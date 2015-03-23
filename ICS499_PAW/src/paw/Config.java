@@ -33,6 +33,9 @@ public class Config {
 	//default mode is its position in the MODES[] (0 = admin, 1 = user);
 	public static int DEFAULTMODE = 0;
 	
+	//the file to record completed games
+	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
+
 	// For Reading the game set file
 	//TODO
 	public static final String DELIMETER = "\\|";
@@ -42,7 +45,7 @@ public class Config {
 	public static final String GAME_SET = "src/gameSet.txt";	
 	
 	//this is the file for BigWordCollection default
-	public static final String INPUT_FILE = "src/gameSet.txt";	
+	public static final String INPUT_FILE = "src/input_words.txt";	
 	/*
 	 * English Options
 	 */
@@ -52,6 +55,8 @@ public class Config {
 		// Win Message
 		public static final String enWINMESSAGE = "             YOU DID IT !!! GREAT JOB!!!"
 				+ "\n Click on 'Start New Game' if you would like to play another game. ";
+		
+		public static final String enLOSEMESSAGE = "             YOU DID NOT FINISH!!";
 		
 		public static Font enTextFont = Font.getFont(Font.SANS_SERIF);
 		
