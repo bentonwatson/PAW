@@ -1,9 +1,29 @@
 package paw;
 
+import java.awt.Color;
 import java.awt.Font;
 
 public class Config {
+	
+	
+	// Tab and Background Colors
+		public static Color WELCOME_PANEL_BG_COLOR = Color.red;
+		public static String PREVIEW_PANEL_BG_COLOR = "white";
+		public static Color READING_PANEL_BG_COLOR = Color.yellow;
+		public static String WRITING_PANEL_BG_COLOR = "green";
+		public static String VOCABULARY_PANEL_BG_COLOR = "cyan";
+		public static String CONFIG_PANEL_BG_COLOR = "magenta"; 
+		
+		public static String APP_TITLE = "Pick and Assemble Words";
+		public static String LOGO_FILE = "logo.jpg";
+		public static String WELCOME_TITLE = "Welcome to Pick and Assemble Words";
+		
+		public static String WELCOME_MSG = "You can play Reading, Writing, Vocabulary" +
+				" Quizzes using this application " + 
+				" You can set the level for the quizzes " +
+				" by clicking the buttons below";
 
+		
 	// font size for Telugu
 	public static final float FONTSIZETELUGU = 26.0f;
 	// Default Font Size
@@ -36,13 +56,12 @@ public class Config {
 	//the file to record completed games
 	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
 
-	// For Reading the game set file
-	//TODO
-	public static final String DELIMETER = "\\|";
-	public static final int MAX_ITEMS_PER_LINE = 7;
-	
 	// user mode gets game to play from this set
 	public static final String GAME_SET = "src/gameSet.txt";	
+	
+	// For Reading the input words to create new games
+	public static final String DELIMETER = "\\|";
+	public static final int MAX_ITEMS_PER_LINE = 7;
 	
 	//this is the file for BigWordCollection default
 	public static final String INPUT_FILE = "src/input_words.txt";	
@@ -79,6 +98,6 @@ public class Config {
 		public static String teTextFont = "src/TE/Gidugu.ttf";
 
 		public static String teWordsFileName = "src/TeluguWords.txt";
-		
+
 //		public static String teWordsFilePath = System.getProperty("user.home") + "\\7LW\\TE\\";
 }

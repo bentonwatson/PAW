@@ -1,376 +1,246 @@
 package paw;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridLayout;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.File;
+import java.io.IOException;
+import java.util.ListIterator;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JSpinner;
-import javax.swing.JToggleButton;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
-import javax.swing.UIManager;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-//import paw.Config.languages;
+import core.BigWordCollection;
+import core.GameCollection;
 
+public class PAWgui extends 	JFrame
+{
+	private		JTabbedPane tabbedPane;
 
-
-
-
-
-public class PAWgui {
-	private JFrame frame;
-	private PAWgame newGame;
-	private JProgressBar progressBar;
-	private JComboBox<String> languageComboBox;
-	private JSpinner lengthOfWordsSpinner;
-	private JSpinner numOfWordsSpinner;
-	private ArrayList<String> guessWord = new ArrayList<>();
-	private static PAWgui window;
-	private int clickCount = 0;
-	private ArrayList<AnswerTile> answerTiles = new ArrayList<>();
-	private ArrayList<GridTile> gridTiles = new ArrayList<>(); 
-	private JPanel guessPanel;
-	private JLabel lblWordsFound;
+	private		JPanel		welcomePanel;
+	private 	JPanel		generatePanel;	
+	private		JPanel		playPanel;
+	private		JPanel		configPanel;
+	private 	JPanel 		topPanel;
+	private GameCollection gameCollection;
+	private BigWordCollection origCollection = new BigWordCollection();
+	private Font font;
 	
-	class TileBoard extends JPanel {
-		private int columns;
-
-
-		/**
-		 * Create the panel.
-		 */
-		public TileBoard(ArrayList<String> characters) {			
-			columns = newGame.getWordLength();
-			this.setLayout(new GridLayout(0, columns));
-			gridTiles = new ArrayList<>(); 
-			for (int i = 0; i < characters.size(); i++) {			
-				GridTile newTile = new GridTile(characters.get(i),i);
-				gridTiles.add(newTile);
-				add(newTile);
-				revalidate();
-			}
-		}
-
-	}
-	class Tile extends JToggleButton {
-		int clickedPosition = -1;
-		int tileId = -1;
-
-		Tile(){
-			setFont(new Font("Arial Unicode MS", Font.PLAIN, 24));
-		}
-
-	}
-	class GridTile extends Tile {
-		int clickedPosition = -1;
-		int tileId = -1;
-		int columnNum;
-		String character = "";
-		Color randomColor = new Color((int)(Math.random()*255)+1,(int)(Math.random()*255)+1,(int)(Math.random()*255)+1);
-		Color pressedColor = Color.WHITE;
-
-		GridTile(String character, int iD){
-			super();
-			setText(character);			
-			tileId = iD;			
-			setBackground(randomColor);
-			columnNum = iD % newGame.getWordLength();
-			addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					for (GridTile gridTile : gridTiles) {
-						if(gridTile.columnNum == columnNum &&
-								gridTile.clickedPosition > -1 && gridTile.tileId != tileId){
-							return;
-						}
-					}
-					if (clickCount == newGame.getWordLength()){
-						if(clickedPosition < 0){
-							return;
-						}
-					}
-
-					if (clickedPosition == -1){
-						clickedPosition = clickCount++;
-						AnswerTile at = answerTiles.get(columnNum);
-						at.character = character;
-						at.setText(character);
-						at.setVisible(true);
-						at.getParent().revalidate();
-						setBackground(pressedColor);
-						getParent().revalidate();
-						guessWord.add(clickedPosition, character);
-					} else {
-						AnswerTile nt = answerTiles.get(columnNum);
-						nt.setVisible(false);
-						nt.getParent().revalidate();
-						setBackground(randomColor);
-						getParent().revalidate();
-						clickCount--;
-						guessWord.remove(clickedPosition);
-						for (GridTile gridTile : gridTiles) {
-							if(gridTile.clickedPosition > clickedPosition){
-								gridTile.clickedPosition -= 1;
-							}
-						}
-						clickedPosition = -1;
-					}
-					if (clickCount == newGame.getWordLength()){
-						if(newGame.isCorrectWord(guessWord)){
-							lblWordsFound.setText("Words Found: ("+newGame.getNumberOfWordsFound() +"/" + newGame.getNumberOfWords() + ")");
-							lblWordsFound.getParent().revalidate();
-							progressBar.setValue(newGame.getNumberOfWordsFound());
-							Timer timer = new Timer();
-							for (AnswerTile answerTile : answerTiles) {
-								answerTile.setBackground(Color.GREEN);
-							} 
-
-							for (GridTile gridTile : gridTiles) {
-								if (gridTile.clickedPosition >-1){
-									timer.schedule(new TimerTask() {
-
-										@Override
-										public void run() {
-											gridTile.setVisible(false);
-											gridTile.clickedPosition = -1;
-
-
-										}
-									}, 1000);
-
-								}									
-							}
-							
-							clickCount = 0;
-							guessWord.clear();
-							for (AnswerTile answerTile : answerTiles) {
-								timer.schedule(new TimerTask() {
-
-									@Override
-									public void run() {
-										answerTile.setVisible(false);
-
-
-
-									}
-								}, 1000);
-							}
-						} 
-						else {
-							for (AnswerTile answerTile : answerTiles) {
-								answerTile.setBackground(Color.RED);
-							} 
-						}
-
-					}						
-				}
-
-			});
-		}
-
-	}
-	class AnswerTile extends Tile {
-		int tileId = -1;
-		String character = "";
-		Color color = Color.WHITE;
-
-		AnswerTile(String character, int iD){
-			super();
-			setText(character);			
-			tileId = iD;			
-			setBackground(color);
-			setVisible(false);
-		}
-
-	}
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+    /** 
+     * The main GUI for the Quiz Master.
+     * This assembles all the invidivual Tabbed Panels
+     * and handles the interactions between the tabs
+     */
+//	public QuizMasterGUI(){
+//		initialize();
+//	}
+	public PAWgui()
+	{
 		try {
-			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-		} catch (Throwable e) {
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("src/te/Gidugu.ttf"));
+			font = font.deriveFont(60f);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					window = new PAWgui();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+		gameCollection = new GameCollection();
+		// NOTE: Every group works on Welcome Tab and one another Tab as follows
+		// Check the Assignment for details
 
-	/**
-	 * Create the application.
-	 */
-	public PAWgui() {
+	
+
+		setTitle(Config.APP_TITLE);
+		setSize( 1200, 800 );
+		setBackground( Color.gray );
+		setMinimumSize(new Dimension(1200, 800));
+		
+		// Create the tab pages
+		topPanel = new JPanel();
+		topPanel.setLayout( new BorderLayout() );
+		getContentPane().add( topPanel );
+		
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		newGame = new PAWgame();
-		frame = new JFrame();
-		frame.setMinimumSize(new Dimension(1000,800));
-		frame.setBounds(100, 100, 634, 492);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		SpringLayout springLayout = new SpringLayout();
-		frame.getContentPane().setLayout(springLayout);
+	public void initialize(){
+		createWelcomePage();
+		createGeneratePage();
+		createPlayPage();
+		createConfigPage();
 
-		JPanel settingsPanel = new JPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, settingsPanel, 0, SpringLayout.NORTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, settingsPanel, 0, SpringLayout.WEST, frame.getContentPane());
-		frame.getContentPane().add(settingsPanel);
-		SpringLayout sl_settingsPanel = new SpringLayout();
-		settingsPanel.setLayout(sl_settingsPanel);
-
-		JPanel tileBoardPanel = new JPanel();
-		springLayout.putConstraint(SpringLayout.SOUTH, settingsPanel, 0, SpringLayout.SOUTH, tileBoardPanel);
-		springLayout.putConstraint(SpringLayout.EAST, settingsPanel, -6, SpringLayout.WEST, tileBoardPanel);
-		springLayout.putConstraint(SpringLayout.NORTH, tileBoardPanel, 0, SpringLayout.NORTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, tileBoardPanel, -80, SpringLayout.SOUTH, frame.getContentPane());
-		tileBoardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		springLayout.putConstraint(SpringLayout.WEST, tileBoardPanel, 235, SpringLayout.WEST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, tileBoardPanel, -10, SpringLayout.EAST, frame.getContentPane());
-		frame.getContentPane().add(tileBoardPanel);
-		tileBoardPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		tileBoardPanel.add(new TileBoard(newGame.newGameCharacters()));
-
-		guessPanel = new JPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, guessPanel, -80, SpringLayout.SOUTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, guessPanel, 0, SpringLayout.WEST, tileBoardPanel);
-		springLayout.putConstraint(SpringLayout.SOUTH, guessPanel, -10, SpringLayout.SOUTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, guessPanel, 0, SpringLayout.EAST, tileBoardPanel);
-		frame.getContentPane().add(guessPanel);
-		addAnswerBlocks(guessPanel);
-		JButton btnExitGame = new JButton("Exit Game");
-		springLayout.putConstraint(SpringLayout.WEST, btnExitGame, 118, SpringLayout.WEST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, btnExitGame, -22, SpringLayout.SOUTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, btnExitGame, -27, SpringLayout.WEST, guessPanel);
-		guessPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		btnExitGame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
+		// Create a tabbed pane
+		tabbedPane = new JTabbedPane();
+		tabbedPane.addTab( "Welcome", welcomePanel );
+		tabbedPane.addTab( "Generate", generatePanel );
+		tabbedPane.addTab( "Play", playPanel );
+		tabbedPane.addTab( "Config", configPanel );
+		topPanel.add( tabbedPane, BorderLayout.CENTER );
+		
+		ChangeListener changeListener = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				 JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+			        int index = sourceTabbedPane.getSelectedIndex();
+			        if(index == 1){
+			        	generatePanel = new GeneratePanel();
+			        	sourceTabbedPane.setComponentAt(index,generatePanel);
+			        }
+			        if(index == 2){
+			        	playPanel = new PlayPanel();
+			        	sourceTabbedPane.setComponentAt(index, playPanel);
+			        }
+			        if(index == 3){
+			        	configPanel = new ConfigPanel();
+			        	sourceTabbedPane.setComponentAt(index,configPanel);
+			        }
 			}
-		});
-		frame.getContentPane().add(btnExitGame);
-
-		JButton btnStartNewGame = new JButton("New Game");
-		springLayout.putConstraint(SpringLayout.NORTH, btnStartNewGame, 0, SpringLayout.NORTH, btnExitGame);
-		springLayout.putConstraint(SpringLayout.EAST, btnStartNewGame, -6, SpringLayout.WEST, btnExitGame);
-		btnStartNewGame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				newGame = new PAWgame(languageComboBox.getModel().getSelectedItem().toString(),
-						(int)lengthOfWordsSpinner.getValue(), (int)numOfWordsSpinner.getValue());
-				TileBoard newGamePanel = new TileBoard(newGame.newGameCharacters());
-				tileBoardPanel.removeAll();
-				tileBoardPanel.add(newGamePanel);
-				tileBoardPanel.revalidate();
-				guessPanel.removeAll();
-				addAnswerBlocks(guessPanel);
-				guessPanel.revalidate();
-			}
-		});
-
-		lengthOfWordsSpinner = new JSpinner();
-		lengthOfWordsSpinner.setModel(new SpinnerNumberModel(5, 4, 6, 1));
-		settingsPanel.add(lengthOfWordsSpinner);
-
-		JLabel lblSelectLengthOf = new JLabel("Select Length of Words");
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, lengthOfWordsSpinner, -6, SpringLayout.NORTH, lblSelectLengthOf);
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, lblSelectLengthOf, 26, SpringLayout.NORTH, settingsPanel);
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, lblSelectLengthOf, 10, SpringLayout.WEST, settingsPanel);
-		settingsPanel.add(lblSelectLengthOf);
-
-		JLabel lblSelectNumberOf = new JLabel("Select Number of Words");
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, lblSelectNumberOf, 26, SpringLayout.SOUTH, lblSelectLengthOf);
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, lblSelectNumberOf, 0, SpringLayout.WEST, lblSelectLengthOf);
-		settingsPanel.add(lblSelectNumberOf);
-
-		numOfWordsSpinner = new JSpinner();
-		sl_settingsPanel.putConstraint(SpringLayout.EAST, lengthOfWordsSpinner, 0, SpringLayout.EAST, numOfWordsSpinner);
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, numOfWordsSpinner, -6, SpringLayout.NORTH, lblSelectNumberOf);
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, numOfWordsSpinner, 4, SpringLayout.EAST, lblSelectNumberOf);
-		numOfWordsSpinner.setModel(new SpinnerNumberModel(10, 5, 15, 1));
-		settingsPanel.add(numOfWordsSpinner);
-
-		JLabel lblSelectLanguage = new JLabel("Select Language:");
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, lblSelectLanguage, 32, SpringLayout.SOUTH, lblSelectNumberOf);
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, lblSelectLanguage, 10, SpringLayout.WEST, settingsPanel);
-		settingsPanel.add(lblSelectLanguage);
-
-		languageComboBox = new JComboBox<String>();
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, languageComboBox, -5, SpringLayout.NORTH, lblSelectLanguage);
-		sl_settingsPanel.putConstraint(SpringLayout.EAST, languageComboBox, 0, SpringLayout.EAST, lengthOfWordsSpinner);
-		languageComboBox.setModel(new DefaultComboBoxModel(Config.languages.values()));
-		settingsPanel.add(languageComboBox);
-
-		progressBar = new JProgressBar();
-		progressBar.setMaximum((int)numOfWordsSpinner.getValue());
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, progressBar, 39, SpringLayout.WEST, settingsPanel);
-		settingsPanel.add(progressBar);
-
-		lblWordsFound = new JLabel("Words Found: (0/" + numOfWordsSpinner.getValue() + ")");
-		sl_settingsPanel.putConstraint(SpringLayout.SOUTH, lblWordsFound, -35, SpringLayout.SOUTH, settingsPanel);
-		sl_settingsPanel.putConstraint(SpringLayout.NORTH, progressBar, 6, SpringLayout.SOUTH, lblWordsFound);
-		sl_settingsPanel.putConstraint(SpringLayout.WEST, lblWordsFound, 51, SpringLayout.WEST, settingsPanel);
-		settingsPanel.add(lblWordsFound);
-		frame.getContentPane().add(btnStartNewGame);
-
-		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
-
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-
-		JCheckBoxMenuItem chckbxmntmUserMode = new JCheckBoxMenuItem("User Mode");
-		mnFile.add(chckbxmntmUserMode);
-
-		JCheckBoxMenuItem chckbxmntmAdminMode = new JCheckBoxMenuItem("Admin Mode");
-		mnFile.add(chckbxmntmAdminMode);
-
-		JMenuItem mntmNewGame = new JMenuItem("New Game");
-		mnFile.add(mntmNewGame);
-
-		JMenuItem mntmExitGame = new JMenuItem("Exit Game");
-		mnFile.add(mntmExitGame);
-
-
-
+		};
+		tabbedPane.addChangeListener(changeListener);
+		
 	}
-	public void addAnswerBlocks(JPanel answerPanel){
-		answerTiles = new ArrayList<>();
-		for (int i = 0; i < newGame.getWordLength(); i++) {
-			AnswerTile answerTile = new AnswerTile("",i);
-			answerTiles.add(answerTile);
-			answerPanel.add(answerTile);
+	
+	public void createWelcomePage()
+	{
+		welcomePanel = new WelcomePanel();
+	}
+	
+	public void createGeneratePage()
+	{
+		generatePanel = new GeneratePanel();
+	}
+
+	public void createPlayPage()
+	{
+		playPanel = new PlayPanel();
+	}
+
+	public void createConfigPage()
+	{
+		configPanel = new ConfigPanel();
+	}
+	
+    // Main method to get things started
+	public static void main( String args[] )
+	{
+		// Create an instance of the test application
+		PAWgui mainFrame	= new PAWgui();
+		mainFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		mainFrame.setVisible( true );
+		
+	}
+	
+	
+	class WelcomePanel extends JPanel
+	{
+		public WelcomePanel() {
+			setMinimumSize(new Dimension(640,480));
+			setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			setBorder(new EmptyBorder(5, 5, 5, 5));
+			setLayout(new GridLayout(1, 2));
+			
+			JPanel pic = new JPanel();
+			pic.setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			JLabel logoImage = new JLabel("", new ImageIcon("src/logo.jpg"), SwingConstants.CENTER);
+			pic.add(logoImage);
+			add(pic);
+			
+			
+			JPanel text = new JPanel();
+			text.setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			text.setLayout(new GridLayout(3,0));
+			text.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+			
+			JTextPane title = new JTextPane();
+			title.setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			title.setText(Config.WELCOME_TITLE);
+			title.setFont(new Font("Tempus Sans ITC", Font.PLAIN, 30));
+			text.add(title);
+			
+			JTextPane body = new JTextPane();
+			body.setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			body.setText(Config.WELCOME_MSG);
+			body.setFont(new Font("Tempus Sans ITC", Font.PLAIN, 30));
+			text.add(body);
+			
+			
+			JPanel button = new JPanel();
+			button.setBackground((Config.WELCOME_PANEL_BG_COLOR));
+			button.setLayout(new FlowLayout());
+			
+			JButton setLevel1 = new JButton("Level 1");
+			setLevel1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						gameCollection = new GameCollection();
+						initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			setLevel1.setSize(100, 100);
+			setLevel1.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevel1.setBackground(Color.yellow);
+			button.add(setLevel1);
+			
+			JButton setLevel2 = new JButton("Level 2");
+			setLevel2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						gameCollection = new GameCollection();
+						initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			setLevel2.setSize(100, 50);
+			setLevel2.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevel2.setBackground(Color.yellow);
+			button.add(setLevel2);
+			
+			JButton setLevel3 = new JButton("Level 3");
+			setLevel3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						gameCollection = new GameCollection();
+						initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			setLevel3.setSize(100, 50);
+			setLevel3.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevel3.setBackground(Color.yellow);
+			button.add(setLevel3);
+			
+			text.add(button);
+			add(text);
 		}
+
+	}
+	
+	class GeneratePanel extends JPanel{
+	
 	}
 
+	class PlayPanel extends JPanel{
+	
+	}
+	
+	class ConfigPanel extends JPanel{
+	
+	}
 }
+
+
