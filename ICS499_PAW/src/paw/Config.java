@@ -7,21 +7,16 @@ public class Config {
 	
 	
 	// Tab and Background Colors
-		public static Color WELCOME_PANEL_BG_COLOR = Color.red;
-		public static String PREVIEW_PANEL_BG_COLOR = "white";
-		public static Color READING_PANEL_BG_COLOR = Color.yellow;
-		public static String WRITING_PANEL_BG_COLOR = "green";
-		public static String VOCABULARY_PANEL_BG_COLOR = "cyan";
-		public static String CONFIG_PANEL_BG_COLOR = "magenta"; 
+		public static Color WELCOME_PANEL_BG_COLOR = Color.yellow;
+		public static Color GENERATE_PANEL_BG_COLOR =Color.white;
+		public static Color PLAY_PANEL_BG_COLOR = Color.yellow;
+		public static Color CONFIG_PANEL_BG_COLOR = Color.magenta; 
 		
 		public static String APP_TITLE = "Pick and Assemble Words";
 		public static String LOGO_FILE = "logo.jpg";
 		public static String WELCOME_TITLE = "Welcome to Pick and Assemble Words";
 		
-		public static String WELCOME_MSG = "You can play Reading, Writing, Vocabulary" +
-				" Quizzes using this application " + 
-				" You can set the level for the quizzes " +
-				" by clicking the buttons below";
+		public static String WELCOME_MSG = "Choose your Mode";
 
 		
 	// font size for Telugu
@@ -57,14 +52,14 @@ public class Config {
 	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
 
 	// user mode gets game to play from this set
-	public static final String GAME_SET = "src/gameSet.txt";	
+	public static final String GAME_SET = "src\\gameSet.txt";	
 	
 	// For Reading the input words to create new games
 	public static final String DELIMETER = "\\|";
 	public static final int MAX_ITEMS_PER_LINE = 7;
 	
 	//this is the file for BigWordCollection default
-	public static final String INPUT_FILE = "src/input_words.txt";	
+	public static final String INPUT_FILE = "src\\input_words.txt";	
 	/*
 	 * English Options
 	 */

@@ -1,5 +1,6 @@
 package core;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -64,8 +65,8 @@ public class GameCollection
 	public void readGame(String a_pathName) throws IOException
 	{
 	
-		// FileInputStream in = new FileInputStream(a_pathName);
-		InputStream in = getClass().getResourceAsStream(a_pathName);
+		FileInputStream in = new FileInputStream(a_pathName);
+//		InputStream in = getClass().getResourceAsStream(a_pathName);
 		Scanner input = new Scanner(in, "UTF-8");
 		String line2 = "";
 		boolean delimiterFound = false;
