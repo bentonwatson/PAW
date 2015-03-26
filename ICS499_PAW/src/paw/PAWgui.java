@@ -176,8 +176,8 @@ public class PAWgui extends 	JFrame
 			button.setBackground((Config.WELCOME_PANEL_BG_COLOR));
 			button.setLayout(new FlowLayout());
 			
-			JButton setLevel1 = new JButton("Level 1");
-			setLevel1.addActionListener(new ActionListener() {
+			JButton setModeUser = new JButton("User Mode");
+			setModeUser.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						gameCollection = new GameCollection();
@@ -187,13 +187,13 @@ public class PAWgui extends 	JFrame
 					}
 				}
 			});
-			setLevel1.setSize(100, 100);
-			setLevel1.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevel1.setBackground(Color.yellow);
-			button.add(setLevel1);
+			setModeUser.setSize(100, 100);
+			setModeUser.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setModeUser.setBackground(Color.yellow);
+			button.add(setModeUser);
 			
-			JButton setLevel2 = new JButton("Level 2");
-			setLevel2.addActionListener(new ActionListener() {
+			JButton setModeAdmin = new JButton("Admin Mode");
+			setModeAdmin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						gameCollection = new GameCollection();
@@ -203,26 +203,10 @@ public class PAWgui extends 	JFrame
 					}
 				}
 			});
-			setLevel2.setSize(100, 50);
-			setLevel2.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevel2.setBackground(Color.yellow);
-			button.add(setLevel2);
-			
-			JButton setLevel3 = new JButton("Level 3");
-			setLevel3.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						gameCollection = new GameCollection();
-						initialize();
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-			setLevel3.setSize(100, 50);
-			setLevel3.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevel3.setBackground(Color.yellow);
-			button.add(setLevel3);
+			setModeAdmin.setSize(100, 50);
+			setModeAdmin.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setModeAdmin.setBackground(Color.yellow);
+			button.add(setModeAdmin);
 			
 			text.add(button);
 			add(text);

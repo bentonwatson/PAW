@@ -26,13 +26,13 @@ public class English extends core.Language {
 		//added portion to detect mode and seed file.
 		String adminFile = paw.Config.enAdminWordsFileName;
 //		String staticFile = core.Config.enWordsFilePath + core.Config.enWordsFileName;
-		String staticFile = paw.Config.enWordsFileName;
+//		String staticFile = paw.Config.enWordsFileName;
 		try {
 			if (mode == 0 && new File(adminFile).exists() && new File(adminFile).isFile() 
 					&& new FileInputStream(adminFile).available() > 0) {
 				this.seedFile = new FileInputStream(adminFile);
-			} else if (new File(staticFile).exists() && new File(staticFile).isFile()) {
-				this.seedFile = new FileInputStream(staticFile);
+//			} else if (new File(staticFile).exists() && new File(staticFile).isFile()) {
+//				this.seedFile = new FileInputStream(staticFile);
 			} else {
 				System.out
 				.println("invalid english seed file or path specified, reverting to default");

@@ -12,7 +12,7 @@ import core.WordProcessor;
 //import te.TeluguWordProcessor;
 
 
-public class PAWgame {
+public class PAWgameLL {
 	private String language;
 	private int wordLength;
 	private int numberOfWords;
@@ -20,12 +20,12 @@ public class PAWgame {
 	private WordProcessor wp;
 	private ArrayList<String> charsForGameTiles = new ArrayList<>();
     private int numberOfWordsFound = 0;
-	PAWgame(){
+	PAWgameLL(){
 		language = Config.LANGUAGES[Config.DEFAULTLANGUAGE];
 		wordLength = 5;
 		numberOfWords = 10;
 	}
-	PAWgame(String _language,int _wordLength, int _numberOfWords){
+	PAWgameLL(String _language,int _wordLength, int _numberOfWords){
 		language = _language;
 		wordLength = _wordLength;
 		numberOfWords = _numberOfWords;
@@ -33,9 +33,9 @@ public class PAWgame {
 	public ArrayList<String> newGameCharacters(){
 		String filePath = "";
 		if (language.equals("English")){
-			filePath = Config.enWordsFileName;
+			//filePath = Config.enWordsFileName;
 		} else {
-			filePath = Config.teWordsFileName;
+			//filePath = Config.teWordsFileName;
 		}
 		try (
 				Scanner in = new Scanner(new InputStreamReader(new FileInputStream(filePath)));

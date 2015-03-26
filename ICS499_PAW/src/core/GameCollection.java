@@ -101,12 +101,14 @@ public class GameCollection
 	{
 		String id = new String();
 		String title = new String();
+		int level = 0;
 		ArrayList<String> wordList = new ArrayList<String>();
 		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
 		String[][] puzzleGrid;
 		ArrayList<String[]> charGrid = new ArrayList<String[]>();
 		boolean idFound = false;
 		boolean titleFound = false;
+		boolean levelFound = false;
 		boolean wordsFound = false;
 		boolean columnFound = false;
 		
@@ -130,6 +132,13 @@ public class GameCollection
 				String[] split = line.split("Title:");
 				title = split[1].trim();
 				titleFound = true;
+				
+			}
+			else if (line.contains("Level:"))
+			{
+				String[] split = line.split("Level:");
+				level = Integer.valueOf(split[1].trim());
+				levelFound = true;
 				
 			}
 			else if (line.contains("Words:"))
@@ -163,7 +172,7 @@ public class GameCollection
 //				
 		}//end while 
 		
-		if (!idFound || !titleFound || !wordsFound || !columnFound){
+		if (!idFound || !titleFound || !levelFound || !wordsFound || !columnFound){
 //			WordSearchPuzzlePlayer.errorMessage("The text: \n" + a_text + "\n" +
 //					" id, title, grid or words line are missing.");
 		}
@@ -186,7 +195,7 @@ public class GameCollection
 //			//System.out.println("");
 //		}
 		input.close();
-		Game game = new Game(id, title, wordList, columnList);
+		Game game = new Game(id, level, title, wordList, columnList);
 		allGames.add(game);
 		
 	}

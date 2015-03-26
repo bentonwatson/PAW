@@ -54,7 +54,7 @@ public class Config {
 	// user mode gets game to play from this set
 	public static final String GAME_SET = "src\\gameSet.txt";	
 	
-	// For Reading the input words to create new games
+	// When using bigwordcollection
 	public static final String DELIMETER = "\\|";
 	public static final int MAX_ITEMS_PER_LINE = 7;
 	
@@ -74,7 +74,7 @@ public class Config {
 		
 		public static Font enTextFont = Font.getFont(Font.SANS_SERIF);
 		
-		public static String enWordsFileName = "src/EnglishWords.txt";
+		//public static String enWordsFileName = "src/EnglishWords.txt";
 		
 		public static String enAdminWordsFileName = "src/EN/adminInput.txt";
 		
@@ -92,7 +92,7 @@ public class Config {
 		
 		public static String teTextFont = "src/TE/Gidugu.ttf";
 
-		public static String teWordsFileName = "src/TeluguWords.txt";
+		// public static String teWordsFileName = "src/TeluguWords.txt";
 
 //		public static String teWordsFilePath = System.getProperty("user.home") + "\\7LW\\TE\\";
 }

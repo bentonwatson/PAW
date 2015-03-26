@@ -37,7 +37,7 @@ import javax.swing.border.EtchedBorder;
 
 public class PAWguiLL {
 	private JFrame frame;
-	private PAWgame newGame;
+	private PAWgameLL newGame;
 	private JProgressBar progressBar;
 	private JComboBox<String> languageComboBox;
 	private JSpinner lengthOfWordsSpinner;
@@ -235,7 +235,7 @@ public class PAWguiLL {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		newGame = new PAWgame();
+		newGame = new PAWgameLL();
 		frame = new JFrame();
 		frame.setMinimumSize(new Dimension(1000,800));
 		frame.setBounds(100, 100, 634, 492);
@@ -286,7 +286,7 @@ public class PAWguiLL {
 		springLayout.putConstraint(SpringLayout.EAST, btnStartNewGame, -6, SpringLayout.WEST, btnExitGame);
 		btnStartNewGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				newGame = new PAWgame(languageComboBox.getModel().getSelectedItem().toString(),
+				newGame = new PAWgameLL(languageComboBox.getModel().getSelectedItem().toString(),
 						(int)lengthOfWordsSpinner.getValue(), (int)numOfWordsSpinner.getValue());
 				TileBoard newGamePanel = new TileBoard(newGame.newGameCharacters());
 				tileBoardPanel.removeAll();

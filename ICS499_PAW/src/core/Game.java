@@ -15,6 +15,7 @@ public class Game
 
 	private String id;
 	private String title;
+	private int level;
 	private ArrayList<String> wordList;
 	private ArrayList<ArrayList<String>> columnData; //size = # of columns
 
@@ -22,11 +23,21 @@ public class Game
 	private int gridWidth; // derived
 	private int gridHeight; // derived
 
-	Game(String an_id, String a_title, ArrayList<String> a_word_list,
+	Game(int a_level, String a_title, ArrayList<String> a_word_list,
+			ArrayList<ArrayList<String>> a_columnData)
+			{
+		level = a_level;
+		title = a_title;
+		wordList = a_word_list;
+		columnData = a_columnData;
+			}
+
+	Game(String an_id, int a_level, String a_title, ArrayList<String> a_word_list,
 			ArrayList<ArrayList<String>> a_columnData)
 	{
 		id = an_id;
 		title = a_title;
+		level = a_level;
 		wordList = a_word_list;
 		columnData = a_columnData;
 	}
@@ -61,6 +72,22 @@ public class Game
 	public String getTitle()
 	{
 		return title;
+	}
+	
+	/**
+	 * Set method for the variable level
+	 */
+	public void setLevel(int a_level)
+	{
+		level = a_level;
+	}
+	
+	/**
+	 * Get method for the variable level
+	 */
+	public int getLevel()
+	{
+		return level;
 	}
 	
 	/**
