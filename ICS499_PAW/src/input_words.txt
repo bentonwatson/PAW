@@ -1,4 +1,4 @@
-﻿ID	d1	ignore theme	d1	telugu	d1	english	d1	Clue	d1	Image	d1	Sound
+﻿ID	d1	Topic	d1	Telugu	d1	English	d1	Clue	d1	Image	d1	Sound
 1	|	Airlines	|	ఎయిర్ కెనడా	|	air canada	|	ఎయిర్ కెనడా_clue	|		|	
 2	|	Airlines	|	ఎయిర్ ట్రాన్	|	airtran	|	ఎయిర్ ట్రాన్_clue	|		|	
 3	|	Airlines	|	అలాస్కా ఎయిర్ లైన్స్	|	alaska airlines	|	అలాస్కా ఎయిర్ లైన్స్_clue	|		|	

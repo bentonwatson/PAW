@@ -1,5 +1,6 @@
 ID: 001
-Title:  4Letters  (Level 1)
+Title:  4Letters
+Level: 1
 Words:  BARN,FARM,CORN,DRUM,MILK,
 C: B,F,C,D,M,
 C: A,A,O,R,I,
@@ -7,7 +8,8 @@ C: R,R,R,U,L,
 C: N,M,N,M,K,
 --------------------------------------------
 ID: 002
-Title:  5Letters  (Level 1)
+Title:  5Letters
+Level: 1
 Words:   DRAIN,STORM,CREAM,BROWN
 C: D,S,C,B,
 C: R,T,R,R,
@@ -16,7 +18,8 @@ C: I,R,A,W,
 C: N,M,M,N,
 -------------------------------------------
 ID: 003
-Title:  4Letters  (Level 2)
+Title:  4Letters
+Level: 2
 Words:   BARN,FARM,CORN,DRUM,MILK,
 C: B,F,C,D,M,
 C: A,O,R,I,

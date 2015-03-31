@@ -2,10 +2,13 @@ package paw;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
+
+import core.Game;
 
 public class Config {
 	
-	
+
 	// Tab and Background Colors
 		public static Color WELCOME_PANEL_BG_COLOR = Color.yellow;
 		public static Color GENERATE_PANEL_BG_COLOR =Color.white;
@@ -16,13 +19,16 @@ public class Config {
 		public static String LOGO_FILE = "logo.jpg";
 		public static String WELCOME_TITLE = "Welcome to Pick and Assemble Words";
 		
-		public static String WELCOME_MSG = "Choose your Mode";
+		public static String WELCOME_MSG = "This space will have instructions, etc.";
 
 		
 	// font size for Telugu
 	public static final float FONTSIZETELUGU = 26.0f;
 	// Default Font Size
 	public static final float FONTSIZEDEFAULT = 18.0f;
+	
+	public static Font LABELFONT = new Font("Calibri", Font.BOLD,20);
+	
 	// Languages to choose from
 	public enum languages {
 		English, Telugu
@@ -42,17 +48,25 @@ public class Config {
 	//works
 	public static boolean createHTML = false;
 	
-	//0 = admin, 1 = user
-	public static final String[] MODES = { "admin", "user" };
-	
-	//default mode is its position in the MODES[] (0 = admin, 1 = user);
-	public static int DEFAULTMODE = 0;
+	// modes may be "user" or "admin"
+	public static String DEFAULTMODE = "admin";
 	
 	//the file to record completed games
 	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
 
 	// user mode gets game to play from this set
 	public static final String GAME_SET = "src\\gameSet.txt";	
+	
+	//default game configurations
+	public static String topic = "Any";
+	public static String level = "1";
+	public static String wordLength = "4";
+	public static String wordStrength = "4";
+	public static String allowDuplicates = "true";
+	public static String charOrder = "true";
+	public static String[] defaultGameConfig = {"Any", "1", "4", "4", "true", "true"};
+//	public static String[] defaultGameConfig = {topic, level, wordLength, wordStrength, allowDuplicates, charOrder};
+	
 	
 	// When using bigwordcollection
 	public static final String DELIMETER = "\\|";

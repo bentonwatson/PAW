@@ -10,6 +10,7 @@ package core;
 // Software Engineering Assignment 3
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -645,6 +646,26 @@ public class WordProcessor {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * helper method to match telugu wordprocessor methods
+	 * English this is same as length
+	 * @return int
+	 */
+	public int getWordStrength() {
+		return this.getLength();
+	}
+	
+	/**
+	 * helper method to shuffle all characters in the word
+	 * @return ArrayList<String>
+	 */
+	public ArrayList<String> shuffleChars(){
+		ArrayList<String> chars = new ArrayList<String>();
+		chars.addAll(logicalChars);
+		Collections.shuffle(chars);
+		return chars;
 	}
 	
 	

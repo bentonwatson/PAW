@@ -1,8 +1,15 @@
 package paw;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
+import core.BigWord;
+import core.BigWordCollection;
 import core.Game;
+import core.GameIdServer;
+import core.WordProcessor;
 
 /**
  * 
@@ -19,71 +26,217 @@ public class GameGenerator {
 	private String title;
 	private ArrayList<String> wordList;
 	private ArrayList<ArrayList<String>> columnData;
-	
-	// congif parameters
-	private String level;
+	private ArrayList<BigWord> bigWordList;
+	// game criteria variables
+	private int level;
 	private String topic;
 	private int wordLength;
 	private int numWords;
-	private int wordStrength;
+	private int wordStrength; //in English the wordStrength must match the wordLength
 	private int wordWeight;
 	private boolean duplicates; // true if duplicates are allowed within the columns
 	private boolean charOrder; // true if characters are displayed in logical word order
 	private boolean showAllWords; // false when only words matching criteria are to be returned
+	private int id;
 	
-	public GameGenerator(String a_topic, int a_length, int a_numWords, int a_strength,
-			int a_weight, boolean dup, boolean order, boolean all){
+	@SuppressWarnings("unused")
+	public GameGenerator(String a_topic, int a_level, int a_length, int a_strength,
+			boolean dup, boolean order){
 		topic = a_topic;
 		wordLength = a_length;
-		numWords = a_numWords;
-		wordStrength = a_strength;
-		wordWeight = a_weight;
+		if(Config.DEFAULTLANGUAGE == 0){
+			wordStrength = a_length;
+		}else{
+			wordStrength = a_strength;
+		}
+		level = a_level;
+//		wordWeight = a_weight;
 		duplicates = dup;
 		charOrder = order;
-		showAllWords = all;
+//		showAllWords = all;
+		
+		id = GameIdServer.instance().getId();
 		
 		setTitle();
-		setLevel();
-		setWordList();
-		setColumnData();
+//		setLevel();
+		setBigWordList();
+		
 	}
-	
+
 	/**
 	 * method returns the game generated
+	 * 
 	 * @return
 	 */
-	public Game getNewGame(){
+	public Game getNewGame() {
+		newGame = new Game(level, title, wordList, columnData);
 		return newGame;
 	}
-	
+
 	/**
-	 * Method to set the title 
+	 * Method to set the title
 	 * 
 	 */
-	public void setTitle(){
-		//TODO
+	public void setTitle() {
+		title = topic + " (Level-" + level + ")";
 	}
-	
+
+	public String getTitle(){
+		return title;
+	}
 	/**
-	 * Method to set the level
-	 * level will be determined based on ?? criteria right now
+	 * Method to set the level level will be determined based on ?? criteria
+	 * right now
 	 */
-	public void setLevel(){
-		//TODO
+	public void setLevel(int a_level) {
+		level = a_level;
+//		level = 1;
+//		if (!duplicates) {
+//			level++;
+//		}
+//		if (!charOrder) {
+//			level++;
+//		}
+//		if (wordLength > 5) {
+//			level++;
+//		}
 	}
 	
+	public int getLevel(){
+		return level;
+	}
+	
+	public void setWords(int num){
+		numWords = num;
+		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
+		for (BigWord bigWord : bigWordList) {
+			wordsOfCorrectLength.add(bigWord.getEnglish());
+		}
+		chooseRandomListOfWords(wordsOfCorrectLength);
+		setColumnData();
+	}
+
 	/**
-	 * Method to read input file, choose words based on criteria
-	 * set the wordList variable
+	 * Method to read input file, choose words based on criteria set the
+	 * wordList variable
 	 */
-	public void setWordList(){
-		//TODO
+	@SuppressWarnings("unused")
+	public void setBigWordList() {
+		BigWordCollection bwc = new BigWordCollection();
+		BigWordCollection bwcByCriteria = bwc.getBigWordCollectionByCriteria(topic, 
+				wordLength, wordLength, wordStrength, wordStrength);
+		System.out.println("generator - " + bwcByCriteria.size());
+		bigWordList = new ArrayList<BigWord>();
+		if (Config.DEFAULTLANGUAGE == 0){
+			if(!bwcByCriteria.containsDuplicateEnglishWords()){
+				bigWordList.addAll(bwcByCriteria.getAllBigWords());
+			}else if(bwcByCriteria.containsDuplicateEnglishWords()){
+				//TODO what to do if duplicate words are returned
+				bigWordList.addAll(bwcByCriteria.getAllBigWords());
+			}
+		}
+		if (Config.DEFAULTLANGUAGE == 1){
+			if(!bwcByCriteria.containsDuplicateTeluguWords()){
+				bigWordList.addAll(bwcByCriteria.getAllBigWords());
+			} else if (bwcByCriteria.containsDuplicateTeluguWords()){
+				//TODO what to do if duplicate words are returned
+				bigWordList.addAll(bwcByCriteria.getAllBigWords());
+			}
+		}
 	}
 	
+	public int getNumBigWordList(){
+		return bigWordList.size();
+	}
+	
+	@SuppressWarnings("unused")
+	public ArrayList<String> getWordsBigWordList(){
+		ArrayList<String> words = new ArrayList<String>();
+		if(Config.DEFAULTLANGUAGE == 0){
+			for(BigWord bigWord : bigWordList){
+				words.add(bigWord.getEnglish());
+			}
+		}else if(Config.DEFAULTLANGUAGE == 1){
+			for(BigWord bigWord : bigWordList){
+				words.add(bigWord.getTelugu());
+			}
+		}
+		return words;
+	}
+
+	public void chooseRandomListOfWords(List<String> wordsOfCorrectLength) {
+		if(wordsOfCorrectLength.size() >= numWords){
+			Collections.shuffle(wordsOfCorrectLength);
+			wordList = new ArrayList<String>();
+			for (int i = 0; i < numWords; i++) {
+				wordList.add(wordsOfCorrectLength.get(i));
+			}
+		}
+	}
+
 	/**
 	 * Method to set the columnData
 	 */
-	public void setColumnData(){
-		//TODO
+	public void setColumnData() {
+		columnData = createColumns();
+		if (!(duplicates && charOrder)) {
+			shuffleColumns();
+			removeDuplicates();
+		} else if (!duplicates) {
+			removeDuplicates();
+		} else if (!charOrder) {
+			shuffleColumns();
+		}
+	}
+
+	/**
+	 * Method to create the columns
+	 * @return ArrayList<String>
+	 */
+	public ArrayList<ArrayList<String>> createColumns(){
+		ArrayList<ArrayList<String>> columns = new ArrayList<ArrayList<String>>();
+		for(int i = 0; i < wordLength; i++){
+			ArrayList<String> single = new ArrayList<String>();
+			for(String word : wordList){
+				single.add(String.valueOf(word.charAt(i)));
+			}
+			single = shuffleChars(single);
+			columns.add(single);
+		}
+		return columns;
+	}
+	
+	/**
+	 * Shuffle characters within a single column.
+	 * @param charsToShuffle: the chars to shuffle
+	 */
+	public ArrayList<String> shuffleChars(ArrayList<String> charsToShuffle) {
+		Collections.shuffle(charsToShuffle);
+		return charsToShuffle;
+	}
+
+	/**
+	 * Shuffles the column order
+	 */
+	public void shuffleColumns() {
+		Collections.shuffle(columnData);
+	}
+
+	/**
+	 * removes the duplicate letters within a single column
+	 */
+	public void removeDuplicates() {
+		for (ArrayList<String> arrayList : columnData) {
+			HashSet<String> uniqueCharacters = new HashSet<>(arrayList);
+			arrayList.clear();
+			arrayList.addAll(uniqueCharacters);
+		}
+	}
+	
+	public static void main(String[] args) {
+		GameGenerator gg = new GameGenerator("BodyParts", 1, 4, 4, false, false);
+		gg.setWords(5);
+		Game game = gg.getNewGame();
+		System.out.println(game.toString());
 	}
 }

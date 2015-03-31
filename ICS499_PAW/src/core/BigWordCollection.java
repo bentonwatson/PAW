@@ -328,7 +328,8 @@ public class BigWordCollection
 		 */
 		public BigWordCollection getBigWordCollectionByTopic(String some_topic)
 		{
-			if( some_topic.equalsIgnoreCase("any")){
+			if(some_topic.equalsIgnoreCase("any")){
+				
 				return this;
 			} 
 			return new BigWordCollection(bigWordsTopicsTable.get(some_topic));
@@ -338,17 +339,27 @@ public class BigWordCollection
 		 * Returns the Big Word Collection based on the length of the word
 		 * This method matches the exact length. All other words are discarded
 		 */
+		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordLength(int a_length)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
+			String word = null;
+			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				String word = bw.getTelugu();
-				te.TeluguWordProcessor twp = new te.TeluguWordProcessor(word);
-				if(twp.getLength() == a_length){
+				if(Config.DEFAULTLANGUAGE == 0){
+					word = bw.getEnglish();
+					wp = new WordProcessor(word);
+				}else if(Config.DEFAULTLANGUAGE == 1){
+					word = bw.getTelugu();
+					wp = new te.TeluguWordProcessor(word);
+				}
+				if(wp.getLength() == a_length){
 					bwList.add(bw);
 				}
 			}
+			BigWordCollection collection = new BigWordCollection(bwList);
+			
 			return new BigWordCollection(bwList);
 		}
 		
@@ -356,14 +367,22 @@ public class BigWordCollection
 		 * Returns the Big Word Collection based on the length (min and max) of the word
 		 * This method matches all the strings between MIN and MAX (including)
 		 */
+		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordLength(int min, int max)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
+			String word = null;
+			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				String word = bw.getTelugu();
-				te.TeluguWordProcessor twp = new te.TeluguWordProcessor(word);
-				if((twp.getLength() >= min || min == 0) && (twp.getLength() <= max || max == 0)){
+				if(Config.DEFAULTLANGUAGE == 0){
+					word = bw.getEnglish();
+					wp = new WordProcessor(word);
+				}else if(Config.DEFAULTLANGUAGE == 1){
+					word = bw.getTelugu();
+					wp = new te.TeluguWordProcessor(word);
+				}
+				if((wp.getLength() >= min || min == 0) && (wp.getLength() <= max || max == 0)){
 					bwList.add(bw);
 				}
 			}
@@ -376,14 +395,22 @@ public class BigWordCollection
 		 * For English, strength = length
 		 * For Telugu, different algorithm is already provided
 		 * */
+		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordStrength(int strength)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
+			String word = null;
+			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				String word = bw.getTelugu();
-				te.TeluguWordProcessor twp = new te.TeluguWordProcessor(word);
-				if(twp.getWordStrength() == strength){
+				if(Config.DEFAULTLANGUAGE == 0){
+					word = bw.getEnglish();
+					wp = new WordProcessor(word);
+				}else if(Config.DEFAULTLANGUAGE == 1){
+					word = bw.getTelugu();
+					wp = new te.TeluguWordProcessor(word);
+				}
+				if(wp.getWordStrength() == strength){
 					bwList.add(bw);
 				}
 			}	
@@ -396,14 +423,22 @@ public class BigWordCollection
 		 * For English, strength = length
 		 * For Telugu, different algorithm is already provided
 		 * */
+		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordStrength(int min, int max)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
+			String word = null;
+			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				String word = bw.getTelugu();
-				te.TeluguWordProcessor twp = new te.TeluguWordProcessor(word);
-				if((twp.getWordStrength() >= min || min == 0) && (twp.getWordStrength() <= max || max == 0)){
+				if(Config.DEFAULTLANGUAGE == 0){
+					word = bw.getEnglish();
+					wp = new WordProcessor(word);
+				}else if(Config.DEFAULTLANGUAGE == 1){
+					word = bw.getTelugu();
+					wp = new te.TeluguWordProcessor(word);
+				}
+				if((wp.getWordStrength() >= min || min == 0) && (wp.getWordStrength() <= max || max == 0)){
 					bwList.add(bw);
 				}
 			}
@@ -422,8 +457,11 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> returnList = new ArrayList<BigWord>();
 			BigWordCollection bwcTopics = getBigWordCollectionByTopic(a_topic);
+			System.out.println("by topic size - " + bwcTopics.size());
 			BigWordCollection bwcLength = bwcTopics.getBigWordCollectionByWordLength(min_len, max_len);
+			System.out.println("by length size - " + bwcLength.size());
 			BigWordCollection bwcStrength = bwcLength.getBigWordCollectionByWordStrength(min_strength, max_strength);
+			System.out.println("by strength size - " + bwcStrength.size());
 			
 			return bwcStrength;
 		}
@@ -482,7 +520,29 @@ public class BigWordCollection
         }
 		
 		/**
-		 * Checks whether Big Word Collection has any duplicate Telgu words
+		 * Checks whether Big Word Collection has any duplicate English words
+		 */
+		public boolean containsDuplicateEnglishWords()
+		{
+			BWCIterator iterator = new BWCIterator(this);
+			int count = this.size();
+			ArrayList<String> words = new ArrayList<String>();
+			for(int i = 0; i < count; i++){
+				if(words.contains(iterator.getCurrent().getEnglish())){
+					return true;
+				}else{
+					words.add(iterator.getCurrent().getEnglish());
+				}
+				if(i < count-1){
+					iterator.next();
+				}
+				
+			}
+			return false;
+		}
+		
+		/**
+		 * Checks whether Big Word Collection has any duplicate Clues
 		 */
 		public boolean containsDuplicateClues()
 		{
@@ -501,7 +561,6 @@ public class BigWordCollection
 			}
             return false;
         }
-		
 		
 		/**
 		 * Gets the Big Word Collection where the Big Word has an image file associated with it
@@ -530,6 +589,11 @@ public class BigWordCollection
 			}
 			return new BigWordCollection(bwList);
 		}
+
+		public Hashtable<String, ArrayList<BigWord>> getBigWordsTopicsTable() {
+			return bigWordsTopicsTable;
+		}
+
 		
 		
 		//***********************************************************

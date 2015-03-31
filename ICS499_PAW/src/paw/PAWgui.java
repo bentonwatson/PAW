@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.ListIterator;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import core.BigWordCollection;
+import core.Game;
 import core.GameCollection;
 
 public class PAWgui extends 	JFrame
@@ -28,18 +30,22 @@ public class PAWgui extends 	JFrame
 	private		JPanel		playPanel;
 	private		JPanel		configPanel;
 	private 	JPanel 		topPanel;
+	private String mode = Config.DEFAULTMODE;
 	private GameCollection gameCollection;
 	private BigWordCollection origCollection = new BigWordCollection();
 	private Font font;
+	private int gameLevel;
+	public int numWordsFound = 0; //value set by Config panel as a result after setting new config
+//	public Game tmpGame = new Game();
+	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
+	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	
     /** 
-     * The main GUI for the Quiz Master.
+     * The main GUI for the PAW game.
      * This assembles all the invidivual Tabbed Panels
      * and handles the interactions between the tabs
      */
-//	public QuizMasterGUI(){
-//		initialize();
-//	}
+
 	public PAWgui()
 	{
 		try {
@@ -53,69 +59,90 @@ public class PAWgui extends 	JFrame
 			e.printStackTrace();
 		}
 		gameCollection = new GameCollection();
-		// NOTE: Every group works on Welcome Tab and one another Tab as follows
-		// Check the Assignment for details
-
-	
 
 		setTitle(Config.APP_TITLE);
 		setSize( 1200, 800 );
 		setBackground( Color.gray );
 		setMinimumSize(new Dimension(1200, 800));
 		
-		// Create the tab pages
 		topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );
 		getContentPane().add( topPanel );
+		
+		tabbedPane = new JTabbedPane();
+		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
 		initialize();
 	}
 
 	public void initialize(){
+		tabbedPane.removeAll();
 		createWelcomePage();
-		createGeneratePage();
-		createPlayPage();
-		createConfigPage();
-
-		// Create a tabbed pane
-		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab( "Welcome", welcomePanel );
-		tabbedPane.addTab( "Generate", generatePanel );
-		tabbedPane.addTab( "Play", playPanel );
-		tabbedPane.addTab( "Config", configPanel );
-		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
-		ChangeListener changeListener = new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				 JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
-			        int index = sourceTabbedPane.getSelectedIndex();
-			        if(index == 1){
-			        	generatePanel = new GeneratePanel();
-			        	sourceTabbedPane.setComponentAt(index,generatePanel);
-			        }
-			        if(index == 2){
-			        	playPanel = new PlayPanel();
-			        	sourceTabbedPane.setComponentAt(index, playPanel);
-			        }
-			        if(index == 3){
-			        	configPanel = new ConfigPanel();
-			        	sourceTabbedPane.setComponentAt(index,configPanel);
-			        }
-			}
-		};
-		tabbedPane.addChangeListener(changeListener);
+		if(mode.equals("user")){
+			createPlayPage();
+			tabbedPane.addTab( "Play", playPanel );
+			
+			ChangeListener changeListener = new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+					int index = sourceTabbedPane.getSelectedIndex();
+					if(index == 1){
+						playPanel = new PlayPanel();
+						sourceTabbedPane.setComponentAt(index, playPanel);
+					}
+				}
+			};
+			tabbedPane.addChangeListener(changeListener);
+		}else if(mode.equals("admin")){
+			createPlayPage();
+			tabbedPane.addTab( "Play", playPanel );
+			createGeneratePage();
+			tabbedPane.addTab( "Generate", generatePanel );
+			createConfigPage();
+			tabbedPane.addTab( "Config", configPanel );
+			ChangeListener changeListener = new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+					int index = sourceTabbedPane.getSelectedIndex();
+					if(index == 1){
+						playPanel = new PlayPanel();
+						sourceTabbedPane.setComponentAt(index, playPanel);
+					}
+					if(index == 2){
+//						generatePanel = new GeneratePanel();
+						createGeneratePage();
+						sourceTabbedPane.setComponentAt(index, generatePanel);
+					}
+					if(index == 3){
+						createConfigPage();
+//						configPanel = new ConfigPanel(Config.CONFIG_PANEL_BG_COLOR, this);
+						sourceTabbedPane.setComponentAt(index, configPanel);
+					}
+				}
+			};
+			tabbedPane.addChangeListener(changeListener);
+		}
 		
 	}
 	
 	public void createWelcomePage()
 	{
+		tmpConfigSettings.add(Config.topic);
+		tmpConfigSettings.add(Config.level);
+		tmpConfigSettings.add(Config.defaultGameConfig[2]);
+		tmpConfigSettings.add(Config.wordStrength);
+		tmpConfigSettings.add(Config.allowDuplicates);
+		tmpConfigSettings.add(Config.charOrder);
 		welcomePanel = new WelcomePanel();
 	}
 	
 	public void createGeneratePage()
 	{
-		generatePanel = new GeneratePanel();
+		generatePanel = new GeneratePanel(Config.GENERATE_PANEL_BG_COLOR, PAWgui.this);
 	}
 
 	public void createPlayPage()
@@ -125,14 +152,34 @@ public class PAWgui extends 	JFrame
 
 	public void createConfigPage()
 	{
-		configPanel = new ConfigPanel();
+		configPanel = new ConfigPanel(Config.CONFIG_PANEL_BG_COLOR, PAWgui.this);
 	}
 	
-    // Main method to get things started
+	/** 
+    *public method that other classes can call to change tab
+    *@author ISRAEL.Yemer
+    */
+	public void selectTabbedPaneIndex (int i) 
+	{ 
+		tabbedPane.setSelectedIndex (i);
+	}
+
+	public void setNumWordsFound(int num){
+		numWordsFound = num;
+	}
+	
+	public int getGameLevel(){
+		if(tmpConfigSettings.size() > 0){
+			return Integer.valueOf(tmpConfigSettings.get(1));
+		}
+		return Integer.valueOf(Config.level);
+	}
+
+	// Main method to get things started
 	public static void main( String args[] )
 	{
 		// Create an instance of the test application
-		PAWgui mainFrame	= new PAWgui();
+		PAWgui mainFrame = new PAWgui();
 		mainFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		mainFrame.setVisible( true );
 		
@@ -152,7 +199,6 @@ public class PAWgui extends 	JFrame
 			JLabel logoImage = new JLabel("", new ImageIcon("src/logo.jpg"), SwingConstants.CENTER);
 			pic.add(logoImage);
 			add(pic);
-			
 			
 			JPanel text = new JPanel();
 			text.setBackground((Config.WELCOME_PANEL_BG_COLOR));
@@ -175,38 +221,95 @@ public class PAWgui extends 	JFrame
 			JPanel button = new JPanel();
 			button.setBackground((Config.WELCOME_PANEL_BG_COLOR));
 			button.setLayout(new FlowLayout());
+			gameLevel = getGameLevel();
 			
-			JButton setModeUser = new JButton("User Mode");
-			setModeUser.addActionListener(new ActionListener() {
+			JButton setLevelOne = new JButton("Easy");
+			setLevelOne.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						gameCollection = new GameCollection();
+						tmpConfigSettings.clear();
+						tmpConfigSettings.add("Any");
+						tmpConfigSettings.add("1");
+						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("true");
+						tmpConfigSettings.add("true");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 				}
 			});
-			setModeUser.setSize(100, 100);
-			setModeUser.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setModeUser.setBackground(Color.yellow);
-			button.add(setModeUser);
+			setLevelOne.setSize(100, 100);
+			setLevelOne.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelOne.setBackground(Color.yellow);
+			button.add(setLevelOne);
 			
-			JButton setModeAdmin = new JButton("Admin Mode");
-			setModeAdmin.addActionListener(new ActionListener() {
+			JButton setLevelTwo = new JButton("Medium");
+			setLevelTwo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						gameCollection = new GameCollection();
+						tmpConfigSettings.clear();
+						tmpConfigSettings.add("Any");
+						tmpConfigSettings.add("2");
+						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("true");
+						tmpConfigSettings.add("true");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 				}
 			});
-			setModeAdmin.setSize(100, 50);
-			setModeAdmin.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setModeAdmin.setBackground(Color.yellow);
-			button.add(setModeAdmin);
+			setLevelTwo.setSize(100, 50);
+			setLevelTwo.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelTwo.setBackground(Color.yellow);
+			button.add(setLevelTwo);
+
+			JButton setLevelThree = new JButton("Hard");
+			setLevelThree.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						tmpConfigSettings.clear();
+						tmpConfigSettings.add("Any");
+						tmpConfigSettings.add("3");
+						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("true");
+						initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			setLevelThree.setSize(100, 50);
+			setLevelThree.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelThree.setBackground(Color.yellow);
+			button.add(setLevelThree);
+
+			JButton setLevelFour = new JButton("Impossible");
+			setLevelFour.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						tmpConfigSettings.clear();
+						tmpConfigSettings.add("Any");
+						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("false");
+						initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			setLevelFour.setSize(100, 50);
+			setLevelFour.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelFour.setBackground(Color.yellow);
+			button.add(setLevelFour);
 			
 			text.add(button);
 			add(text);
@@ -214,15 +317,9 @@ public class PAWgui extends 	JFrame
 
 	}
 	
-	class GeneratePanel extends JPanel{
 	
-	}
 
 	class PlayPanel extends JPanel{
-	
-	}
-	
-	class ConfigPanel extends JPanel{
 	
 	}
 }
