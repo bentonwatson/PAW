@@ -30,7 +30,7 @@ import core.BigWordCollection;
 
 /**
 *
-* @author surin.assa
+* @author surin.assa/Ben Watson
 */
 public class ConfigPanel extends JPanel 
 		implements PropertyChangeListener {
@@ -44,15 +44,18 @@ public class ConfigPanel extends JPanel
 	private JLabel numberWordsFoundLabel;
 	private JLabel levelLabel;
 	private JLabel topicLabel;
+	private JLabel numWordsLabel;
 	private JLabel minLenLabel;
 	private JLabel minStrengthLabel;
 	private JLabel allowDupLabel;
 	private JLabel charOrderLabel;
+	private JLabel allWordsLabel;
 	
 	private JTextField showTotalWordsTF;
 	private JTextField showNumberWordsFoundTF;
 	private JComboBox<Integer> levelComboBox;
 	private JComboBox<String> topicComboBox;
+	private JFormattedTextField numWordsTF; 	
 	private JFormattedTextField minLenTF; 	
 	private JFormattedTextField minStrengthTF;
 	
@@ -64,11 +67,22 @@ public class ConfigPanel extends JPanel
 	private JRadioButton charOrderNo;
 	private ButtonGroup charOrderGroup;
 	
+	private JRadioButton allWordsYes; 
+	private JRadioButton allWordsNo;
+	private ButtonGroup allWordsGroup;
+	
 	private JButton setConfigBttn;
 	
 	private int levelValue;
 	private String topicValue = "";
 
+	private NumberFormat numWordsFormat;
+	private static int minNumWords = 2;
+	private int minNumWordsValue;
+	private static int maxNumWords = 10;
+	private int maxNumWordsValue = 10;
+	
+	
 	private NumberFormat minLenFormat;
 	private static int minLen = 2;
 	private int minLenValue;
@@ -83,6 +97,7 @@ public class ConfigPanel extends JPanel
 	
 	private boolean allowDupValue;
 	private boolean charOrderValue;
+	private boolean allWordsValue;
 	
 	private int numWordsFound;
 	private BigWordCollection allWords;
@@ -99,6 +114,7 @@ public class ConfigPanel extends JPanel
 		
 		minLenFormat = NumberFormat.getNumberInstance();		 
 		minStrFormat = NumberFormat.getNumberInstance();		 
+		numWordsFormat = NumberFormat.getNumberInstance();		 
 		
 		initComponents(color);
 	}
@@ -113,7 +129,6 @@ public class ConfigPanel extends JPanel
 		setBackground(color);
 		
 		// initialize components for the configuration panel
-		
 		Border border = BorderFactory.createEtchedBorder();
 		
 		// label "Total Number of words"
@@ -146,6 +161,34 @@ public class ConfigPanel extends JPanel
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				levelValue = Integer.valueOf(levelComboBox.getSelectedItem().toString());
+				if(levelValue == 1){
+					numWordsTF.setValue(5);
+					minLenTF.setValue(4);
+					minStrengthTF.setValue(4);
+					allowDupYes.setSelected(true);
+					charOrderYes.setSelected(true);
+				}
+				if(levelValue == 2){
+					numWordsTF.setValue(5);
+					minLenTF.setValue(6);
+					minStrengthTF.setValue(6);
+					allowDupYes.setSelected(true);
+					charOrderYes.setSelected(true);
+				}
+				if(levelValue == 3){
+					numWordsTF.setValue(8);
+					minLenTF.setValue(6);
+					minStrengthTF.setValue(6);
+					allowDupNo.setSelected(true);
+					charOrderYes.setSelected(true);
+				}
+				if(levelValue == 4){
+					numWordsTF.setValue(5);
+					minLenTF.setValue(6);
+					minStrengthTF.setValue(6);
+					allowDupNo.setSelected(true);
+					charOrderNo.setSelected(true);
+				}
 			}
 		});
 		
@@ -166,6 +209,15 @@ public class ConfigPanel extends JPanel
 				topicValue = topicComboBox.getSelectedItem().toString();
 			}
 		});		
+		
+		//Number Of Words
+		numWordsLabel = new JLabel("Number of Words (2 - 10)");
+		numWordsLabel.setFont(Config.LABELFONT);
+		numWordsTF = new JFormattedTextField(numWordsFormat);
+		numWordsTF.setFont(Config.LABELFONT);
+		minNumWordsValue = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
+		numWordsTF.setValue(minNumWordsValue);
+		numWordsTF.addPropertyChangeListener("value",this);
 		
 		//Word Length
 		minLenLabel = new JLabel("Length of the word (2 - 10)");
@@ -229,8 +281,27 @@ public class ConfigPanel extends JPanel
 		charOrderPanel.add(charOrderYes);
 		charOrderPanel.add(charOrderNo);
 		
-		
-		// *************all the buttons
+		//show all words returned
+		allWordsLabel = new JLabel("Generate Game with All Words");
+		allWordsLabel.setFont(Config.LABELFONT);
+		allWordsYes = new JRadioButton("Yes");
+		allWordsYes.setMnemonic(KeyEvent.VK_Y);
+		allWordsYes.setActionCommand("Yes");
+		allWordsNo = new JRadioButton("No");
+		allWordsNo.setMnemonic(KeyEvent.VK_N);
+		allWordsNo.setActionCommand("No");
+		allWordsGroup = new ButtonGroup();
+		allWordsGroup.add(allWordsYes);
+		allWordsGroup.add(allWordsNo);
+		allWordsValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(6));
+		if(allWordsValue){
+			allWordsYes.setSelected(true);
+		}else{
+			allWordsNo.setSelected(true);
+		}
+		JPanel allWordsPanel = new JPanel(new FlowLayout());
+		allWordsPanel.add(allWordsYes);
+		allWordsPanel.add(allWordsNo);
 
 		// set configuration button
 		setConfigBttn = new JButton("Set Configuration");
@@ -249,8 +320,15 @@ public class ConfigPanel extends JPanel
 				if(charOrderNo.getModel() == charOrderGroup.getSelection()){
 					charOrderValue = false;
 				}
+				if(allWordsYes.getModel() == allWordsGroup.getSelection()){
+					allWordsValue = true;
+				}
+				if(allWordsNo.getModel() == allWordsGroup.getSelection()){
+					allWordsValue = false;
+				}
 				gg = new GameGenerator(topicValue, levelValue, minLenValue, minStrValue, allowDupValue, charOrderValue);
-				//the number of words and subsequent column data is set in the generate tab
+				//the number of words and subsequent column data is set in PAWgui to retain the settings
+				//for subsequent configTab open
 				internalgui.tmpConfigSettings.clear();
 				internalgui.tmpConfigSettings.add(topicValue);
 				internalgui.tmpConfigSettings.add(String.valueOf(levelValue));
@@ -258,19 +336,19 @@ public class ConfigPanel extends JPanel
 				internalgui.tmpConfigSettings.add(String.valueOf(minStrValue));
 				internalgui.tmpConfigSettings.add(String.valueOf(allowDupValue));
 				internalgui.tmpConfigSettings.add(String.valueOf(charOrderValue));
-//				System.out.println("set config----");
-//				System.out.println(topicValue);
-//				System.out.println(levelValue);
-//				System.out.println(minLenValue);
-//				System.out.println(minStrValue);
-//				System.out.println(allowDupValue);
-//				System.out.println(charOrderValue);
+				internalgui.tmpConfigSettings.add(String.valueOf(allWordsValue));
+				internalgui.tmpConfigSettings.add(String.valueOf(minNumWordsValue));
 				numWordsFound = gg.getNumBigWordList();
 				internalgui.numWordsFound = numWordsFound;
 				internalgui.tmpWordList = gg.getWordsBigWordList();
-//				System.out.println(numWordsFound);
 				showNumberWordsFoundTF.setText(String.valueOf(numWordsFound));
-//				goToGenerate(2); // switches tab to Generate tab
+				if(allWordsValue){
+					gg.chooseNumberOfWords(numWordsFound);
+				}else{
+					gg.chooseNumberOfWords(minNumWordsValue); 
+				}
+//				GeneratePanel.setNewGame(gg);
+//				goToGenerate(2); // switches tab to Generate tab when clicking setConfig button
 			}
 		});
 
@@ -279,75 +357,87 @@ public class ConfigPanel extends JPanel
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(layout.createSequentialGroup()
-					.addGap(150)
+					.addGap(75)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(allWordsLabel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
 						.addComponent(charOrderLabel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
 						.addComponent(allowDupLabel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-						.addComponent(minStrengthLabel)
+						.addComponent(minStrengthLabel, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
 						.addComponent(minLenLabel, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
+						.addComponent(numWordsLabel, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
 						.addComponent(levelLabel)
 						.addComponent(topicLabel))
-					.addGap(50)
+					.addGap(25)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(allWordsPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(charOrderPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(allowDupPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(minStrengthTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(minLenTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+						.addComponent(numWordsTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(levelComboBox, 0, 150, Short.MAX_VALUE)
 						.addComponent(topicComboBox, 0, 150, Short.MAX_VALUE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 				.addGroup(layout.createSequentialGroup()
-					.addGap(80)
+					.addGap(40)
 					.addComponent(totalWordsLabel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-					.addGap(16)
+					.addGap(8)
 					.addComponent(showTotalWordsTF, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
 					.addComponent(numberWordsFoundLabel, GroupLayout.PREFERRED_SIZE, 320, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addGap(9)
 					.addComponent(showNumberWordsFoundTF, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addGap(80))
+					.addGap(40))
 				.addGroup(layout.createSequentialGroup()
 					.addPreferredGap(ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
 					.addComponent(setConfigBttn)
-					.addGap(106))
+					.addGap(53))
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
-					.addGap(42)
+					.addGap(21)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(totalWordsLabel)
 						.addComponent(showTotalWordsTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(numberWordsFoundLabel)
 						.addComponent(showNumberWordsFoundTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(125)
+					.addGap(15)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(levelComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(levelLabel))
-					.addGap(30)
+					.addGap(15)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(topicComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(topicLabel))
-					.addGap(30)
+					.addGap(15)
+					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(numWordsLabel)
+						.addComponent(numWordsTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(20)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(minLenLabel)
 						.addComponent(minLenTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(39)
+					.addGap(20)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(minStrengthLabel)
 						.addComponent(minStrengthTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(38)
+					.addGap(19)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(allowDupLabel)
 						.addComponent(allowDupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(35)
+					.addGap(17)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(charOrderLabel)
 						.addComponent(charOrderPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGap(35)
+					.addGap(17)
+					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(allWordsLabel)
+						.addComponent(allWordsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(17)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(setConfigBttn, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE))
-					.addGap(40))
+					.addGap(20))
 		);
 		
 		this.setLayout(layout);
@@ -356,10 +446,8 @@ public class ConfigPanel extends JPanel
 	}  // end initComponents
    
 	/**
-	 * this method sets the game collection and switches the index when clicked
-	 * 
-	 * @param index tab index between 2 and 4 or -1 if not changing tabs.
-	 * @author israel.yemer
+	 * this method switches the tab to Generate tab
+	 * @param index of generate tab only called internally
 	 */
 	private void goToGenerate(int index) {
 		if(index != -1)
@@ -370,9 +458,6 @@ public class ConfigPanel extends JPanel
 	/**
 	 * Used for field validation for the min/max length and min/max strength
 	 * @author sean.ford	   
-	 * Also set boolean values for allow dups and char order
-	 * @author Ben Watson
-	 * 
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
@@ -389,7 +474,13 @@ public class ConfigPanel extends JPanel
             minStrValue = minStrValue > maxStr ? maxStr : minStrValue;
             minStrValue = minStrValue > maxStrValue ? maxStrValue : minStrValue;
             minStrengthTF.setValue(minStrValue);
-        } 
+		} else if (source == numWordsTF) {
+			minNumWordsValue = ((Number)numWordsTF.getValue()).intValue();
+			minNumWordsValue = minNumWordsValue < minNumWords ? minNumWords : minNumWordsValue;
+			minNumWordsValue = minNumWordsValue > maxNumWords ? maxNumWords : minNumWordsValue;
+			minNumWordsValue = minNumWordsValue > maxNumWordsValue ? maxNumWordsValue : minNumWordsValue;
+			numWordsTF.setValue(minNumWordsValue);
+		} 
 	}	
 }
 

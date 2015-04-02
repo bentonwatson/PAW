@@ -61,15 +61,16 @@ public class PAWgui extends 	JFrame
 		gameCollection = new GameCollection();
 
 		setTitle(Config.APP_TITLE);
-		setSize( 1200, 800 );
+		setSize( 1050, 700 );
 		setBackground( Color.gray );
-		setMinimumSize(new Dimension(1200, 800));
+		setMinimumSize(new Dimension(600, 400));
 		
 		topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );
 		getContentPane().add( topPanel );
 		
 		tabbedPane = new JTabbedPane();
+		tabbedPane.setFont(Config.LABELFONT);
 		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
 		initialize();
@@ -90,7 +91,7 @@ public class PAWgui extends 	JFrame
 					JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
 					int index = sourceTabbedPane.getSelectedIndex();
 					if(index == 1){
-						playPanel = new PlayPanel();
+						createPlayPage();
 						sourceTabbedPane.setComponentAt(index, playPanel);
 					}
 				}
@@ -109,17 +110,15 @@ public class PAWgui extends 	JFrame
 					JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
 					int index = sourceTabbedPane.getSelectedIndex();
 					if(index == 1){
-						playPanel = new PlayPanel();
+						createPlayPage();
 						sourceTabbedPane.setComponentAt(index, playPanel);
 					}
 					if(index == 2){
-//						generatePanel = new GeneratePanel();
 						createGeneratePage();
 						sourceTabbedPane.setComponentAt(index, generatePanel);
 					}
 					if(index == 3){
 						createConfigPage();
-//						configPanel = new ConfigPanel(Config.CONFIG_PANEL_BG_COLOR, this);
 						sourceTabbedPane.setComponentAt(index, configPanel);
 					}
 				}
@@ -133,10 +132,12 @@ public class PAWgui extends 	JFrame
 	{
 		tmpConfigSettings.add(Config.topic);
 		tmpConfigSettings.add(Config.level);
-		tmpConfigSettings.add(Config.defaultGameConfig[2]);
+		tmpConfigSettings.add(Config.wordLength);
 		tmpConfigSettings.add(Config.wordStrength);
 		tmpConfigSettings.add(Config.allowDuplicates);
 		tmpConfigSettings.add(Config.charOrder);
+		tmpConfigSettings.add(Config.allWords);
+		tmpConfigSettings.add(Config.numWords);
 		welcomePanel = new WelcomePanel();
 	}
 	
@@ -147,7 +148,7 @@ public class PAWgui extends 	JFrame
 
 	public void createPlayPage()
 	{
-		playPanel = new PlayPanel();
+		playPanel = new PlayPanel(Config.PLAY_PANEL_BG_COLOR, PAWgui.this);
 	}
 
 	public void createConfigPage()
@@ -234,6 +235,8 @@ public class PAWgui extends 	JFrame
 						tmpConfigSettings.add("4");
 						tmpConfigSettings.add("true");
 						tmpConfigSettings.add("true");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("5");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -252,10 +255,12 @@ public class PAWgui extends 	JFrame
 						tmpConfigSettings.clear();
 						tmpConfigSettings.add("Any");
 						tmpConfigSettings.add("2");
-						tmpConfigSettings.add("5");
-						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("6");
+						tmpConfigSettings.add("6");
 						tmpConfigSettings.add("true");
 						tmpConfigSettings.add("true");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("5");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -274,10 +279,12 @@ public class PAWgui extends 	JFrame
 						tmpConfigSettings.clear();
 						tmpConfigSettings.add("Any");
 						tmpConfigSettings.add("3");
-						tmpConfigSettings.add("4");
-						tmpConfigSettings.add("4");
+						tmpConfigSettings.add("6");
+						tmpConfigSettings.add("6");
 						tmpConfigSettings.add("false");
 						tmpConfigSettings.add("true");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("8");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -296,10 +303,12 @@ public class PAWgui extends 	JFrame
 						tmpConfigSettings.clear();
 						tmpConfigSettings.add("Any");
 						tmpConfigSettings.add("4");
-						tmpConfigSettings.add("5");
-						tmpConfigSettings.add("5");
+						tmpConfigSettings.add("6");
+						tmpConfigSettings.add("6");
 						tmpConfigSettings.add("false");
 						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("false");
+						tmpConfigSettings.add("5");
 						initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -317,11 +326,6 @@ public class PAWgui extends 	JFrame
 
 	}
 	
-	
-
-	class PlayPanel extends JPanel{
-	
-	}
 }
 
 

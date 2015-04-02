@@ -457,11 +457,11 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> returnList = new ArrayList<BigWord>();
 			BigWordCollection bwcTopics = getBigWordCollectionByTopic(a_topic);
-			System.out.println("by topic size - " + bwcTopics.size());
+//			System.out.println("by topic size - " + bwcTopics.size());
 			BigWordCollection bwcLength = bwcTopics.getBigWordCollectionByWordLength(min_len, max_len);
-			System.out.println("by length size - " + bwcLength.size());
+//			System.out.println("by length size - " + bwcLength.size());
 			BigWordCollection bwcStrength = bwcLength.getBigWordCollectionByWordStrength(min_strength, max_strength);
-			System.out.println("by strength size - " + bwcStrength.size());
+//			System.out.println("by strength size - " + bwcStrength.size());
 			
 			return bwcStrength;
 		}

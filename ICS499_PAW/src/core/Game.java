@@ -16,6 +16,7 @@ public class Game
 	private String id;
 	private String title;
 	private int level;
+	private int wordLength;
 	private ArrayList<String> wordList;
 	private ArrayList<ArrayList<String>> columnData; //size = # of columns
 //
@@ -62,6 +63,13 @@ public class Game
 		return id;
 	}
 
+	/**
+	 * returns the word length
+	 */
+	public int getWordLength(){
+		return columnData.size();
+	}
+	
 	/**
 	 * Set method for the variable title
 	 */

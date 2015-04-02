@@ -28,6 +28,7 @@ public class Config {
 	public static final float FONTSIZEDEFAULT = 18.0f;
 	
 	public static Font LABELFONT = new Font("Calibri", Font.BOLD,20);
+	public static Font UNDERFONT = new Font("Calibri", Font.BOLD,16);
 	
 	// Languages to choose from
 	public enum languages {
@@ -52,7 +53,8 @@ public class Config {
 	public static String DEFAULTMODE = "admin";
 	
 	//the file to record completed games
-	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
+//	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
+	public static String progressFile = "src\\PAW_Progress.txt";
 
 	// user mode gets game to play from this set
 	public static final String GAME_SET = "src\\gameSet.txt";	
@@ -64,8 +66,8 @@ public class Config {
 	public static String wordStrength = "4";
 	public static String allowDuplicates = "true";
 	public static String charOrder = "true";
-	public static String[] defaultGameConfig = {"Any", "1", "4", "4", "true", "true"};
-//	public static String[] defaultGameConfig = {topic, level, wordLength, wordStrength, allowDuplicates, charOrder};
+	public static String allWords = "false";
+	public static String numWords = "5";
 	
 	
 	// When using bigwordcollection

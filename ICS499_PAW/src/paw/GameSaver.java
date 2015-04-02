@@ -67,10 +67,9 @@ public class GameSaver {
 				+ "Level: "+ level+ "\n"
 				+ "Words:   "+ wordList+"\n"
 				+ columns
-				+"-----------------------------------------------";
+				+"-----------------------------------------";
 		try {
-			File file = new File(path);					 
-			FileWriter fileWritter = new FileWriter(file.getPath(),true);
+			FileWriter fileWritter = new FileWriter(path,true);
 			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
 			bufferWritter.write(data);
 			bufferWritter.close();
