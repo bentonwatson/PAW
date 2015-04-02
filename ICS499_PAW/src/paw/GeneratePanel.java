@@ -170,7 +170,7 @@ class GeneratePanel extends JPanel{
 		playGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					PlayPanel.setNewGame(newGame);
+					AdminPlayPanel.setNewGame(newGame);
 					internalgui.selectTabbedPaneIndex(1);
 				} catch (Exception e1) {
 					e1.printStackTrace();

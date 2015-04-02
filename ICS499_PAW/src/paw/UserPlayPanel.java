@@ -36,7 +36,8 @@ public class UserPlayPanel extends JPanel {
 	private JPanel buttPanel;
 	
 	private int userGameLevel;
-	private JComboBox<Integer> levelComboBox;
+	private String userGameLevelByName;
+	private JComboBox<String> levelComboBox;
 	private JLabel levelComboLabel;
 	
 	ArrayList<String> foundWordList = new ArrayList<String>();
@@ -101,11 +102,17 @@ public class UserPlayPanel extends JPanel {
 		gridPanel.setBorder(new LineBorder(Color.black, 2));
 		
 		titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel(internalgui.tmpConfigSettings.get(0) 
-						+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
-						+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
-		titleLabel.setFont(Config.LABELFONT);
-		titlePanel.add(titleLabel);
+		if(currentGame != null){
+			JLabel titleLabel = new JLabel(currentGame.getTitle() 
+					+ " - (Duplicates = )"
+					+ " - (In Order = )");
+			titleLabel.setFont(Config.LABELFONT);
+			titlePanel.add(titleLabel);
+		}else{
+			JLabel titleLabel = new JLabel(" No Game Selected ");
+			titleLabel.setFont(Config.LABELFONT);
+			titlePanel.add(titleLabel);
+		}
 		gridPanel.add(titlePanel, BorderLayout.NORTH);
 		
 		JPanel columnPanel = new JPanel();
@@ -194,21 +201,36 @@ public class UserPlayPanel extends JPanel {
 		// Level
 		levelComboLabel = new JLabel("Level");
 		levelComboLabel.setFont(Config.LABELFONT);
-		levelComboBox = new JComboBox<Integer>();
-		for(int i = 1; i <= 4; i++){
-			levelComboBox.addItem(i);
+		levelComboBox = new JComboBox<String>();
+		String [] levelByName = {"Easy", "Medium", "Hard", "Impossible"};
+		for(int i = 0; i < 4; i++){
+			levelComboBox.addItem(levelByName[i]);
 		}
 		levelComboBox.setFont(Config.LABELFONT);
 		if(currentGame != null){
 			userGameLevel = currentGame.getLevel();
+			userGameLevelByName = levelByName[currentGame.getLevel() - 1];
 		}else{
 			userGameLevel = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
+			userGameLevelByName = levelByName[Integer.valueOf(internalgui.tmpConfigSettings.get(1)) - 1];
 		}
-		levelComboBox.setSelectedItem(userGameLevel);
+		levelComboBox.setSelectedItem(userGameLevelByName);
 		levelComboBox.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				userGameLevel = Integer.valueOf(levelComboBox.getSelectedItem().toString());
+				userGameLevelByName = levelComboBox.getSelectedItem().toString();
+				if(userGameLevelByName.equals("Easy")){
+					userGameLevel = 1;
+				}
+				if(userGameLevelByName.equals("Medium")){
+					userGameLevel = 2;
+				}
+				if(userGameLevelByName.equals("Hard")){
+					userGameLevel = 3;
+				}
+				if(userGameLevelByName.equals("Impossible")){
+					userGameLevel = 4;
+				}
 			}
 		});
 		

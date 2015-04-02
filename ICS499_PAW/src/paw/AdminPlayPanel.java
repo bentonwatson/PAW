@@ -44,28 +44,29 @@ public class AdminPlayPanel extends JPanel{
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		
-		if(newGame != null){
-			generateWordListPanel();
-			generateGridPanel();
-			generateButtonPanel();
-		}else{
-			String topic = internalgui.tmpConfigSettings.get(0);
-			int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
-			int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
-			int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
-			boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
-			boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
-			String showall = internalgui.tmpConfigSettings.get(6);
-			int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
-			newGame = new GameGenerator(topic, level, len, stren, dup, order);
-			newGame.chooseNumberOfWords(numWords);
-			
+//		if(newGame != null){
+//			generateWordListPanel();
+//			generateGridPanel();
+//			generateButtonPanel();
+//		}else{
+//			String topic = internalgui.tmpConfigSettings.get(0);
+//			int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
+//			int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
+//			int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
+//			boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
+//			boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
+//			String showall = internalgui.tmpConfigSettings.get(6);
+//			int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
+//			newGame = new GameGenerator(topic, level, len, stren, dup, order);
+//			newGame.chooseNumberOfWords(numWords);
+//			
+			//if newGame == null the panels will generate empty 
 			generateWordListPanel();
 			generateGridPanel();
 			generateButtonPanel();
 			
 			setVisible(true);
-		}
+//		}
 	}
 	/**
 	 * generates the panel to display words that have been guessed correctly
@@ -78,19 +79,24 @@ public class AdminPlayPanel extends JPanel{
 		JEditorPane numWords = new JEditorPane();
 		numWords.setFont(Config.LABELFONT);
 		numWords.setBackground(Color.yellow);
-		
-		numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords())
+		if(newGame != null){
+			numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords())
 				+ "\n You Have Found = " + foundWordList.size());
+		}else{
+			numWords.setText("Number of Words = 0 \n You Have Found = 0");
+		}
 		wordListPanel.add(numWords, BorderLayout.NORTH);
 		
 		JEditorPane words = new JEditorPane();
 		words.setFont(Config.UNDERFONT);
 		words.setBackground(Color.yellow);
 		String foundList = "";
-		for(int i = 0; i < foundWordList.size(); i++){
-			foundList += foundWordList.get(i) + "\n";
+		if(foundWordList != null){
+			for(int i = 0; i < foundWordList.size(); i++){
+				foundList += foundWordList.get(i) + "\n";
+			}
+			words.setText(foundList);
 		}
-		words.setText(foundList);
 		wordListPanel.add(words, BorderLayout.CENTER);
 		
 		add(wordListPanel, BorderLayout.WEST);
@@ -105,11 +111,17 @@ public class AdminPlayPanel extends JPanel{
 		gridPanel.setBorder(new LineBorder(Color.black, 2));
 		
 		titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel(newGame.getTitle() 
-						+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
-						+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
-		titleLabel.setFont(Config.LABELFONT);
-		titlePanel.add(titleLabel);
+		if(newGame != null){
+			JLabel titleLabel = new JLabel(newGame.getTitle() 
+					+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
+					+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
+			titleLabel.setFont(Config.LABELFONT);
+			titlePanel.add(titleLabel);
+		}else{
+			JLabel titleLabel = new JLabel(" No Game Selected ");
+			titleLabel.setFont(Config.LABELFONT);
+			titlePanel.add(titleLabel);
+		}
 		gridPanel.add(titlePanel, BorderLayout.NORTH);
 		
 		JPanel columnPanel = new JPanel();
@@ -118,24 +130,22 @@ public class AdminPlayPanel extends JPanel{
 		columnPanel.setLayout(new SpringLayout());
 		
 		ArrayList<ArrayList<String>> columnData = new ArrayList<ArrayList<String>>();
-		if(currentGame!= null){
-			columnData = currentGame.getColumnData();
-		}else{
+		if(newGame!= null){
 			columnData = newGame.getNewGame().getColumnData();
-		}
 		
-		for(int i = 0; i < columnData.size(); i++){
-			JPanel column = new JPanel(new SpringLayout());
-			ArrayList<String> characters = columnData.get(i);
-			for(String character : characters){
-				GridTile newTile = new GridTile(character);
-				column.add(newTile);
+			for(int i = 0; i < columnData.size(); i++){
+				JPanel column = new JPanel(new SpringLayout());
+				ArrayList<String> characters = columnData.get(i);
+				for(String character : characters){
+					GridTile newTile = new GridTile(character);
+					column.add(newTile);
+				}
+				SpringUtility.makeGrid(column, characters.size(), 1, 5, 5, 5, 5);//component, rows, cols, initX, intY, xPad, yPad
+				
+				columnPanel.add(column);
 			}
-			SpringUtility.makeGrid(column, characters.size(), 1, 5, 5, 5, 5);//component, rows, cols, initX, intY, xPad, yPad
-			
-			columnPanel.add(column);
+			SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		}
-		SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		
 		gridPanel.add(sp, BorderLayout.CENTER);
 		
@@ -146,15 +156,16 @@ public class AdminPlayPanel extends JPanel{
 
 		answerPanel = new JPanel(new BorderLayout());
 		answerPanel.add(instructPanel, BorderLayout.NORTH);
-
-		for(int i = 0; i < columnData.size(); i++){
-			JPanel ansRow = new JPanel(new SpringLayout());
-			for(int j = 0; j < columnData.size(); j++){
-				GridTile newTile = new GridTile(" ");
-				ansRow.add(newTile);
+		if(newGame != null){
+			for(int i = 0; i < columnData.size(); i++){
+				JPanel ansRow = new JPanel(new SpringLayout());
+				for(int j = 0; j < columnData.size(); j++){
+					GridTile newTile = new GridTile(" ");
+					ansRow.add(newTile);
+				}
+				SpringUtility.makeGrid(ansRow, 1, columnData.size(), 5, 5, 5, 5);
+				answerPanel.add(ansRow, BorderLayout.CENTER);
 			}
-			SpringUtility.makeGrid(ansRow, 1, columnData.size(), 5, 5, 5, 5);
-			answerPanel.add(ansRow, BorderLayout.CENTER);
 		}
 		JButton guessBtn = new JButton("Guess");
 		guessBtn.setFont(Config.LABELFONT);
