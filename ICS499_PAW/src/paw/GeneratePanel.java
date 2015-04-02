@@ -2,35 +2,23 @@ package paw;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
-import core.Game;
+
+import core.SpringUtility;
 
 /**
  * this tab will display the list of available words in left text type panel
@@ -46,11 +34,9 @@ class GeneratePanel extends JPanel{
 	private PAWgui internalgui;
 	private static GameGenerator newGame;
 	private JPanel gridPanel;
-	private JPanel answerPanel;
 	private JPanel titlePanel;
 	private JPanel wordListPanel;
 	private JPanel buttonPanel;
-	private JTable table;
 	
 	public GeneratePanel(Color color, PAWgui paw) {
 		this.internalgui = paw;
@@ -65,7 +51,6 @@ class GeneratePanel extends JPanel{
 		int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
 		boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
 		boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
-		String showall = internalgui.tmpConfigSettings.get(6);
 		int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
 		newGame = new GameGenerator(topic, level, len, stren, dup, order);
 		newGame.chooseNumberOfWords(numWords);
@@ -132,10 +117,10 @@ class GeneratePanel extends JPanel{
 				GridTile newTile = new GridTile(character);
 				column.add(newTile);
 			}
-			makeGrid(column, characters.size(), 1, 5, 5, 5, 5);
+			SpringUtility.makeGrid(column, characters.size(), 1, 5, 5, 5, 5);
 			columnPanel.add(column);
 		}
-		makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
+		SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		
 		gridPanel.add(sp, BorderLayout.CENTER);
 		add(gridPanel, BorderLayout.CENTER);
@@ -195,7 +180,7 @@ class GeneratePanel extends JPanel{
 		buttonPanel.add(playGameBtn);
 		
 
-		makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
+		SpringUtility.makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
 		
 		buttPanel.add(buttonPanel);
 		add(buttPanel, BorderLayout.EAST);
@@ -244,97 +229,4 @@ class GeneratePanel extends JPanel{
 		}
 
 	}
-	
-	/**
-	 * @author From Java Docs Example Codes
-     * Aligns the first <code>rows</code> * <code>cols</code>
-     * components of <code>parent</code> in
-     * a grid. Each component is as big as the maximum
-     * preferred width and height of the components.
-     * The parent is made just big enough to fit them all.
-     *
-     * @param rows number of rows
-     * @param cols number of columns
-     * @param initialX x location to start the grid at
-     * @param initialY y location to start the grid at
-     * @param xPad x padding between cells
-     * @param yPad y padding between cells
-     */
-    public static void makeGrid(Container parent,
-                                int rows, int cols,
-                                int initialX, int initialY,
-                                int xPad, int yPad) {
-        SpringLayout layout;
-        try {
-            layout = (SpringLayout)parent.getLayout();
-        } catch (ClassCastException exc) {
-            System.err.println("The first argument to makeGrid must use SpringLayout.");
-            return;
-        }
- 
-        Spring xPadSpring = Spring.constant(xPad);
-        Spring yPadSpring = Spring.constant(yPad);
-        Spring initialXSpring = Spring.constant(initialX);
-        Spring initialYSpring = Spring.constant(initialY);
-        int max = rows * cols;
- 
-        //Calculate Springs that are the max of the width/height so that all
-        //cells have the same size.
-        Spring maxWidthSpring = layout.getConstraints(parent.getComponent(0)).
-                                    getWidth();
-        Spring maxHeightSpring = layout.getConstraints(parent.getComponent(0)).
-                                    getWidth();
-        for (int i = 1; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(
-                                            parent.getComponent(i));
- 
-            maxWidthSpring = Spring.max(maxWidthSpring, cons.getWidth());
-            maxHeightSpring = Spring.max(maxHeightSpring, cons.getHeight());
-        }
- 
-        //Apply the new width/height Spring. This forces all the
-        //components to have the same size.
-        for (int i = 0; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(
-                                            parent.getComponent(i));
- 
-            cons.setWidth(maxWidthSpring);
-            cons.setHeight(maxHeightSpring);
-        }
- 
-        //Then adjust the x/y constraints of all the cells so that they
-        //are aligned in a grid.
-        SpringLayout.Constraints lastCons = null;
-        SpringLayout.Constraints lastRowCons = null;
-        for (int i = 0; i < max; i++) {
-            SpringLayout.Constraints cons = layout.getConstraints(
-                                                 parent.getComponent(i));
-            if (i % cols == 0) { //start of new row
-                lastRowCons = lastCons;
-                cons.setX(initialXSpring);
-            } else { //x position depends on previous component
-                cons.setX(Spring.sum(lastCons.getConstraint(SpringLayout.EAST),
-                                     xPadSpring));
-            }
- 
-            if (i / cols == 0) { //first row
-                cons.setY(initialYSpring);
-            } else { //y position depends on previous row
-                cons.setY(Spring.sum(lastRowCons.getConstraint(SpringLayout.SOUTH),
-                                     yPadSpring));
-            }
-            lastCons = cons;
-        }
- 
-        //Set the parent's size.
-        SpringLayout.Constraints pCons = layout.getConstraints(parent);
-        pCons.setConstraint(SpringLayout.SOUTH,
-                            Spring.sum(
-                                Spring.constant(yPad),
-                                lastCons.getConstraint(SpringLayout.SOUTH)));
-        pCons.setConstraint(SpringLayout.EAST,
-                            Spring.sum(
-                                Spring.constant(xPad),
-                                lastCons.getConstraint(SpringLayout.EAST)));
-    }
 }

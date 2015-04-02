@@ -2,48 +2,27 @@ package paw;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
 import core.Game;
 import core.SpringUtility;
 
-/**
- * this tab will display the game for playing
- * Has all playing capabilities +
- * Added capabilities for the admin
- * @author Ben
- *
- */
-class PlayPanel extends JPanel{
+public class AdminPlayPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private PAWgui internalgui;
@@ -56,24 +35,20 @@ class PlayPanel extends JPanel{
 	private JPanel buttonPanel;
 	private JPanel buttPanel;
 	
-	private int userGameLevel;
-	private JComboBox<Integer> levelComboBox;
-	private JLabel levelComboLabel;
-	
 	ArrayList<String> foundWordList = new ArrayList<String>();
 	
-	public PlayPanel(Color color, PAWgui paw) {
+	public AdminPlayPanel(Color color, PAWgui paw){
 		this.internalgui = paw;
 		setMinimumSize(new Dimension(1000,550));
 		setBackground(color);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		
-		if(Config.DEFAULTMODE.equals("admin") && newGame != null){
+		if(newGame != null){
 			generateWordListPanel();
 			generateGridPanel();
 			generateButtonPanel();
-		}else if(Config.DEFAULTMODE.equals("admin") && newGame == null){
+		}else{
 			String topic = internalgui.tmpConfigSettings.get(0);
 			int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
 			int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
@@ -89,12 +64,9 @@ class PlayPanel extends JPanel{
 			generateGridPanel();
 			generateButtonPanel();
 			
-		}else{
-			
+			setVisible(true);
 		}
-		setVisible(true);
 	}
-	
 	/**
 	 * generates the panel to display words that have been guessed correctly
 	 */
@@ -107,15 +79,8 @@ class PlayPanel extends JPanel{
 		numWords.setFont(Config.LABELFONT);
 		numWords.setBackground(Color.yellow);
 		
-		if(Config.DEFAULTMODE.equals("admin")){
-			numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords())
-					+ "\n You Have Found = " + foundWordList.size());
-		}else if(currentGame != null){
-			numWords.setText("Number of Words = " + String.valueOf(currentGame.getNumberWords())
-					+ "\n You Have Found = " + foundWordList.size());
-		}else{
-			numWords.setText("Number of Words = 0 \n You Have Found = 0");
-		}
+		numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords())
+				+ "\n You Have Found = " + foundWordList.size());
 		wordListPanel.add(numWords, BorderLayout.NORTH);
 		
 		JEditorPane words = new JEditorPane();
@@ -130,7 +95,6 @@ class PlayPanel extends JPanel{
 		
 		add(wordListPanel, BorderLayout.WEST);
 	}
-	
 	/**
 	 * Creates the panel to display the columns
 	 * includes the answer row
@@ -210,6 +174,7 @@ class PlayPanel extends JPanel{
 		add(gridPanel, BorderLayout.CENTER);
 	}
 	
+
 	/**
 	 * gather tiles and form a word
 	 * check the word against newGame.getWordList()
@@ -220,8 +185,8 @@ class PlayPanel extends JPanel{
 		//TODO write guess button functionality
 		
 	}
-	
-	
+		
+
 	/**
 	 * generates a panel to hold action buttons
 	 */
@@ -231,88 +196,37 @@ class PlayPanel extends JPanel{
 		buttonPanel = new JPanel(new SpringLayout());
 		buttonPanel.setBackground(Color.yellow);
 		
-		if(Config.DEFAULTMODE.equals("admin")){
-			// generates the HTML
-			JButton createHTMLBtn = new JButton("Create\nHTML");
-			createHTMLBtn.setFont(Config.LABELFONT);
-			createHTMLBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
+		// generates the HTML
+		JButton createHTMLBtn = new JButton("Create\nHTML");
+		createHTMLBtn.setFont(Config.LABELFONT);
+		createHTMLBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
 //					CreateHTML ch = new CreateHTML(newGame.getNewGame());
-						//TODO ?? add a popup to confirm the file was written
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
+					//TODO ?? add a popup to confirm the file was written
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
-			});
-			buttonPanel.add(createHTMLBtn);
-			
-			//calls gameSaver and displays saved message
-			JButton saveGameBtn = new JButton("Save\nGame");
-			saveGameBtn.setFont(Config.LABELFONT);
-			saveGameBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						GameSaver gs = new GameSaver(newGame.getNewGame());
-						//TODO ?? add a popup to confirm the file was written
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-			buttonPanel.add(saveGameBtn);
-			
-			SpringUtility.makeGrid(buttonPanel, 2, 1, 25, 15, 15, 15);
-			
-			buttPanel.add(buttonPanel);
-		}else{
-			
-			// Level
-			levelComboLabel = new JLabel("Level");
-			levelComboLabel.setFont(Config.LABELFONT);
-			levelComboBox = new JComboBox<Integer>();
-			for(int i = 1; i <= 4; i++){
-				levelComboBox.addItem(i);
 			}
-			levelComboBox.setFont(Config.LABELFONT);
-			if(currentGame != null){
-				userGameLevel = currentGame.getLevel();
-			}else{
-				userGameLevel = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
+		});
+		buttonPanel.add(createHTMLBtn);
+		
+		//calls gameSaver and displays saved message
+		JButton saveGameBtn = new JButton("Save\nGame");
+		saveGameBtn.setFont(Config.LABELFONT);
+		saveGameBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					GameSaver gs = new GameSaver(newGame.getNewGame());
+					//TODO ?? add a popup to confirm the file was written
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
-			levelComboBox.setSelectedItem(userGameLevel);
-			levelComboBox.addItemListener(new ItemListener(){
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					userGameLevel = Integer.valueOf(levelComboBox.getSelectedItem().toString());
-				}
-			});
-			
-			buttonPanel.add(levelComboLabel);
-			buttonPanel.add(levelComboBox);
-			
-			// calls for a new game using the userGameLevel variable
-			JButton newGameBtn = new JButton("New Game");
-			newGameBtn.setFont(Config.LABELFONT);
-			newGameBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						ProgressTracker pt = new ProgressTracker();
-						//TODO ?? add function to save completed game then get new game
-						// may be passing in the game level to get a particular game set
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-			buttonPanel.add(newGameBtn);
-			
-			SpringUtility.makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
-			
-			buttPanel.add(buttonPanel);
-			
-			
-		}
+		});
+		buttonPanel.add(saveGameBtn);
+		SpringUtility.makeGrid(buttonPanel, 2, 1, 25, 15, 15, 15);
+		buttPanel.add(buttonPanel);
 		add(buttPanel, BorderLayout.EAST);
 		
 	}
@@ -325,14 +239,6 @@ class PlayPanel extends JPanel{
 		newGame = game;
 	}
 
-	/**
-	 * sets the currentGame for the User in Play Panel
-	 * @param Game
-	 */
-	public static void setCurrentGame(Game game){
-		currentGame = game;
-	}
-	
 	/**
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *
@@ -368,5 +274,4 @@ class PlayPanel extends JPanel{
 		}
 
 	}
-	
 }

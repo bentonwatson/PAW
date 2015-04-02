@@ -19,7 +19,11 @@ public class Config {
 		public static String LOGO_FILE = "logo.jpg";
 		public static String WELCOME_TITLE = "Welcome to Pick and Assemble Words";
 		
-		public static String WELCOME_MSG = "This space will have instructions, etc.";
+		public static String WELCOME_MSG = "Choose your Level and Select Play Tab to get started.";
+		public static String ADMIN_WELCOME = "Levels chosen here pre-populate a game from 'Any' topic."
+												+" Select Config tab to refine the results,"
+												+ "Generate tab to see the results,"
+												+ " or Play tab to play the results.";
 
 		
 	// font size for Telugu
@@ -50,7 +54,7 @@ public class Config {
 	public static boolean createHTML = false;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "admin";
+	public static String DEFAULTMODE = "user";
 	
 	//the file to record completed games
 //	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
