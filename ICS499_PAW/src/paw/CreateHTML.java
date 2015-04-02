@@ -7,10 +7,11 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import core.Game;
+
 /**
- * Creates an HTML Answer page for a Bonza puzzle Future could create a
- * wordsearch based upon the puzzle.
- * 
+ * As it is now...not written for PAW game
+ * Creates an HTML Page for Playing the game on paper.
  * @author Dan Kruse 9-13-14
  * 
  */
@@ -21,16 +22,11 @@ public class CreateHTML {
 	// Create a file named by creation date.
 	File file;
 	PrintWriter out;
-
+	
 	/**
 	 * Sole CreateHtml constructor.
-	 * 
 	 * @author Dan Kruse 9-13-14
-	 * @param puzzleGrid
-	 *            - Words to display on the HTML table.
-	 * @param title
-	 *            - The categore that resembles the words in the grid.
-	 * @throws IOException
+	 * 
 	 */
 	public CreateHTML(ArrayList<String> clues, ArrayList<Integer> answerSize,
 			ArrayList<String> tiles) throws IOException {

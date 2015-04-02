@@ -29,10 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-import paw.PAWguiLL.AnswerTile;
-import paw.PAWguiLL.GridTile;
-import paw.PAWguiLL.Tile;
 import core.Game;
 
 /**
@@ -173,6 +169,7 @@ class PlayPanel extends JPanel{
 		guessBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					checkGuess();
 					generateWordListPanel();
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -186,6 +183,18 @@ class PlayPanel extends JPanel{
 	}
 	
 	/**
+	 * gather tiles and form a word
+	 * check the word against newGame.getWordList()
+	 * if correct add the word to foundWordList and remove from original word list
+	 * unclear how the main play grid will react...??
+	 */
+	public void checkGuess(){
+		//TODO write guess button functionality
+		
+	}
+	
+	
+	/**
 	 * generates a panel to hold action buttons
 	 */
 	public void generateButtonPanel(){
@@ -197,11 +206,31 @@ class PlayPanel extends JPanel{
 		// generates the HTML
 		JButton createHTMLBtn = new JButton("Create\nHTML");
 		createHTMLBtn.setFont(Config.LABELFONT);
+		createHTMLBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+//					CreateHTML ch = new CreateHTML(newGame.getNewGame());
+					//TODO ?? add a popup to confirm the file was written
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		buttonPanel.add(createHTMLBtn);
 		
 		//calls gameSaver and displays saved message
 		JButton saveGameBtn = new JButton("Save\nGame");
 		saveGameBtn.setFont(Config.LABELFONT);
+		saveGameBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					GameSaver gs = new GameSaver(newGame.getNewGame());
+					//TODO ?? add a popup to confirm the file was written
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		buttonPanel.add(saveGameBtn);
 
 		makeGrid(buttonPanel, 2, 1, 25, 15, 15, 15);

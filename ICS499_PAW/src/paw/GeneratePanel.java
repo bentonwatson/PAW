@@ -30,10 +30,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-import paw.PAWguiLL.AnswerTile;
-import paw.PAWguiLL.GridTile;
-import paw.PAWguiLL.Tile;
 import core.Game;
 
 /**
@@ -155,6 +151,16 @@ class GeneratePanel extends JPanel{
 		// generates the HTML
 		JButton createHTMLBtn = new JButton("Create\nHTML");
 		createHTMLBtn.setFont(Config.LABELFONT);
+		createHTMLBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+//					CreateHTML ch = new CreateHTML(newGame.getNewGame());
+					//TODO ?? add a popup to confirm the file was written
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		buttonPanel.add(createHTMLBtn);
 		
 		//calls gameSaver and displays saved message
@@ -164,6 +170,7 @@ class GeneratePanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					GameSaver gs = new GameSaver(newGame.getNewGame());
+					//TODO ?? add a popup to confirm the file was written
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

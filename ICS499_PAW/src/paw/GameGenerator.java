@@ -8,7 +8,6 @@ import java.util.List;
 import core.BigWord;
 import core.BigWordCollection;
 import core.Game;
-import core.GameIdServer;
 import core.WordProcessor;
 
 /**
@@ -61,7 +60,6 @@ public class GameGenerator {
 		level = a_level;
 		duplicates = dup;
 		charOrder = order;
-//		id = GameIdServer.instance().getId();
 		setTitle();
 		setBigWordList();
 	}
