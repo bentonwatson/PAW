@@ -274,18 +274,7 @@ public class GameGenerator {
 	 * Shuffles the column order
 	 */
 	public void shuffleColumns() {
-		ArrayList<ArrayList<String>> tmp = new ArrayList<ArrayList<String>>();
-//		tmp.addAll(columnData);
-//		ArrayList<Integer> colNumbers = new ArrayList<Integer>();
-//		for(int i = 0; i < tmp.size(); i++){
-//			colNumbers.add(i);
-//		}
-		Collections.shuffle(tmp);
-//		Collections.shuffle(colNumbers);
-//		columnData.clear();
-//		for(int i = 0; i < colNumbers.size(); i++){
-//			columnData.add(tmp.get(colNumbers.get(i)));
-//		}
+		Collections.shuffle(columnData);
 	}
 
 	/**

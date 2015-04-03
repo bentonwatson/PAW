@@ -329,21 +329,7 @@ public class ConfigPanel extends JPanel
 				gg = new GameGenerator(topicValue, levelValue, minLenValue, 
 						minStrValue, allowDupValue, charOrderValue, minNumWordsValue);
 				
-				//the number of words and subsequent column data is set in PAWgui to retain the settings
-				//for subsequent configTab open
-				internalgui.tmpConfigSettings.clear();
-				internalgui.tmpConfigSettings.add(topicValue);
-				internalgui.tmpConfigSettings.add(String.valueOf(levelValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(minLenValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(minStrValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(allowDupValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(charOrderValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(allWordsValue));
-				internalgui.tmpConfigSettings.add(String.valueOf(minNumWordsValue));
-				internalgui.tmpWordList = gg.getWordsBigWordList();
-				
 				numWordsFound = gg.getNumBigWordList();
-				internalgui.numWordsFound = numWordsFound;
 				showNumberWordsFoundTF.setText(String.valueOf(numWordsFound));
 				if(allWordsValue){
 					gg.chooseNumberOfWords(numWordsFound);

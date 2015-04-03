@@ -48,7 +48,7 @@ public class Config {
 	public static boolean createHTML = false;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "user";
+	public static String DEFAULTMODE = "admin";
 	
 	//the file to record completed games
 //	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
@@ -58,17 +58,8 @@ public class Config {
 	public static final String GAME_SET = "src\\gameSet.txt";	
 	
 	//default game configurations
-	public static String topic = "Any";
-	public static String level = "1";
-	public static String wordLength = "4";
-	public static String wordStrength = "4";
-	public static String allowDuplicates = "true";
-	public static String charOrder = "true";
-	public static String allWords = "false";
-	public static String numWords = "5";
-	public static GameGenerator defaultGameGenerator = new GameGenerator
-			("Any", 1, 4, 4, true, true, 5);
-	
+	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};
+
 	// When using bigwordcollection
 	public static final String DELIMETER = "\\|";
 	public static final int MAX_ITEMS_PER_LINE = 7;

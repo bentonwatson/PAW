@@ -34,6 +34,8 @@ public class PAWgui extends 	JFrame
 	private GameCollection gameCollection;
 	private String mode = Config.DEFAULTMODE;
 	private Font font;
+	private int userGameLevel;
+	
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
 	
@@ -73,16 +75,12 @@ public class PAWgui extends 	JFrame
 		
 		gameCollection = new GameCollection();
 		
-		//sets the default configurations to level 1
-		tmpConfigSettings.add(Config.topic);
-		tmpConfigSettings.add(Config.level);
-		tmpConfigSettings.add(Config.wordLength);
-		tmpConfigSettings.add(Config.wordStrength);
-		tmpConfigSettings.add(Config.allowDuplicates);
-		tmpConfigSettings.add(Config.charOrder);
-		tmpConfigSettings.add(Config.allWords);
-		tmpConfigSettings.add(Config.numWords);
 		
+		//sets the default configurations to level 1
+		for(String setting: Config.defaultSettings){
+			tmpConfigSettings.add(setting);
+			
+		}
 		initialize();
 	}
 
@@ -147,10 +145,6 @@ public class PAWgui extends 	JFrame
 	{
 		generatePanel = new GeneratePanel(Config.GENERATE_PANEL_BG_COLOR, PAWgui.this);
 	}
-	public void createPlayPage()
-	{
-		playPanel = new PlayPanel(Config.PLAY_PANEL_BG_COLOR, PAWgui.this);
-	}
 	public void createUserPlayPage()
 	{
 		userPlayPanel = new UserPlayPanel(Config.PLAY_PANEL_BG_COLOR, PAWgui.this);
@@ -171,6 +165,14 @@ public class PAWgui extends 	JFrame
 	public void selectTabbedPaneIndex (int i) 
 	{ 
 		tabbedPane.setSelectedIndex (i);
+	}
+	
+	public void setUserGameLevel(int a_level){
+		userGameLevel = a_level;
+	}
+	
+	public int getUserGameLevel(){
+		return userGameLevel;
 	}
 	
 	/**

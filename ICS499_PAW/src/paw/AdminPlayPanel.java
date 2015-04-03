@@ -27,7 +27,7 @@ public class AdminPlayPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private PAWgui internalgui;
-	private static GameGenerator newGame;
+//	private static GameGenerator newGame;
 	private static Game currentGame;
 	private JPanel gridPanel;
 	private JPanel answerPanel;
@@ -70,8 +70,8 @@ public class AdminPlayPanel extends JPanel{
 		JEditorPane numWords = new JEditorPane();
 		numWords.setFont(font);
 		numWords.setBackground(Color.yellow);
-		if(newGame != null){
-			numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords())
+		if(currentGame != null){
+			numWords.setText("Number of Words = " + String.valueOf(currentGame.getNumberWords())
 				+ "\n You Have Found = " + foundWordList.size());
 		}else{
 			numWords.setText("Number of Words = 0 \n You Have Found = 0");
@@ -102,10 +102,10 @@ public class AdminPlayPanel extends JPanel{
 		gridPanel.setBorder(new LineBorder(Color.black, 2));
 		
 		titlePanel = new JPanel();
-		if(newGame != null){
-			JLabel titleLabel = new JLabel(newGame.getTitle() 
-					+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
-					+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
+		if(currentGame != null){
+			JLabel titleLabel = new JLabel(currentGame.getTitle() 
+					+ " - (Duplicates = " + currentGame.getDuplicate() + ")"
+					+ " - (In Order = " + currentGame.getCharOrder() + ")");
 			titleLabel.setFont(font);
 			titlePanel.add(titleLabel);
 		}else{
@@ -121,12 +121,12 @@ public class AdminPlayPanel extends JPanel{
 		columnPanel.setLayout(new SpringLayout());
 		
 		ArrayList<ArrayList<String>> columnData = new ArrayList<ArrayList<String>>();
-		if(newGame!= null){
-			columnData = newGame.getNewGame().getColumnData();
+		if(currentGame!= null){
+			columnData = currentGame.getColumnData();
 		
 			for(int i = 0; i < columnData.size(); i++){
 				ArrayList<String> characters = columnData.get(i);
-				JPanel column = new JPanel(new GridLayout(newGame.getNewGame().getNumberWords(), 1));
+				JPanel column = new JPanel(new GridLayout(currentGame.getNumberWords(), 1));
 				for(int j = 0; j < characters.size(); j++){
 					GridTile newTile = new GridTile(characters.get(j));
 					column.add(newTile);
@@ -147,7 +147,7 @@ public class AdminPlayPanel extends JPanel{
 
 		answerPanel = new JPanel(new BorderLayout());
 		answerPanel.add(instructPanel, BorderLayout.NORTH);
-		if(newGame != null){
+		if(currentGame != null){
 			for(int i = 0; i < columnData.size(); i++){
 				JPanel ansRow = new JPanel(new GridLayout(1, columnData.size()));
 				for(int j = 0; j < columnData.size(); j++){
@@ -204,7 +204,7 @@ public class AdminPlayPanel extends JPanel{
 		createHTMLBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-//					CreateHTML ch = new CreateHTML(newGame.getNewGame());
+//					CreateHTML ch = new CreateHTML(currentGame);
 					//TODO ?? add a popup to confirm the file was written
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -219,7 +219,7 @@ public class AdminPlayPanel extends JPanel{
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GameSaver gs = new GameSaver(newGame.getNewGame());
+					GameSaver gs = new GameSaver(currentGame);
 					//TODO ?? add a popup to confirm the file was written
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -237,8 +237,8 @@ public class AdminPlayPanel extends JPanel{
 	 * sets the newGame for the admin in Play Panel
 	 * @param GameGenerator
 	 */
-	public static void setNewGame(GameGenerator game){
-		newGame = game;
+	public static void setCurrentGame(GameGenerator game){
+		currentGame = game.getNewGame();
 	}
 
 	/**

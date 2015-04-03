@@ -63,8 +63,9 @@ public class UserPlayPanel extends JPanel {
 		font = internalgui.getFont();
 		gameCollection = internalgui.getGameCollection();
 		
-		currentGame = Config.defaultGameGenerator.getNewGame();
-		userGameLevel = currentGame.getLevel();
+//		currentGame = Config.defaultGameGenerator.getNewGame();
+//		userGameLevel = currentGame.getLevel();
+		userGameLevel = internalgui.getUserGameLevel();
 		
 		
 		setMinimumSize(new Dimension(1000,550));

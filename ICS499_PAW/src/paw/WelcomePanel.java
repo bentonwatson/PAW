@@ -21,7 +21,6 @@ import javax.swing.border.MatteBorder;
 
 public class WelcomePanel extends JPanel {
 	
-	public ArrayList<String> tmpConfigSettings;
 	PAWgui internalgui;
 	private int gameLevel;
 	private int userGameLevel;
@@ -29,7 +28,6 @@ public class WelcomePanel extends JPanel {
 	public WelcomePanel(Color color, PAWgui paw) {
 		
 		internalgui = paw;
-		tmpConfigSettings = internalgui.tmpConfigSettings;
 		
 		setMinimumSize(new Dimension(640,480));
 		setBackground(color);
@@ -67,141 +65,91 @@ public class WelcomePanel extends JPanel {
 		JPanel button = new JPanel();
 		button.setBackground(color);
 		button.setLayout(new FlowLayout());
-		gameLevel = getGameLevel();
-		
-		JButton setLevelOne = new JButton("Easy");
-		setLevelOne.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(Config.DEFAULTMODE.equals("admin")){
-						tmpConfigSettings.clear();
-						tmpConfigSettings.add("Any");
-						tmpConfigSettings.add("1");
-						tmpConfigSettings.add("4");
-						tmpConfigSettings.add("4");
-						tmpConfigSettings.add("true");
-						tmpConfigSettings.add("true");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("5");
-						internalgui.setTmpConfigSettings(tmpConfigSettings);
-					}else{
-						userGameLevel = 1;
-						internalgui.tmpConfigSettings.set(1, "1");
-						//TODO use this information to populate the user's play panel with a game
+//		gameLevel = getGameLevel();
+		if(Config.DEFAULTMODE.equals("user")){
+			JButton setLevelOne = new JButton("Easy");
+			setLevelOne.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						internalgui.setUserGameLevel(1);
+						internalgui.initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
 					}
-					internalgui.initialize();
-				} catch (Exception e1) {
-					e1.printStackTrace();
 				}
-			}
-		});
-		setLevelOne.setSize(100, 100);
-		setLevelOne.setFont(new Font("Sitka Display", Font.BOLD, 16));
-		setLevelOne.setBackground(Color.yellow);
-		button.add(setLevelOne);
-		
-		JButton setLevelTwo = new JButton("Medium");
-		setLevelTwo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(Config.DEFAULTMODE.equals("admin")){
-						tmpConfigSettings.clear();
-						tmpConfigSettings.add("Any");
-						tmpConfigSettings.add("2");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("true");
-						tmpConfigSettings.add("true");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("5");
-						internalgui.setTmpConfigSettings(tmpConfigSettings);
-					}else{
-						userGameLevel = 2;
-						internalgui.tmpConfigSettings.set(1, "2");
-						//TODO use this information to populate the user's play panel with a game
+			});
+			setLevelOne.setSize(100, 100);
+			setLevelOne.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelOne.setBackground(Color.yellow);
+			button.add(setLevelOne);
+			
+			JButton setLevelTwo = new JButton("Medium");
+			setLevelTwo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						internalgui.setUserGameLevel(2);
+						internalgui.initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
 					}
-					internalgui.initialize();
-				} catch (Exception e1) {
-					e1.printStackTrace();
 				}
-			}
-		});
-		setLevelTwo.setSize(100, 50);
-		setLevelTwo.setFont(new Font("Sitka Display", Font.BOLD, 16));
-		setLevelTwo.setBackground(Color.yellow);
-		button.add(setLevelTwo);
-
-		JButton setLevelThree = new JButton("Hard");
-		setLevelThree.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(Config.DEFAULTMODE.equals("admin")){
-						tmpConfigSettings.clear();
-						tmpConfigSettings.add("Any");
-						tmpConfigSettings.add("3");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("true");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("8");
-						internalgui.setTmpConfigSettings(tmpConfigSettings);
-					}else{
-						userGameLevel = 3;
-						internalgui.tmpConfigSettings.set(1, "3");
-						//TODO use this information to populate the user's play panel with a game
+			});
+			setLevelTwo.setSize(100, 50);
+			setLevelTwo.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelTwo.setBackground(Color.yellow);
+			button.add(setLevelTwo);
+			
+			JButton setLevelThree = new JButton("Hard");
+			setLevelThree.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						internalgui.setUserGameLevel(3);
+						internalgui.initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
 					}
-					internalgui.initialize();
-				} catch (Exception e1) {
-					e1.printStackTrace();
 				}
-			}
-		});
-		setLevelThree.setSize(100, 50);
-		setLevelThree.setFont(new Font("Sitka Display", Font.BOLD, 16));
-		setLevelThree.setBackground(Color.yellow);
-		button.add(setLevelThree);
-
-		JButton setLevelFour = new JButton("Impossible");
-		setLevelFour.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(Config.DEFAULTMODE.equals("admin")){
-						tmpConfigSettings.clear();
-						tmpConfigSettings.add("Any");
-						tmpConfigSettings.add("4");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("6");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("false");
-						tmpConfigSettings.add("5");
-						internalgui.setTmpConfigSettings(tmpConfigSettings);
-					}else{
-						userGameLevel = 4;
-						internalgui.tmpConfigSettings.set(1, "4");
-						//TODO use this information to populate the user's play panel with a game
+			});
+			setLevelThree.setSize(100, 50);
+			setLevelThree.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelThree.setBackground(Color.yellow);
+			button.add(setLevelThree);
+			
+			JButton setLevelFour = new JButton("Impossible");
+			setLevelFour.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						internalgui.setUserGameLevel(4);
+						internalgui.initialize();
+					} catch (Exception e1) {
+						e1.printStackTrace();
 					}
-					internalgui.initialize();
-				} catch (Exception e1) {
-					e1.printStackTrace();
 				}
-			}
-		});
-		setLevelFour.setSize(100, 50);
-		setLevelFour.setFont(new Font("Sitka Display", Font.BOLD, 16));
-		setLevelFour.setBackground(Color.yellow);
-		button.add(setLevelFour);
-		
+			});
+			setLevelFour.setSize(100, 50);
+			setLevelFour.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			setLevelFour.setBackground(Color.yellow);
+			button.add(setLevelFour);
+			
+		}else{
+			JButton goToConfig = new JButton("Ready to Configure New Games!");
+			goToConfig.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						internalgui.selectTabbedPaneIndex(3);		
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			goToConfig.setSize(100, 50);
+			goToConfig.setFont(new Font("Sitka Display", Font.BOLD, 16));
+			goToConfig.setBackground(Color.yellow);
+			button.add(goToConfig);
+		}
 		text.add(button);
 		add(text);
 	}
 
-	public int getGameLevel(){
-		if(tmpConfigSettings.size() > 0){
-			return Integer.valueOf(tmpConfigSettings.get(1));
-		}
-		return Integer.valueOf(Config.level);
-	}
 
 }

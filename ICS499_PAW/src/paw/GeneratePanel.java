@@ -19,6 +19,7 @@ import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import core.Game;
 import core.SpringUtility;
 
 /**
@@ -48,22 +49,7 @@ class GeneratePanel extends JPanel{
 		setBackground(color);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
-		
-//		String topic = internalgui.tmpConfigSettings.get(0);
-//		int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
-//		int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
-//		int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
-//		boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
-//		boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
-//		String showAll = internalgui.tmpConfigSettings.get(6);
-//		int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
-//		newGame = new GameGenerator(topic, level, len, stren, dup, order);
-//		if(Boolean.valueOf(showAll)){
-//			newGame.chooseNumberOfWords(newGame.getNumBigWordList());
-//		}else{
-//			newGame.chooseNumberOfWords(numWords);
-//		}
-//	
+
 		generateWordListPanel();
 		generateGridPanel();
 		generateButtonPanel();
@@ -192,7 +178,7 @@ class GeneratePanel extends JPanel{
 		playGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					AdminPlayPanel.setNewGame(newGame);
+					AdminPlayPanel.setCurrentGame(newGame);
 					internalgui.selectTabbedPaneIndex(1);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -215,7 +201,7 @@ class GeneratePanel extends JPanel{
 	public static void setNewGame(GameGenerator game){
 		newGame = game;
 	}
-	
+
 	/**
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *
