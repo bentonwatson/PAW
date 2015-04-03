@@ -326,7 +326,9 @@ public class ConfigPanel extends JPanel
 				if(allWordsNo.getModel() == allWordsGroup.getSelection()){
 					allWordsValue = false;
 				}
-				gg = new GameGenerator(topicValue, levelValue, minLenValue, minStrValue, allowDupValue, charOrderValue);
+				gg = new GameGenerator(topicValue, levelValue, minLenValue, 
+						minStrValue, allowDupValue, charOrderValue, minNumWordsValue);
+				
 				//the number of words and subsequent column data is set in PAWgui to retain the settings
 				//for subsequent configTab open
 				internalgui.tmpConfigSettings.clear();
@@ -338,16 +340,17 @@ public class ConfigPanel extends JPanel
 				internalgui.tmpConfigSettings.add(String.valueOf(charOrderValue));
 				internalgui.tmpConfigSettings.add(String.valueOf(allWordsValue));
 				internalgui.tmpConfigSettings.add(String.valueOf(minNumWordsValue));
+				internalgui.tmpWordList = gg.getWordsBigWordList();
+				
 				numWordsFound = gg.getNumBigWordList();
 				internalgui.numWordsFound = numWordsFound;
-				internalgui.tmpWordList = gg.getWordsBigWordList();
 				showNumberWordsFoundTF.setText(String.valueOf(numWordsFound));
 				if(allWordsValue){
 					gg.chooseNumberOfWords(numWordsFound);
 				}else{
 					gg.chooseNumberOfWords(minNumWordsValue); 
 				}
-//				GeneratePanel.setNewGame(gg);
+				GeneratePanel.setNewGame(gg);
 //				goToGenerate(2); // switches tab to Generate tab when clicking setConfig button
 			}
 		});

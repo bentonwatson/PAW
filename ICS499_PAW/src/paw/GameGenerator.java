@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import te.TeluguWordProcessor;
 import core.BigWord;
 import core.BigWordCollection;
 import core.Game;
@@ -62,15 +63,40 @@ public class GameGenerator {
 		charOrder = order;
 		setTitle();
 		setBigWordList();
+		chooseNumberOfWords(bigWordList.size());
+		setNewGame();
 	}
-
+	
+	@SuppressWarnings("unused")
+	public GameGenerator(String a_topic, int a_level, int a_length, int a_strength,
+			boolean dup, boolean order, int a_num){
+		topic = a_topic;
+		wordLength = a_length;
+		if(Config.DEFAULTLANGUAGE == 0){
+			wordStrength = a_length;
+		}else{
+			wordStrength = a_strength;
+		}
+		level = a_level;
+		duplicates = dup;
+		charOrder = order;
+		setTitle();
+		setBigWordList();
+		chooseNumberOfWords(a_num);
+		setNewGame();
+	}
+	/**
+	 * method to create a new game
+	 */
+	public void setNewGame(){
+		newGame = new Game(level, title, wordList, columnData, duplicates, charOrder);
+	}
 	/**
 	 * method returns the new game generated
 	 * does not have an id assigned
 	 * @return
 	 */
 	public Game getNewGame() {
-		newGame = new Game(level, title, wordList, columnData);
 		return newGame;
 	}
 
@@ -113,7 +139,11 @@ public class GameGenerator {
 		numWords = num;
 		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
 		for (BigWord bigWord : bigWordList) {
-			wordsOfCorrectLength.add(bigWord.getEnglish().toUpperCase());
+			if(Config.DEFAULTLANGUAGE == 0){
+				wordsOfCorrectLength.add(bigWord.getEnglish().toUpperCase());
+			}else if(Config.DEFAULTLANGUAGE == 1){
+				wordsOfCorrectLength.add(bigWord.getTelugu());
+			}
 		}
 		chooseRandomListOfWords(wordsOfCorrectLength);
 		setColumnData();
@@ -175,9 +205,10 @@ public class GameGenerator {
 	}
 
 	/**
-	 * method to randomly choose the requested number of words
+	 * method called by chooseNumberOfWords 
+	 * randomly chooses the requested number of words
 	 * from the returned bigWordList
-	 * When bigWordList is < number requested all are bigWords are used
+	 * When bigWordList is < number requested all bigWords are used
 	 * @param wordsOfCorrectLength
 	 */
 	public void chooseRandomListOfWords(List<String> wordsOfCorrectLength) {
@@ -221,7 +252,8 @@ public class GameGenerator {
 		for(int i = 0; i < wordLength; i++){
 			ArrayList<String> single = new ArrayList<String>();
 			for(String word : wordList){
-				single.add(String.valueOf(word.charAt(i)));
+				WordProcessor wp = new TeluguWordProcessor(word);
+				single.add(wp.logicalCharAt(i));
 			}
 			single = shuffleChars(single);
 			columns.add(single);
@@ -243,16 +275,17 @@ public class GameGenerator {
 	 */
 	public void shuffleColumns() {
 		ArrayList<ArrayList<String>> tmp = new ArrayList<ArrayList<String>>();
-		tmp.addAll(columnData);
-		ArrayList<Integer> colNumbers = new ArrayList<Integer>();
-		for(int i = 0; i < tmp.size(); i++){
-			colNumbers.add(i);
-		}
-		Collections.shuffle(colNumbers);
-		columnData.clear();
-		for(int i = 0; i < colNumbers.size(); i++){
-			columnData.add(tmp.get(colNumbers.get(i)));
-		}
+//		tmp.addAll(columnData);
+//		ArrayList<Integer> colNumbers = new ArrayList<Integer>();
+//		for(int i = 0; i < tmp.size(); i++){
+//			colNumbers.add(i);
+//		}
+		Collections.shuffle(tmp);
+//		Collections.shuffle(colNumbers);
+//		columnData.clear();
+//		for(int i = 0; i < colNumbers.size(); i++){
+//			columnData.add(tmp.get(colNumbers.get(i)));
+//		}
 	}
 
 	/**
@@ -273,7 +306,7 @@ public class GameGenerator {
 	 */
 //	public static void main(String[] args) {
 //		GameGenerator gg = new GameGenerator("BodyParts", 1, 4, 4, false, false);
-//		gg.setWords(5);
+//		gg.chooseNumberOfWords(5);
 //		Game game = gg.getNewGame();
 //		System.out.println(game.toString());
 //	}

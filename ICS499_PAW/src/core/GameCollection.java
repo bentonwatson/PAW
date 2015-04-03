@@ -102,6 +102,8 @@ public class GameCollection
 		String id = new String();
 		String title = new String();
 		int level = 0;
+		boolean duplicate = false;
+		boolean charOrder = false;
 		ArrayList<String> wordList = new ArrayList<String>();
 		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
 		String[][] puzzleGrid;
@@ -109,6 +111,7 @@ public class GameCollection
 		boolean idFound = false;
 		boolean titleFound = false;
 		boolean levelFound = false;
+		boolean otherFound = false;
 		boolean wordsFound = false;
 		boolean columnFound = false;
 		
@@ -138,8 +141,19 @@ public class GameCollection
 			{
 				String[] split = line.split("Level:");
 				level = Integer.valueOf(split[1].trim());
+				System.out.println(level);
 				levelFound = true;
 				
+			}
+			else if (line.contains("Other:"))
+			{
+				String[] split = line.split("Other:");
+				String other = split[1].trim();
+				String[] list = other.split("\\,");
+				duplicate = Boolean.valueOf(list[0]);
+				charOrder = Boolean.valueOf(list[1]);
+				
+				otherFound = true;
 			}
 			else if (line.contains("Words:"))
 			{
@@ -195,11 +209,31 @@ public class GameCollection
 //			//System.out.println("");
 //		}
 		input.close();
-		Game game = new Game(id, level, title, wordList, columnList);
+		Game game = new Game(id, level, title, wordList, columnList, duplicate, charOrder);
 		allGames.add(game);
 		
 	}
 
+	/**
+	 * method returns a game based ont he level
+	 * @param a_level
+	 * @return Game
+	 */
+	public Game getGameByLevel(int a_level){
+		
+		for (int i = 0; i < allGames.size(); i++)
+		{
+			int level = allGames.get(i).getLevel();
+
+			if (level == a_level)
+			{
+				this.currentIndex = i;
+				return allGames.get(i);
+			} 
+		}
+		return getRandomGame();
+	}
+	
 	/*
 	 * Method that returns a puzzle based on an Id from the puzzle collection
 	 * Ifthere is no puzzle matching that id, then a random puzzle will be

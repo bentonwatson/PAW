@@ -31,7 +31,7 @@ public class PAWgui extends 	JFrame
 	private	JPanel adminPlayPanel;
 	private	JPanel configPanel;
 	private JPanel topPanel;
-	
+	private GameCollection gameCollection;
 	private String mode = Config.DEFAULTMODE;
 	private Font font;
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
@@ -49,7 +49,7 @@ public class PAWgui extends 	JFrame
 	{
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, new File("src/te/Gidugu.ttf"));
-			font = font.deriveFont(60f);
+			font = font.deriveFont(Config.FONTSIZETELUGU);
 		} catch (FontFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,6 +70,8 @@ public class PAWgui extends 	JFrame
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setFont(Config.LABELFONT);
 		topPanel.add( tabbedPane, BorderLayout.CENTER );
+		
+		gameCollection = new GameCollection();
 		
 		//sets the default configurations to level 1
 		tmpConfigSettings.add(Config.topic);
@@ -177,6 +179,14 @@ public class PAWgui extends 	JFrame
 	 */
 	public void setTmpConfigSettings(ArrayList<String> tmp){
 		this.tmpConfigSettings = tmp;
+	}
+	
+	public GameCollection getGameCollection(){
+		return gameCollection;
+	}
+	
+	public Font getFont(){
+		return font;
 	}
 	
 	// Main method to get things started

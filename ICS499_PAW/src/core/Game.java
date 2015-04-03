@@ -17,30 +17,31 @@ public class Game
 	private String title;
 	private int level;
 	private int wordLength;
+	private boolean duplicate;
+	private boolean charOrder;
+	private int numberWords;
 	private ArrayList<String> wordList;
-	private ArrayList<ArrayList<String>> columnData; //size = # of columns
-//
-//	private String[][] puzzleGrid;
-//	private int gridWidth; // derived
-//	private int gridHeight; // derived
+	private ArrayList<ArrayList<String>> columnData; //size = # of columns/length of words
 
 	public Game(int a_level, String a_title, ArrayList<String> a_word_list,
-			ArrayList<ArrayList<String>> a_columnData)
-			{
+			ArrayList<ArrayList<String>> a_columnData, boolean a_dup, boolean a_order) {
 		level = a_level;
 		title = a_title;
 		wordList = a_word_list;
 		columnData = a_columnData;
-			}
+		duplicate = a_dup;
+		charOrder = a_order;
+	}
 
 	public Game(String an_id, int a_level, String a_title, ArrayList<String> a_word_list,
-			ArrayList<ArrayList<String>> a_columnData)
-	{
+			ArrayList<ArrayList<String>> a_columnData, boolean a_dup, boolean a_order) {
 		id = an_id;
 		title = a_title;
 		level = a_level;
 		wordList = a_word_list;
 		columnData = a_columnData;
+		duplicate = a_dup;
+		charOrder = a_order;
 	}
 
 	public Game() {
@@ -103,6 +104,36 @@ public class Game
 	}
 	
 	/**
+	 * set method for duplicate characters allowed
+	 * true allows duplicate characters to display in single column
+	 */
+	public void setDuplicate(boolean b){
+		duplicate = b;
+	}
+	
+	/**
+	 * get method for duplicate characters
+	 */
+	public boolean getDuplicate(){
+		return duplicate;
+	}
+
+	/**
+	 * set method for charOrder
+	 * true indicates the columns are shuffle out of logical character order
+	 */
+	public void setCharOrder(boolean b){
+		charOrder = b;
+	}
+	
+	/**
+	 * get method for duplicate characters
+	 */
+	public boolean getCharOrder(){
+		return charOrder;
+	}
+	
+	/**
 	 * Set method for the variable wordList
 	 */
 	public void setWordList(ArrayList<String> a_word_list)
@@ -142,59 +173,18 @@ public class Game
 	}
 
 	/**
+	 * Method to set Number of Words in game
+	 */
+	public void setNumberWords(int a_num){
+		numberWords = a_num;;
+	}
+	
+	/**
 	 * Method to get Number of Words in game
 	 */
 	public int getNumberWords(){
 		return wordList.size();
 	}
-//
-//	/**
-//	 * Set method for the variable gridWidth
-//	 */
-//	public void setGridWidth(int a_grid_width)
-//	{
-//		gridWidth = a_grid_width;
-//	}
-//
-//	/**
-//	 * Set method for the variable gridHeight
-//	 */
-//	public void setGridHeight(int a_grid_height)
-//	{
-//		gridHeight = a_grid_height;
-//	}
-//
-//	/**
-//	 * Set method for the variable puzzleGrid
-//	 */
-//	public void setPuzzleGrid(String[][] a_puzzle_grid)
-//	{
-//		puzzleGrid = a_puzzle_grid;
-//	}
-//
-//	/**
-//	 * Get method for the variable gridWidth
-//	 */
-//	public int getGridWidth()
-//	{
-//		return gridWidth;
-//	}
-//
-//	/**
-//	 * Get method for the variable gridHeight
-//	 */
-//	public int getGridHeight()
-//	{
-//		return gridHeight;
-//	}
-//
-//	/**
-//	 * Get method for the variable puzzleGrid
-//	 */
-//	public String[][] getPuzzleGrid()
-//	{
-//		return puzzleGrid;
-//	}
 
 	/**
 	 * Returns the String representation of Game object
@@ -202,6 +192,8 @@ public class Game
 	public String toString()
 	{
 		String temp = "\nid = " + id + "\ntitle = " + title 
+				+ "\nduplicate - " + String.valueOf(duplicate) 
+				+ " charOrder - "+ String.valueOf(charOrder) 
 				+ "\nwordList" + wordList + "\ncolumnData" + columnData;
 
 		return temp;

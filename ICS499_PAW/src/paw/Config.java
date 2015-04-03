@@ -2,6 +2,8 @@ package paw;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.File;
 import java.util.ArrayList;
 
 import core.Game;
@@ -10,10 +12,10 @@ public class Config {
 	
 
 	// Tab and Background Colors
-		public static Color WELCOME_PANEL_BG_COLOR = Color.yellow;
+		public static Color WELCOME_PANEL_BG_COLOR = Color.lightGray;
 		public static Color GENERATE_PANEL_BG_COLOR =Color.white;
 		public static Color PLAY_PANEL_BG_COLOR = Color.yellow;
-		public static Color CONFIG_PANEL_BG_COLOR = Color.magenta; 
+		public static Color CONFIG_PANEL_BG_COLOR = Color.pink; 
 		
 		public static String APP_TITLE = "Pick and Assemble Words";
 		public static String LOGO_FILE = "logo.jpg";
@@ -32,17 +34,9 @@ public class Config {
 	public static final float FONTSIZEDEFAULT = 18.0f;
 	
 	public static Font LABELFONT = new Font("Calibri", Font.BOLD,20);
-	public static Font UNDERFONT = new Font("Calibri", Font.BOLD,16);
-	
-	// Languages to choose from
-	public enum languages {
-		English, Telugu
-	}
-	// requires a language class as well as editing a few lines of code in the
-	// gui to incorporate more languages.
-	public static final String[] LANGUAGES = { "English", "Telugu" };
-	
-	//default language is its position in the LANGUAGES[] (0 = english, 1 = telugu);
+
+	// some gui code will need additions to incorporate more languages.
+	//default language  (0 = english, 1 = telugu);
 	public static final int DEFAULTLANGUAGE = 0;
 	
 	//works
@@ -72,7 +66,8 @@ public class Config {
 	public static String charOrder = "true";
 	public static String allWords = "false";
 	public static String numWords = "5";
-	
+	public static GameGenerator defaultGameGenerator = new GameGenerator
+			("Any", 1, 4, 4, true, true, 5);
 	
 	// When using bigwordcollection
 	public static final String DELIMETER = "\\|";
@@ -91,14 +86,8 @@ public class Config {
 				+ "\n Click on 'Start New Game' if you would like to play another game. ";
 		
 		public static final String enLOSEMESSAGE = "             YOU DID NOT FINISH!!";
-		
-		public static Font enTextFont = Font.getFont(Font.SANS_SERIF);
-		
-		//public static String enWordsFileName = "src/EnglishWords.txt";
-		
+
 		public static String enAdminWordsFileName = "src/EN/adminInput.txt";
-		
-//		public static String enWordsFilePath = System.getProperty("user.home") + "\\7LW\\EN\\";
 	
 	/*
 	 * Telugu options
@@ -112,7 +101,4 @@ public class Config {
 		
 		public static String teTextFont = "src/TE/Gidugu.ttf";
 
-		// public static String teWordsFileName = "src/TeluguWords.txt";
-
-//		public static String teWordsFilePath = System.getProperty("user.home") + "\\7LW\\TE\\";
 }

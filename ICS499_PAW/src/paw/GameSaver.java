@@ -45,26 +45,32 @@ public class GameSaver {
 				}
 			}
 		} catch (IOException e) { e.printStackTrace(); } 
-		
-		int idSetup= (Integer.parseInt(id)+1);
-		gameId = ("00"+ idSetup);
+		if(!id.equals("")){
+			int idSetup= (Integer.parseInt(id)+1);
+			gameId = ("00"+ idSetup);
+		}else{
+			gameId = "001";
+		}
 	}
 	 
 	/**
 	 * Method saves the new game to the gameset
 	 * sets the success variable
 	 */
-	public void writeNewGame(){
+	public void writeNewGame() {
 		saveSuccessful = false;
 		String path= Config.GAME_SET;  //  set the value to the game get folder by path
-		String title= newGame.getTitle();
+		String title = newGame.getTitle();
 		generateNewId();
-		String level= newGame.getLevel()+"";
-		String wordList= formatWordList(newGame.getWordList());
-		String columns= formatColumnData(newGame.getColumnData());
+		String level = newGame.getLevel()+"";
+		String dup = String.valueOf(newGame.getDuplicate());
+		String order = String.valueOf(newGame.getCharOrder());
+		String wordList = formatWordList(newGame.getWordList());
+		String columns = formatColumnData(newGame.getColumnData());
 		String data="\n"+"ID: "+gameId+"\n"
 				+ "Title:  "+ title+"\n"
 				+ "Level: "+ level+ "\n"
+				+ "Other: "+ dup + "," + order + "\n"
 				+ "Words:   "+ wordList+"\n"
 				+ columns
 				+"-----------------------------------------";
@@ -125,7 +131,7 @@ public class GameSaver {
 	 */
 //	public static void main(String[] args) {
 //		GameGenerator gg = new GameGenerator("BodyParts", 1, 4, 4, false, false);
-//		gg.setWords(5);
+//		gg.chooseNumberOfWords(5);
 //		Game game = gg.getNewGame();
 //		System.out.println(game.toString());
 //		

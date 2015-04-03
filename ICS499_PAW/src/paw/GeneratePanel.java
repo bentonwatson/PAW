@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,24 +38,32 @@ class GeneratePanel extends JPanel{
 	private JPanel titlePanel;
 	private JPanel wordListPanel;
 	private JPanel buttonPanel;
+	private Font font;
 	
 	public GeneratePanel(Color color, PAWgui paw) {
 		this.internalgui = paw;
+		font = internalgui.getFont();
+		
 		setMinimumSize(new Dimension(1000,550));
 		setBackground(color);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		
-		String topic = internalgui.tmpConfigSettings.get(0);
-		int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
-		int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
-		int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
-		boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
-		boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
-		int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
-		newGame = new GameGenerator(topic, level, len, stren, dup, order);
-		newGame.chooseNumberOfWords(numWords);
-		
+//		String topic = internalgui.tmpConfigSettings.get(0);
+//		int level = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
+//		int len = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
+//		int stren = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
+//		boolean dup = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
+//		boolean order = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
+//		String showAll = internalgui.tmpConfigSettings.get(6);
+//		int numWords = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
+//		newGame = new GameGenerator(topic, level, len, stren, dup, order);
+//		if(Boolean.valueOf(showAll)){
+//			newGame.chooseNumberOfWords(newGame.getNumBigWordList());
+//		}else{
+//			newGame.chooseNumberOfWords(numWords);
+//		}
+//	
 		generateWordListPanel();
 		generateGridPanel();
 		generateButtonPanel();
@@ -70,16 +79,21 @@ class GeneratePanel extends JPanel{
 		wordListPanel.setLayout(new BorderLayout());
 		
 		JEditorPane numWords = new JEditorPane();
-		numWords.setFont(Config.LABELFONT);
-		numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords()));
-		wordListPanel.add(numWords, BorderLayout.NORTH);
+		numWords.setFont(font);
+		if(newGame != null){
+			numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords()));
+		}else{
+			numWords.setText("Number of Words = 0 \n You Have Found = 0");
+		}		wordListPanel.add(numWords, BorderLayout.NORTH);
 		
 		JEditorPane words = new JEditorPane();
-		words.setFont(Config.UNDERFONT);
-		ArrayList<String> wordList = newGame.getNewGame().getWordList();
+		words.setFont(font);
 		String list = "";
-		for(int i = 0; i < wordList.size(); i++){
-			list += wordList.get(i) + "\n";
+		if(newGame!= null){
+			ArrayList<String> wordList = newGame.getNewGame().getWordList();
+			for(int i = 0; i < wordList.size(); i++){
+				list += wordList.get(i) + "\n";
+			}
 		}
 		words.setText(list);
 		wordListPanel.add(words, BorderLayout.CENTER);
@@ -98,29 +112,37 @@ class GeneratePanel extends JPanel{
 		gridPanel.setLayout(new BorderLayout());
 		
 		titlePanel = new JPanel();
-		JLabel titleLabel = new JLabel(newGame.getTitle() 
-						+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
-						+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
-		titleLabel.setFont(Config.LABELFONT);
-		titlePanel.add(titleLabel);
+		if(newGame != null){
+			JLabel titleLabel = new JLabel(newGame.getTitle() 
+					+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
+					+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
+			titleLabel.setFont(font);
+			titlePanel.add(titleLabel);
+		}else{
+			JLabel titleLabel = new JLabel(" No Game Selected ");
+			titleLabel.setFont(font);
+			titlePanel.add(titleLabel);
+		}
 		gridPanel.add(titlePanel, BorderLayout.NORTH);
 		
 		JPanel columnPanel = new JPanel(new SpringLayout());
 		JScrollPane sp = new JScrollPane(columnPanel);
 		
-		ArrayList<ArrayList<String>> columnData = newGame.getNewGame().getColumnData();
-		for(int i = 0; i < columnData.size(); i++){
-			JPanel column = new JPanel(new SpringLayout());
-			
-			ArrayList<String> characters = columnData.get(i);
-			for(String character : characters){
-				GridTile newTile = new GridTile(character);
-				column.add(newTile);
+		if(newGame!= null){
+			ArrayList<ArrayList<String>> columnData = newGame.getNewGame().getColumnData();
+			columnData = newGame.getNewGame().getColumnData();
+			for(int i = 0; i < columnData.size(); i++){
+				ArrayList<String> characters = columnData.get(i);
+				JPanel column = new JPanel(new GridLayout(newGame.getNewGame().getNumberWords(), 1));
+				
+				for(int j = 0; j < characters.size(); j++){
+					GridTile newTile = new GridTile(characters.get(j));
+					column.add(newTile);
+				}
+				columnPanel.add(column);
 			}
-			SpringUtility.makeGrid(column, characters.size(), 1, 5, 5, 5, 5);
-			columnPanel.add(column);
+			SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		}
-		SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		
 		gridPanel.add(sp, BorderLayout.CENTER);
 		add(gridPanel, BorderLayout.CENTER);
@@ -135,7 +157,7 @@ class GeneratePanel extends JPanel{
 		
 		// generates the HTML
 		JButton createHTMLBtn = new JButton("Create\nHTML");
-		createHTMLBtn.setFont(Config.LABELFONT);
+		createHTMLBtn.setFont(font);
 		createHTMLBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -150,7 +172,7 @@ class GeneratePanel extends JPanel{
 		
 		//calls gameSaver and displays saved message
 		JButton saveGameBtn = new JButton("Save\nGame");
-		saveGameBtn.setFont(Config.LABELFONT);
+		saveGameBtn.setFont(font);
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -166,7 +188,7 @@ class GeneratePanel extends JPanel{
 		
 		//sends the game to play Tab and opens play tab
 		JButton playGameBtn = new JButton("Play\nGame");
-		playGameBtn.setFont(Config.LABELFONT);
+		playGameBtn.setFont(font);
 		playGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -204,7 +226,7 @@ class GeneratePanel extends JPanel{
 		int tileId = -1;
 		
 		Tile(){
-			setFont(new Font("Arial Unicode MS", Font.PLAIN, 24));
+			setFont(font);
 		}
 
 	}
@@ -219,13 +241,15 @@ class GeneratePanel extends JPanel{
 		int clickedPosition = -1;
 		int tileId = -1;
 		int columnNum;
-		String character = "";
 		Color pressedColor = Color.WHITE;
 
 		GridTile(String character){
 			super();
 			setText(character);			
 			setBackground(Color.yellow);
+			if(character.equals(" ")){
+				setVisible(false);
+			}
 		}
 
 	}

@@ -1,28 +1,47 @@
+
 ID: 001
-Title:  4Letters
+Title:  (Topic = Any) - (Level = 1)
 Level: 1
-Words:  BARN,FARM,CORN,DRUM,MILK,
-C: B,F,C,D,M,
-C: A,A,O,R,I,
-C: R,R,R,U,L,
-C: N,M,N,M,K,
---------------------------------------------
+Other: true,true
+Words:   WHAT,SOAP,SWAN,YARN,SALT,
+C: S,S,Y,W,S,
+C: A,W,O,H,A,
+C: A,R,L,A,A,
+C: N,T,N,P,T,
+-----------------------------------------
 ID: 002
-Title:  5Letters
-Level: 1
-Words:   DRAIN,STORM,CREAM,BROWN
-C: D,S,C,B,
-C: R,T,R,R,
-C: A,O,E,O,
-C: I,R,A,W,
-C: N,M,M,N,
--------------------------------------------
-ID: 003
-Title:  4Letters
+Title:  (Topic = Any) - (Level = 2)
 Level: 2
-Words:   BARN,FARM,CORN,DRUM,MILK,
-C: B,F,C,D,M,
-C: A,O,R,I,
-C: R,U,L,
-C: N,M,K,
--------------------------------------------
+Other: true,true
+Words:   HERMES,PARROT,SUNDAY,LOCUST,KETUVU,
+C: K,L,S,H,P,
+C: E,U,E,O,A,
+C: R,R,C,N,T,
+C: R,M,D,U,U,
+C: E,V,O,S,A,
+C: T,T,S,U,Y,
+-----------------------------------------
+ID: 003
+Title:  (Topic = Any) - (Level = 3)
+Level: 3
+Other: false,true
+Words:   BELIZE,OPTICS,LISTEN,AUTUMN,VELVET,BEAUTY,MONACO,GUINEA,
+C: G,V,O,A,B,M,L,
+C: U,E,I,P,O,
+C: T,I,N,L,A,S,
+C: I,V,U,A,N,T,
+C: T,C,Z,E,M,
+C: E,N,S,O,T,Y,A,
+-----------------------------------------
+ID: 004
+Title:  (Topic = Any) - (Level = 4)
+Level: 4
+Other: false,false
+Words:   KETUVU,STRAIT,NEPALI,COPPER,FRIDAY,
+C: N,K,S,C,F,
+C: E,R,T,O,
+C: T,R,P,I,
+C: D,A,P,U,
+C: E,I,A,L,V,
+C: I,Y,T,U,R,
+-----------------------------------------

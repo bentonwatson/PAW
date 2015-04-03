@@ -1,27 +1,36 @@
 package paw;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import core.Game;
+import core.GameCollection;
 import core.SpringUtility;
 
 public class UserPlayPanel extends JPanel {
@@ -34,20 +43,38 @@ public class UserPlayPanel extends JPanel {
 	private JPanel wordListPanel;
 	private JPanel buttonPanel;
 	private JPanel buttPanel;
-	
+	private Font font;
 	private int userGameLevel;
 	private String userGameLevelByName;
 	private JComboBox<String> levelComboBox;
 	private JLabel levelComboLabel;
 	
+	private JLabel jlbTime;
+	private JPanel timerPanel;
+	private final ClockListener cl = new ClockListener();
+	private final Timer time = new Timer(1000, cl);
+	private final JLabel jlbTimer = new JLabel("00:00:00");
+	private GameCollection gameCollection;
+	
 	ArrayList<String> foundWordList = new ArrayList<String>();
 	
 	public UserPlayPanel(Color color, PAWgui paw){
 		this.internalgui = paw;
+		font = internalgui.getFont();
+		gameCollection = internalgui.getGameCollection();
+		
+		currentGame = Config.defaultGameGenerator.getNewGame();
+		userGameLevel = currentGame.getLevel();
+		
+		
 		setMinimumSize(new Dimension(1000,550));
 		setBackground(color);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
+		
+		initialize();
+	}
+	public void initialize(){
 		
 		//if currentGame == null the panels will generate empty 
 		generateWordListPanel();
@@ -55,6 +82,7 @@ public class UserPlayPanel extends JPanel {
 		generateButtonPanel();
 		
 		setVisible(true);
+		time.restart();
 	}
 	
 	/**
@@ -66,7 +94,7 @@ public class UserPlayPanel extends JPanel {
 		wordListPanel.setLayout(new BorderLayout());
 		
 		JEditorPane numWords = new JEditorPane();
-		numWords.setFont(Config.LABELFONT);
+		numWords.setFont(font);
 		numWords.setBackground(Color.yellow);
 		
 		if(currentGame != null){
@@ -78,7 +106,7 @@ public class UserPlayPanel extends JPanel {
 		wordListPanel.add(numWords, BorderLayout.NORTH);
 		
 		JEditorPane words = new JEditorPane();
-		words.setFont(Config.UNDERFONT);
+		words.setFont(font);
 		words.setBackground(Color.yellow);
 		String foundList = "";
 		if(foundWordList != null){
@@ -104,13 +132,13 @@ public class UserPlayPanel extends JPanel {
 		titlePanel = new JPanel();
 		if(currentGame != null){
 			JLabel titleLabel = new JLabel(currentGame.getTitle() 
-					+ " - (Duplicates = )"
-					+ " - (In Order = )");
-			titleLabel.setFont(Config.LABELFONT);
+					+ " - (Duplicates = " + currentGame.getDuplicate() + ")"
+					+ " - (In Order = " + currentGame.getCharOrder() + ")");
+			titleLabel.setFont(font);
 			titlePanel.add(titleLabel);
 		}else{
 			JLabel titleLabel = new JLabel(" No Game Selected ");
-			titleLabel.setFont(Config.LABELFONT);
+			titleLabel.setFont(font);
 			titlePanel.add(titleLabel);
 		}
 		gridPanel.add(titlePanel, BorderLayout.NORTH);
@@ -125,13 +153,13 @@ public class UserPlayPanel extends JPanel {
 			columnData = currentGame.getColumnData();
 			
 			for(int i = 0; i < columnData.size(); i++){
-				JPanel column = new JPanel(new SpringLayout());
 				ArrayList<String> characters = columnData.get(i);
-				for(String character : characters){
-					GridTile newTile = new GridTile(character);
+				JPanel column = new JPanel(new GridLayout(currentGame.getNumberWords(), 1));
+				for(int j = 0; j < characters.size(); j++){
+					GridTile newTile = new GridTile(characters.get(j));
 					column.add(newTile);
+					//TODO add in the dragndrop features to each tile...
 				}
-				SpringUtility.makeGrid(column, characters.size(), 1, 5, 5, 5, 5);//component, rows, cols, initX, intY, xPad, yPad
 				
 				columnPanel.add(column);
 			}
@@ -143,28 +171,29 @@ public class UserPlayPanel extends JPanel {
 		
 		JPanel instructPanel = new JPanel();
 		JLabel ansLabel = new JLabel("Drag tile to quess word.");
-		ansLabel.setFont(Config.LABELFONT);
+		ansLabel.setFont(font);
 		instructPanel.add(ansLabel);
 
 		answerPanel = new JPanel(new BorderLayout());
 		answerPanel.add(instructPanel, BorderLayout.NORTH);
 		if(currentGame!= null){
 			for(int i = 0; i < columnData.size(); i++){
-				JPanel ansRow = new JPanel(new SpringLayout());
+				JPanel ansRow = new JPanel(new GridLayout(1, columnData.size()));
 				for(int j = 0; j < columnData.size(); j++){
-					GridTile newTile = new GridTile(" ");
+					GridTile newTile = new GridTile("_");
 					ansRow.add(newTile);
+					//TODO add in the dragndrop features to each tile...
 				}
-				SpringUtility.makeGrid(ansRow, 1, columnData.size(), 5, 5, 5, 5);
 				answerPanel.add(ansRow, BorderLayout.CENTER);
 			}
 		}
 		JButton guessBtn = new JButton("Guess");
-		guessBtn.setFont(Config.LABELFONT);
+		guessBtn.setFont(font);
 		guessBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					checkGuess();
+					//TODO if last word stop timer, record and call progress tracker
 					generateWordListPanel();
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -189,6 +218,10 @@ public class UserPlayPanel extends JPanel {
 		
 	}
 	
+	public void setUserGameLevel(int level){
+		userGameLevel = level;
+	}
+	
 	/**
 	 * generates a panel to hold action buttons
 	 */
@@ -200,36 +233,40 @@ public class UserPlayPanel extends JPanel {
 		
 		// Level
 		levelComboLabel = new JLabel("Level");
-		levelComboLabel.setFont(Config.LABELFONT);
+		levelComboLabel.setFont(font);
 		levelComboBox = new JComboBox<String>();
 		String [] levelByName = {"Easy", "Medium", "Hard", "Impossible"};
 		for(int i = 0; i < 4; i++){
 			levelComboBox.addItem(levelByName[i]);
 		}
-		levelComboBox.setFont(Config.LABELFONT);
-		if(currentGame != null){
-			userGameLevel = currentGame.getLevel();
-			userGameLevelByName = levelByName[currentGame.getLevel() - 1];
-		}else{
-			userGameLevel = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
-			userGameLevelByName = levelByName[Integer.valueOf(internalgui.tmpConfigSettings.get(1)) - 1];
-		}
+		levelComboBox.setFont(font);
+//		if(currentGame != null){
+//			userGameLevel = currentGame.getLevel();
+//			userGameLevelByName = levelByName[currentGame.getLevel() - 1];
+//		}else{
+//			userGameLevel = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
+			userGameLevelByName = levelByName[userGameLevel - 1];
+//		}
 		levelComboBox.setSelectedItem(userGameLevelByName);
 		levelComboBox.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				userGameLevelByName = levelComboBox.getSelectedItem().toString();
+				userGameLevelByName = String.valueOf(levelComboBox.getSelectedItem());
 				if(userGameLevelByName.equals("Easy")){
-					userGameLevel = 1;
+					setUserGameLevel(1);
+					System.out.println("change to 1");
 				}
 				if(userGameLevelByName.equals("Medium")){
-					userGameLevel = 2;
+					setUserGameLevel(2);
+					System.out.println("change to 2");
 				}
 				if(userGameLevelByName.equals("Hard")){
-					userGameLevel = 3;
+					setUserGameLevel(3);
+					System.out.println("change to 3");
 				}
 				if(userGameLevelByName.equals("Impossible")){
-					userGameLevel = 4;
+					setUserGameLevel(4);
+					System.out.println("change to 4");
 				}
 			}
 		});
@@ -239,11 +276,19 @@ public class UserPlayPanel extends JPanel {
 		
 		// calls for a new game using the userGameLevel variable
 		JButton newGameBtn = new JButton("New Game");
-		newGameBtn.setFont(Config.LABELFONT);
+		newGameBtn.setFont(font);
 		newGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ProgressTracker pt = new ProgressTracker();
+//					ProgressTracker pt = new ProgressTracker();
+					System.out.println(userGameLevel);
+					System.out.println(userGameLevelByName);
+					time.stop();
+					currentGame = null;
+					currentGame = gameCollection.getGameByLevel(userGameLevel);
+					System.out.println(userGameLevel);
+					System.out.println(userGameLevelByName);
+					initialize();
 					//TODO ?? add function to save completed game then get new game
 					// may be passing in the game level to get a particular game set
 				} catch (Exception e1) {
@@ -252,7 +297,20 @@ public class UserPlayPanel extends JPanel {
 			}
 		});
 		buttonPanel.add(newGameBtn);
-		SpringUtility.makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
+		
+		timerPanel = new JPanel();
+		jlbTime = new JLabel("time");
+		jlbTime.setForeground(Color.black);
+		jlbTime.setFont(new Font("Serif", Font.BOLD, 36));
+		jlbTimer.setFont(new Font("Serif", Font.BOLD, 36));
+		jlbTimer.setForeground(Color.black);
+		timerPanel.add(jlbTime);
+		timerPanel.add(jlbTimer);
+		buttonPanel.add(timerPanel);
+		timerPanel.setBounds(0, 330, 300, 70);
+		time.start();
+		
+		SpringUtility.makeGrid(buttonPanel, 4, 1, 25, 15, 15, 15);
 		buttPanel.add(buttonPanel);
 		add(buttPanel, BorderLayout.EAST);
 	}
@@ -275,7 +333,7 @@ public class UserPlayPanel extends JPanel {
 		int tileId = -1;
 		
 		Tile(){
-			setFont(new Font("Arial Unicode MS", Font.PLAIN, 24));
+			setFont(font);
 		}
 
 	}
@@ -290,14 +348,93 @@ public class UserPlayPanel extends JPanel {
 		int clickedPosition = -1;
 		int tileId = -1;
 		int columnNum;
-		String character = "";
 		Color pressedColor = Color.WHITE;
 
 		GridTile(String character){
 			super();
 			setText(character);			
 			setBackground(Color.yellow);
+			if(character.equals(" ")){
+				setVisible(false);
+			}
 		}
 
+	}
+	
+	private class ClockListener implements ActionListener
+	{
+
+		private int hours;
+		private int minutes;
+		private int seconds;
+		private String hour;
+		private String minute;
+		private String second;
+		private static final int N = 60;
+		
+		//PAW group added method toSring()
+		public String toString(){
+			return String.valueOf(hour + ":" + minute + ":" + second);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			NumberFormat formatter = new DecimalFormat("00");
+			if (seconds == N) {
+				seconds = 00;
+				minutes++;
+			}
+
+			if (minutes == N) {
+				minutes = 00;
+				hours++;
+			}
+			hour = formatter.format(hours);
+			minute = formatter.format(minutes);
+			second = formatter.format(seconds);
+			jlbTimer.setText(String.valueOf(hour + ":" + minute + ":" + second));
+			seconds++;
+		}
+	}
+
+	public void componentResized(ComponentEvent arg0)
+	{
+
+//		Dimension sidePanelSize = sidePanel.getSize();
+//		wordsPanel.setBounds(0, 50, sidePanelSize.width,
+//				sidePanelSize.height - 50 - 70);
+//		Dimension wordsPanelSize = wordsPanel.getSize();
+//		timerPanel.setBounds(0, wordsPanelSize.height + 50,
+//				sidePanelSize.width, 70);
+	}
+
+	public static void errorMessage(String a_string)
+	{
+
+		JOptionPane.showMessageDialog(null, a_string, "Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
+
+	}
+
+	public void componentHidden(ComponentEvent arg0)
+	{
+	}
+
+	public void componentMoved(ComponentEvent arg0)
+	{
+	}
+
+	public void componentShown(ComponentEvent arg0)
+	{
+	}
+
+	public void mouseExited(MouseEvent e)
+	{
+	}
+
+	public void mouseClicked(MouseEvent e)
+	{
 	}
 }
