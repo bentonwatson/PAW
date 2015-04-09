@@ -28,7 +28,6 @@ public class GameGenerator {
 	private ArrayList<String> customWords;
 	private ArrayList<ArrayList<String>> columnData;
 	private ArrayList<BigWord> bigWordList;
-	private List<String> gameChars = new ArrayList<>();
 	// game criteria variables
 	private int level;
 	private String topic;
@@ -54,7 +53,6 @@ public class GameGenerator {
 	 * @param dup
 	 * @param order
 	 */
-	@SuppressWarnings("unused")
 	public GameGenerator(String a_topic, int a_level, int a_length, int a_strength,
 			boolean dup, boolean order){
 		topic = a_topic;
@@ -74,7 +72,6 @@ public class GameGenerator {
 		setNewGame();
 	}
 	
-	@SuppressWarnings("unused")
 	public GameGenerator(String a_topic, int a_level, int a_length, int a_strength,
 			boolean dup, boolean order, int a_num){
 		topic = a_topic;
@@ -133,7 +130,7 @@ public class GameGenerator {
 	 * 
 	 */
 	public void setTitle() {
-		title = "(Topic = " + topic + ") -" + " (Level = " + level + ")";
+		title = "Topic = " + topic;
 	}
 	/**
 	 * Method get the Title
@@ -220,7 +217,6 @@ public class GameGenerator {
 	 * Method to read input file, find words based on criteria and 
 	 * set the bigWordList variable
 	 */
-	@SuppressWarnings("unused")
 	public void setBigWordList() {
 		BigWordCollection bwc = new BigWordCollection();
 		BigWordCollection bwcByCriteria = bwc.getBigWordCollectionByCriteria(topic, 
@@ -256,14 +252,13 @@ public class GameGenerator {
 	 * Method to return a list of all words found by criteria
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	public ArrayList<String> getWordsBigWordList(){
 		ArrayList<String> words = new ArrayList<String>();
-		if(Config.DEFAULTLANGUAGE == 0){
+		if(language == 0){
 			for(BigWord bigWord : bigWordList){
 				words.add(bigWord.getEnglish());
 			}
-		}else if(Config.DEFAULTLANGUAGE == 1){
+		}else if(language == 1){
 			for(BigWord bigWord : bigWordList){
 				words.add(bigWord.getTelugu());
 			}

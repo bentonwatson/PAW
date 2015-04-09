@@ -1,32 +1,23 @@
 package paw;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.ListIterator;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import core.BigWordCollection;
 import core.Game;
 import core.GameCollection;
 
 public class PAWgui extends 	JFrame
 {
+
+	private static final long serialVersionUID = 1L;
 	private	JTabbedPane tabbedPane;
 	private	JPanel welcomePanel;
 	private JPanel generatePanel;	
-	private	JPanel playPanel;
 	private	JPanel userPlayPanel;
 	private	JPanel adminPlayPanel;
 	private	JPanel configPanel;

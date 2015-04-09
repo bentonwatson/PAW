@@ -1,12 +1,6 @@
 package paw;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.File;
-import java.util.ArrayList;
-
-import core.Game;
 
 public class Config {
 	
@@ -44,7 +38,7 @@ public class Config {
 	public static boolean createHTML = false;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "admin";
+	public static String DEFAULTMODE = "user";
 	
 	//the file to record completed games
 //	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";

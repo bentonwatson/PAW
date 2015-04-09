@@ -1,5 +1,5 @@
 ID: 001
-Title:  (Topic = Any) - (Level = 1)
+Title:  Topic = Any
 Level: 1
 Other: false,true
 Words:   NECK,POUT,CUBE,PAST,PLOW,
@@ -9,7 +9,7 @@ C: S1,C1,U1,O1,B1,
 C: T2,W1,E1,K1, ,
 -----------------------------------------
 ID: 002
-Title:  (Topic = Land Forms) - (Level = 2)
+Title:  Topic = Land Forms
 Level: 2
 Other: true,true
 Words:   STRAIT,LAGOON,TUNNEL,CANYON,GEYSER,
@@ -21,7 +21,7 @@ C: O,O,I,E,E,
 C: T,N,L,R,N,
 -----------------------------------------
 ID: 003
-Title:  (Topic = Any) - (Level = 3)
+Title:  Topic = Any
 Level: 3
 Other: false,true
 Words:   THORNS,CALERY,CHUDWA,MUFFIN,CRUNCH,BANANA,MONDAY,CASHEW,
@@ -33,7 +33,7 @@ C: R1,C1,W1,E1,N2,A1,I1, ,
 C: A2,N1,S1,H1,Y2,W1, , ,
 -----------------------------------------
 ID: 004
-Title:  (Topic = Any) - (Level = 4)
+Title:  Topic = Any
 Level: 4
 Other: false,false
 Words:   DISMAY,BEAGLE,CHIMES,BRUNEI,UNITED,
@@ -43,19 +43,4 @@ C: I1,Y1,S1,D1,E1,
 C: N1,H1,E1,I1,R1,
 C: I2,S1,U1,A1, ,
 C: U1,C1,B2,D1, ,
------------------------------------------
-five
-four
-stop
-cram
-nine
-ID: 005
-Title:  (Topic = custom) - (Level = 1)
-Level: 1
-Other: true,true
-Words:   NINE,CRAM,FIVE,STOP,FOUR,
-C: F,F,C,S,N,
-C: I,O,T,I,R,
-C: V,U,O,N,A,
-C: E,E,R,P,M,
 -----------------------------------------

@@ -3,8 +3,6 @@ package core;
 
 import java.util.ArrayList;
 
-import paw.Config;
-
 /**
  * A class representing a single PAW GAME
  * 
@@ -18,7 +16,6 @@ public class Game
 	private String id;
 	private String title;
 	private int level;
-	private int wordLength;
 	private boolean duplicate;
 	private boolean charOrder;
 	private int numberWords;
@@ -46,10 +43,6 @@ public class Game
 		duplicate = a_dup;
 		charOrder = a_order;
 		numberWords = a_word_list.size();
-	}
-
-	public Game() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

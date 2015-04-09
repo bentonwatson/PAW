@@ -61,7 +61,6 @@ class GeneratePanel extends JPanel{
 	/**
 	 * generates the panel to display words returned from config panel
 	 */
-	//TODO FUTURE: this panel will be an input panel that can generate a new Game from input words
 	public void generateWordListPanel(){
 		wordListPanel = new JPanel();
 		wordListPanel.setPreferredSize(new Dimension(200, 300));

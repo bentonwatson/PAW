@@ -317,8 +317,6 @@ public class WordProcessor {
 	 */
 	public boolean isAnagram(String word_2)
 	{
-		ArrayList<String> newlc = new ArrayList<String>();
-
 		char[] tmp = word_2.toCharArray();
 		char[] tmp2 = word.toCharArray();
 		if (tmp.length == tmp2.length){
