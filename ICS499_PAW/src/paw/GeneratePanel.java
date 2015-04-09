@@ -9,18 +9,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import te.TeluguWordProcessor;
 import core.Game;
 import core.SpringUtility;
+import core.WordProcessor;
 
 /**
  * this tab will display the list of available words in left text type panel
@@ -39,6 +41,7 @@ class GeneratePanel extends JPanel{
 	private JPanel titlePanel;
 	private JPanel wordListPanel;
 	private JPanel buttonPanel;
+	private JPanel columnPanel;
 	private Font font;
 	
 	public GeneratePanel(Color color, PAWgui paw) {
@@ -110,27 +113,45 @@ class GeneratePanel extends JPanel{
 			titlePanel.add(titleLabel);
 		}
 		gridPanel.add(titlePanel, BorderLayout.NORTH);
-		
-		JPanel columnPanel = new JPanel(new SpringLayout());
-		JScrollPane sp = new JScrollPane(columnPanel);
-		
+		columnPanel = new JPanel();
+
+		columnPanel.setLayout(new GridLayout(1, 10, 10, 0));
+		columnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
+
+		ArrayList<ArrayList<String>> columnData = new ArrayList<ArrayList<String>>();
 		if(newGame!= null){
-			ArrayList<ArrayList<String>> columnData = newGame.getColumnData();
 			columnData = newGame.getColumnData();
+		
 			for(int i = 0; i < columnData.size(); i++){
 				ArrayList<String> characters = columnData.get(i);
-				JPanel column = new JPanel(new GridLayout(newGame.getNumberWords(), 1));
-				
+				JPanel column = new JPanel(new GridLayout(characters.size(), 1, 0, 5));
 				for(int j = 0; j < characters.size(); j++){
-					GridTile newTile = new GridTile(characters.get(j));
-					column.add(newTile);
+					if(!newGame.getDuplicate()){
+						String tmp = characters.get(j);
+						if(tmp.length() > 1){
+							WordProcessor wp = new TeluguWordProcessor(tmp);
+							ArrayList<String> ch = wp.getLogicalChars();
+							int count = Integer.valueOf(ch.get(1));
+							GridTile newTile = new GridTile(wp.logicalCharAt(0), j);
+							newTile.columnNum = i;
+							newTile.repeat = count;
+							column.add(newTile);
+						}else{
+							GridTile newTile = new GridTile("", j);
+							newTile.columnNum = i;
+							newTile.repeat = 1;
+							newTile.setVisible(false);
+							column.add(newTile);
+						}
+					}else{
+						GridTile newTile = new GridTile(characters.get(j), j);
+						column.add(newTile);
+					}
 				}
 				columnPanel.add(column);
 			}
-			SpringUtility.makeGrid(columnPanel, 1, columnData.size(), 5, 5, 5, 5);
 		}
-		
-		gridPanel.add(sp, BorderLayout.CENTER);
+		gridPanel.add(columnPanel, BorderLayout.CENTER);
 		add(gridPanel, BorderLayout.CENTER);
 	}
 	
@@ -162,8 +183,7 @@ class GeneratePanel extends JPanel{
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GameSaver gs = new GameSaver(newGame);
-					//TODO ?? add a popup to confirm the file was written
+					new GameSaver(newGame);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -178,7 +198,7 @@ class GeneratePanel extends JPanel{
 		playGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					AdminPlayPanel.setCurrentGame(newGame);
+					internalgui.setCurrentGame(newGame);
 					internalgui.selectTabbedPaneIndex(1);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -227,15 +247,16 @@ class GeneratePanel extends JPanel{
 		int clickedPosition = -1;
 		int tileId = -1;
 		int columnNum;
+		int repeat;
 		Color pressedColor = Color.WHITE;
+		String character;
 
-		GridTile(String character){
+		GridTile(String character, int iD) {
 			super();
-			setText(character);			
+			this.character = character;
+			setText(character);
 			setBackground(Color.yellow);
-			if(character.equals(" ")){
-				setVisible(false);
-			}
+			tileId = iD;
 		}
 
 	}

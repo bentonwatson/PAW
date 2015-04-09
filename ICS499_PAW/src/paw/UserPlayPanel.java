@@ -53,7 +53,6 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import paw.AdminPlayPanel.GridTile;
 import te.TeluguWordProcessor;
 import core.Game;
 import core.GameCollection;
@@ -62,7 +61,6 @@ import core.WordProcessor;
 
 public class UserPlayPanel extends JPanel implements MouseListener{
 	private static final long serialVersionUID = 1L;
-	private String guessMessage;
 	private PAWgui internalgui;
 	private Game currentGame;
 	private JPanel gridPanel;
@@ -191,8 +189,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 
 		columnPanel.setLayout(new GridLayout(1, 10, 10, 0));
 		columnPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
-		JScrollPane sp = new JScrollPane(columnPanel);
-		
+
 		ArrayList<ArrayList<String>> columnData = new ArrayList<ArrayList<String>>();
 		if(currentGame!= null){
 			guessWord = new String[currentGame.getNumberColumns()];
@@ -204,7 +201,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				for(int j = 0; j < characters.size(); j++){
 					if(!currentGame.getDuplicate()){
 						String tmp = characters.get(j);
-						if(!tmp.isEmpty()){
+						if(tmp.length() > 1){
 							WordProcessor wp = new TeluguWordProcessor(tmp);
 							ArrayList<String> ch = wp.getLogicalChars();
 							int count = Integer.valueOf(ch.get(1));
@@ -451,6 +448,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				AnswerTile nt = answerTiles.get(pressedButton.columnNum);
 				if (nt.getBackground().equals(Color.RED)) {
 					for (AnswerTile answerTile : answerTiles) {
+						answerTile.setSelected(false);
 						answerTile.setBackground(Color.YELLOW);
 					}
 				}
@@ -465,11 +463,13 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				AnswerTile nt = answerTiles.get(pressedButton.columnNum);
 				if (nt.getBackground().equals(Color.RED)) {
 					for (AnswerTile answerTile : answerTiles) {
+						answerTile.setSelected(false);
 						answerTile.setBackground(Color.YELLOW);
+						pressedButton.setSelected(false);
 					}
 				}
 				nt.setText(" ");
-				pressedButton.setVisible(true);
+//				pressedButton.setVisible(true);
 				clickCount--;
 				guessWord[pressedButton.columnNum] = "";
 				for (GridTile gridTile : gridTiles) {
@@ -491,6 +491,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 					
 					java.util.Timer timer = new java.util.Timer();
 					for (AnswerTile answerTile : answerTiles) {
+						answerTile.setSelected(false);
 						answerTile.setBackground(Color.GREEN);
 					}
 					long pause = 500;
@@ -506,6 +507,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 									} else {
 										//i want to know if there are any more of this letter needed
 										if(gridTile.repeat > 1){
+											gridTile.setSelected(false);
 											gridTile.setBackground(Color.YELLOW);
 											gridTile.clickedPosition = -1;
 											gridTile.setSelected(false);
@@ -526,6 +528,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 							@Override
 							public void run() {
 								answerTile.setText(" ");
+								answerTile.setSelected(false);
 								answerTile.setBackground(Color.YELLOW);
 							}
 						}, pause);
@@ -537,6 +540,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 					}
 				} else {
 					for (AnswerTile answerTile : answerTiles) {
+						answerTile.setSelected(false);
 						answerTile.setBackground(Color.RED);
 						message.setText("Incorrect Keep Trying!");
 					}
@@ -547,22 +551,25 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		if (arg0.getSource() instanceof AnswerTile) {
 			AnswerTile pressedButton = (AnswerTile) arg0.getSource();
 			if (pressedButton.getText().equals(" ")) {
+				pressedButton.setSelected(false);
 				return;
 			}
 			if (pressedButton.getBackground().equals(Color.RED)) {
 				for (AnswerTile answerTile : answerTiles) {
+					answerTile.setSelected(false);
 					answerTile.setBackground(Color.YELLOW);
-					message.setText("You can do it!");
+					message.setText("");
 				}
 			}
 			guessWord[pressedButton.tileId] = "";
 			pressedButton.setText(" ");
+			pressedButton.setSelected(false);
 			clickCount--;
 			for (GridTile gridTile : gridTiles) {
 				if (gridTile.columnNum == pressedButton.tileId) {
 					gridTile.clickedPosition = -1;
-					gridTile.setBackground(Color.YELLOW);
 					gridTile.setSelected(false);
+					gridTile.setBackground(Color.YELLOW);
 				}
 			}
 

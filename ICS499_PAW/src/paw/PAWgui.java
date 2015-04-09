@@ -30,6 +30,7 @@ public class PAWgui extends 	JFrame
 	private	JPanel userPlayPanel;
 	private	JPanel adminPlayPanel;
 	private	JPanel configPanel;
+	private	JPanel customPanel;
 	private JPanel topPanel;
 	private GameCollection gameCollection;
 	private String mode = Config.DEFAULTMODE;
@@ -37,6 +38,8 @@ public class PAWgui extends 	JFrame
 	private int userGameLevel;
 	private Game currentGame;
 	
+	public String customTopic = "";
+	public ArrayList<String> customWords = new ArrayList<String>();
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
 	
@@ -62,9 +65,9 @@ public class PAWgui extends 	JFrame
 		}
 
 		setTitle(Config.APP_TITLE);
-		setSize( 1050, 700 );
+		setSize( 1050, 800 );
 		setBackground( Color.gray );
-		setMinimumSize(new Dimension(600, 400));
+		setMinimumSize(new Dimension(600, 500));
 		
 		topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );
@@ -116,6 +119,8 @@ public class PAWgui extends 	JFrame
 			tabbedPane.addTab( "Generate", generatePanel );
 			createConfigPage();
 			tabbedPane.addTab( "Config", configPanel );
+			createCustomPage();
+			tabbedPane.addTab( "Custom", customPanel );
 			ChangeListener changeListener = new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent e) {
@@ -132,6 +137,10 @@ public class PAWgui extends 	JFrame
 					if(index == 3){
 						createConfigPage();
 						sourceTabbedPane.setComponentAt(index, configPanel);
+					}
+					if(index == 4){
+						createCustomPage();
+						sourceTabbedPane.setComponentAt(index, customPanel);
 					}
 				}
 			};
@@ -160,6 +169,10 @@ public class PAWgui extends 	JFrame
 	{
 		configPanel = new ConfigPanel(Config.CONFIG_PANEL_BG_COLOR, PAWgui.this);
 	}
+	public void createCustomPage()
+	{
+		customPanel = new CustomPanel(Config.CONFIG_PANEL_BG_COLOR, PAWgui.this);
+	}
 	
 	/** 
     *public method that other classes can call to change tab
@@ -186,14 +199,6 @@ public class PAWgui extends 	JFrame
 		return currentGame;
 	}
 
-	/**
-	 * resets the tmpConfigSettings
-	 * @param args
-	 */
-	public void setTmpConfigSettings(ArrayList<String> tmp){
-		this.tmpConfigSettings = tmp;
-	}
-	
 	public GameCollection getGameCollection(){
 		return gameCollection;
 	}

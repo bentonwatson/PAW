@@ -44,7 +44,7 @@ public class Config {
 	public static boolean createHTML = false;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "user";
+	public static String DEFAULTMODE = "admin";
 	
 	//the file to record completed games
 //	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";

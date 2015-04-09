@@ -25,17 +25,22 @@ public class GameGenerator {
 	private Game newGame;
 	private String title;
 	private ArrayList<String> wordList;
+	private ArrayList<String> customWords;
 	private ArrayList<ArrayList<String>> columnData;
 	private ArrayList<BigWord> bigWordList;
-	
+	private List<String> gameChars = new ArrayList<>();
 	// game criteria variables
 	private int level;
 	private String topic;
+	private boolean custom;
 	private int wordLength;
-	private int wordStrength; //in English the wordStrength must match the wordLength
-	private boolean duplicates; // true if duplicates are allowed within the columns
-	private boolean charOrder; // true if characters are displayed in logical word order
-	
+	private int wordStrength; // in English the wordStrength must match the
+	// wordLength
+	private boolean duplicates; // true if duplicates are allowed within the
+	// columns
+	private boolean charOrder; // true if characters are displayed in logical
+	// word order
+
 	private int numWords;
 	private int language = Config.DEFAULTLANGUAGE;
 
@@ -62,6 +67,7 @@ public class GameGenerator {
 		level = a_level;
 		duplicates = dup;
 		charOrder = order;
+		custom = false;
 		setTitle();
 		setBigWordList();
 		chooseNumberOfWords(bigWordList.size());
@@ -81,11 +87,32 @@ public class GameGenerator {
 		level = a_level;
 		duplicates = dup;
 		charOrder = order;
+		custom = false;
 		setTitle();
 		setBigWordList();
 		chooseNumberOfWords(a_num);
 		setNewGame();
 	}
+
+	public GameGenerator(String a_topic, int a_level, int a_length,
+			int a_strength, boolean dup, boolean order, ArrayList<String> words) {
+		topic = a_topic;
+		wordLength = a_length;
+		if (language == 0) {
+			wordStrength = a_length;
+		} else {
+			wordStrength = a_strength;
+		}
+		level = a_level;
+		duplicates = dup;
+		charOrder = order;
+		custom = true;
+		customWords = words;
+		setTitle();
+		chooseNumberOfWords(words.size());
+		setNewGame();
+	}
+
 	/**
 	 * method to create a new game
 	 */
@@ -139,11 +166,50 @@ public class GameGenerator {
 	public void chooseNumberOfWords(int num){
 		numWords = num;
 		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
-		for (BigWord bigWord : bigWordList) {
-			if(language == 0){
-				wordsOfCorrectLength.add(bigWord.getEnglish().toUpperCase());
-			}else if(language == 1){
-				wordsOfCorrectLength.add(bigWord.getTelugu());
+		WordProcessor wp = new TeluguWordProcessor("");
+		if (language == 0) {
+			if(custom){
+				for(String word : customWords){
+					wp.setWord(word);
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getWord().length() != wordLength) {
+						continue;
+					}
+					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
+				}
+			}else{
+				for (BigWord bigWord : bigWordList) {
+					wp.setWord(bigWord.getEnglish());
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getWord().length() != wordLength) {
+						continue;
+					}
+					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
+				}
+			}
+		} else if (language == 1) {
+			if(custom){
+				for(String word : customWords){
+					wp.setWord(word);
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getWord().length() != wordLength) {
+						continue;
+					}
+					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
+				}
+			}else{
+				for (BigWord bigWord : bigWordList) {
+					wp.setWord(bigWord.getTelugu());
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getLength() != wordLength) {
+						continue;
+					}
+					wordsOfCorrectLength.add(wp.getWord());
+				}
 			}
 		}
 		chooseRandomListOfWords(wordsOfCorrectLength);
@@ -304,6 +370,10 @@ public class GameGenerator {
 			
 			Collections.shuffle(arrayList);
 		}
+	}
+
+	public int getNumCustomWords() {
+		return customWords.size();
 	}
 	
 //	/**

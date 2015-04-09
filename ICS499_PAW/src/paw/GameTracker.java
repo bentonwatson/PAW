@@ -90,7 +90,6 @@ public class GameTracker
 		for (String gameWord : wordList) {
 			wp.setWord(gameWord);
 				if(wp.equals(guessWord)){
-					wordList.remove(gameWord);
 					numberOfWordsFound++;
 					return true;
 				}

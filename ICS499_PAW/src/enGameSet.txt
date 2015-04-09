@@ -44,3 +44,18 @@ C: N1,H1,E1,I1,R1,
 C: I2,S1,U1,A1, ,
 C: U1,C1,B2,D1, ,
 -----------------------------------------
+five
+four
+stop
+cram
+nine
+ID: 005
+Title:  (Topic = custom) - (Level = 1)
+Level: 1
+Other: true,true
+Words:   NINE,CRAM,FIVE,STOP,FOUR,
+C: F,F,C,S,N,
+C: I,O,T,I,R,
+C: V,U,O,N,A,
+C: E,E,R,P,M,
+-----------------------------------------

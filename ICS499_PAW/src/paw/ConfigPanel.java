@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -199,6 +200,7 @@ public class ConfigPanel extends JPanel
 		topicLabel.setFont(font);
 		topicComboBox = new JComboBox<String>();
 		topicComboBox.addItem("Any");
+		topicComboBox.addItem("Custom Topic");
 		Set<String> keys = allWords.getBigWordsTopicsTable().keySet();		
 		for(String val: keys)
 			topicComboBox.addItem(val);		
@@ -328,10 +330,18 @@ public class ConfigPanel extends JPanel
 				if(allWordsNo.getModel() == allWordsGroup.getSelection()){
 					allWordsValue = false;
 				}
-				gg = new GameGenerator(topicValue, levelValue, minLenValue, 
-						minStrValue, allowDupValue, charOrderValue, minNumWordsValue);
+				if(internalgui.customWords.size() > 0){
+					String topic = internalgui.customTopic;
+					gg = new GameGenerator(topic, levelValue, minLenValue, 
+							minStrValue, allowDupValue, charOrderValue, internalgui.customWords);
+					numWordsFound = gg.getNumCustomWords();
+					
+				}else{
+					gg = new GameGenerator(topicValue, levelValue, minLenValue, 
+							minStrValue, allowDupValue, charOrderValue, minNumWordsValue);
+					numWordsFound = gg.getNumBigWordList();
+				}
 				
-				numWordsFound = gg.getNumBigWordList();
 				showNumberWordsFoundTF.setText(String.valueOf(numWordsFound));
 				if(allWordsValue){
 					gg.chooseNumberOfWords(numWordsFound);
