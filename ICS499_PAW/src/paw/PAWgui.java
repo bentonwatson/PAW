@@ -35,6 +35,7 @@ public class PAWgui extends 	JFrame
 	private String mode = Config.DEFAULTMODE;
 	private Font font;
 	private int userGameLevel;
+	private Game currentGame;
 	
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
@@ -70,7 +71,7 @@ public class PAWgui extends 	JFrame
 		getContentPane().add( topPanel );
 		
 		tabbedPane = new JTabbedPane();
-		tabbedPane.setFont(Config.LABELFONT);
+		tabbedPane.setFont(font);
 		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
 		gameCollection = new GameCollection();
@@ -81,10 +82,12 @@ public class PAWgui extends 	JFrame
 			tmpConfigSettings.add(setting);
 			
 		}
+		setUserGameLevel(1);
 		initialize();
 	}
 
 	public void initialize(){
+		setLocationRelativeTo(null);
 		tabbedPane.removeAll();
 		createWelcomePage();
 		tabbedPane.addTab( "Welcome", welcomePanel );
@@ -174,7 +177,15 @@ public class PAWgui extends 	JFrame
 	public int getUserGameLevel(){
 		return userGameLevel;
 	}
+
+	public void setCurrentGame(Game a_game){
+		currentGame = a_game;
+	}
 	
+	public Game getCurrentGame(){
+		return currentGame;
+	}
+
 	/**
 	 * resets the tmpConfigSettings
 	 * @param args
@@ -190,6 +201,13 @@ public class PAWgui extends 	JFrame
 	public Font getFont(){
 		return font;
 	}
+	
+	public static void errorMessage(String a_string) {
+		JOptionPane.showMessageDialog(null, a_string, "Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
+	}
+
 	
 	// Main method to get things started
 	public static void main( String args[] )

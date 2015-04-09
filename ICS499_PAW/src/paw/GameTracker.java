@@ -3,7 +3,9 @@ package paw;
 import java.util.ArrayList;
 import java.util.List;
 
+import te.TeluguWordProcessor;
 import core.Game;
+import core.WordProcessor;
 
 /**
  * A java class that acts as a wrapper to the Puzzle to track the play progress
@@ -24,6 +26,7 @@ public class GameTracker
 	private List<String> wordList;
 	private int numberOfWords;
 	private int numberOfWordsFound;
+	private int language; // 1=Telugu 0=English
 
 	/**
 	 * constructor for setting the puzzle to play
@@ -32,12 +35,12 @@ public class GameTracker
 	 */
 	GameTracker(Game a_game)
 	{
-		game = a_game;
+		language = Config.DEFAULTLANGUAGE;
 		wordListStatus = new ArrayList<Boolean>(); // by default, all will be
 													// FALSE
 		// numberOfWords = puzzle.getWordList().size();
 		numberOfWordsFound = 0;
-		wordList = game.getWordList();
+		wordList = a_game.getWordList();
 		numberOfWords = wordList.size();
 		for (int i = 0; i < numberOfWords; i++)
 		{
@@ -72,7 +75,29 @@ public class GameTracker
 		
 		return theReturn;
 	}
-
+	
+	
+	public boolean isWordInTheList(String[] inputWord){
+		WordProcessor wp = new WordProcessor("");
+		if(language == 1){
+			wp = new TeluguWordProcessor("");
+		}
+		String guessWord = "";
+		for (String string : inputWord) {
+			guessWord += string;
+		}
+		
+		for (String gameWord : wordList) {
+			wp.setWord(gameWord);
+				if(wp.equals(guessWord)){
+					wordList.remove(gameWord);
+					numberOfWordsFound++;
+					return true;
+				}
+		}
+		return false;
+	}
+	
 	public boolean wordHasAlreadyBeenFound(String a_selected_word)
 	{
 		for (int i=0; i< wordList.size(); i++) {
@@ -118,6 +143,16 @@ public class GameTracker
 		return false;
 	}
 
+	public ArrayList<String> getWordsNotFound(){
+		ArrayList<String> words = new ArrayList<String>();
+		for(int i = 0; i < wordList.size(); i++){
+			if(wordListStatus.get(i).equals(false)){
+				words.add(wordList.get(i));
+			}
+		}
+		return words;
+	}
+	
 	/**
 	 * Checks whether all words have been found by the user
 	 */

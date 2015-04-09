@@ -37,6 +37,7 @@ public class GameGenerator {
 	private boolean charOrder; // true if characters are displayed in logical word order
 	
 	private int numWords;
+	private int language = Config.DEFAULTLANGUAGE;
 
 	/**
 	 * Constructor starts the game generation
@@ -53,9 +54,9 @@ public class GameGenerator {
 			boolean dup, boolean order){
 		topic = a_topic;
 		wordLength = a_length;
-		if(Config.DEFAULTLANGUAGE == 0){
+		if (language == 0) {
 			wordStrength = a_length;
-		}else{
+		} else {
 			wordStrength = a_strength;
 		}
 		level = a_level;
@@ -72,7 +73,7 @@ public class GameGenerator {
 			boolean dup, boolean order, int a_num){
 		topic = a_topic;
 		wordLength = a_length;
-		if(Config.DEFAULTLANGUAGE == 0){
+		if (language == 0) {
 			wordStrength = a_length;
 		}else{
 			wordStrength = a_strength;
@@ -139,9 +140,9 @@ public class GameGenerator {
 		numWords = num;
 		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
 		for (BigWord bigWord : bigWordList) {
-			if(Config.DEFAULTLANGUAGE == 0){
+			if(language == 0){
 				wordsOfCorrectLength.add(bigWord.getEnglish().toUpperCase());
-			}else if(Config.DEFAULTLANGUAGE == 1){
+			}else if(language == 1){
 				wordsOfCorrectLength.add(bigWord.getTelugu());
 			}
 		}
@@ -159,16 +160,16 @@ public class GameGenerator {
 		BigWordCollection bwcByCriteria = bwc.getBigWordCollectionByCriteria(topic, 
 				wordLength, wordLength, wordStrength, wordStrength);
 		bigWordList = new ArrayList<BigWord>();
-		if (Config.DEFAULTLANGUAGE == 0){
-			if(!bwcByCriteria.containsDuplicateEnglishWords()){
+		if (language == 0) {
+			if (!bwcByCriteria.containsDuplicateEnglishWords()) {
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			}else if(bwcByCriteria.containsDuplicateEnglishWords()){
 				//TODO what to do if duplicate words are returned
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			}
 		}
-		if (Config.DEFAULTLANGUAGE == 1){
-			if(!bwcByCriteria.containsDuplicateTeluguWords()){
+		if (language == 1) {
+			if (!bwcByCriteria.containsDuplicateTeluguWords()) {
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			} else if (bwcByCriteria.containsDuplicateTeluguWords()){
 				//TODO what to do if duplicate words are returned
@@ -236,7 +237,11 @@ public class GameGenerator {
 		
 		if(!duplicates){
 			removeDuplicates();
-			
+			for (ArrayList<String> arrayList : columnData) {
+				while (arrayList.size() < numWords) {				
+					arrayList.add(" ");
+				}
+			}
 		}
 		if(!charOrder){
 			shuffleColumns();
@@ -282,17 +287,29 @@ public class GameGenerator {
 	 */
 	public void removeDuplicates() {
 		for (ArrayList<String> arrayList : columnData) {
-			HashSet<String> uniqueCharacters = new HashSet<>(arrayList);
+			ArrayList<String> uniqueCharacters = new ArrayList<String>();
+			for(int i = 0; i < arrayList.size(); i++){
+				String c = arrayList.get(i);
+				int count = 0;
+				for(int j = 0; j < arrayList.size(); j++){
+					if(c.equals(arrayList.get(j))){
+						count++;
+					}
+				}
+				uniqueCharacters.add(arrayList.get(i) + count);
+			}
+			HashSet<String> uniqueChar = new HashSet<>(uniqueCharacters);
 			arrayList.clear();
-			arrayList.addAll(uniqueCharacters);
+			arrayList.addAll(uniqueChar);
+			
 			Collections.shuffle(arrayList);
 		}
 	}
 	
-	/**
-	 * Main method to test the generator
-	 * @param args
-	 */
+//	/**
+//	 * Main method to test the generator
+//	 * @param args
+//	 */
 //	public static void main(String[] args) {
 //		GameGenerator gg = new GameGenerator("BodyParts", 1, 4, 4, false, false);
 //		gg.chooseNumberOfWords(5);

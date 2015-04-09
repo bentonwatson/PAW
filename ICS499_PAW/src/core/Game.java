@@ -3,6 +3,8 @@ package core;
 
 import java.util.ArrayList;
 
+import paw.Config;
+
 /**
  * A class representing a single PAW GAME
  * 
@@ -31,6 +33,7 @@ public class Game
 		columnData = a_columnData;
 		duplicate = a_dup;
 		charOrder = a_order;
+		numberWords = a_word_list.size();
 	}
 
 	public Game(String an_id, int a_level, String a_title, ArrayList<String> a_word_list,
@@ -42,6 +45,7 @@ public class Game
 		columnData = a_columnData;
 		duplicate = a_dup;
 		charOrder = a_order;
+		numberWords = a_word_list.size();
 	}
 
 	public Game() {
@@ -183,7 +187,7 @@ public class Game
 	 * Method to get Number of Words in game
 	 */
 	public int getNumberWords(){
-		return wordList.size();
+		return numberWords;
 	}
 
 	/**

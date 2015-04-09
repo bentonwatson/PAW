@@ -28,12 +28,8 @@ public class Config {
 												+ " or Play tab to play the results.";
 
 		
-	// font size for Telugu
+//	// font size for Telugu
 	public static final float FONTSIZETELUGU = 26.0f;
-	// Default Font Size
-	public static final float FONTSIZEDEFAULT = 18.0f;
-	
-	public static Font LABELFONT = new Font("Calibri", Font.BOLD,20);
 
 	// some gui code will need additions to incorporate more languages.
 	//default language  (0 = english, 1 = telugu);
@@ -48,14 +44,14 @@ public class Config {
 	public static boolean createHTML = false;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "admin";
+	public static String DEFAULTMODE = "user";
 	
 	//the file to record completed games
 //	public static String progressFile = System.getProperty("user.home") + "\\PAW\\PAW_Progress.txt";
 	public static String progressFile = "src\\PAW_Progress.txt";
 
 	// user mode gets game to play from this set
-	public static final String GAME_SET = "src\\gameSet.txt";	
+	public static final String GAME_SET = "src\\enGameSet.txt";	
 	
 	//default game configurations
 	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};
@@ -74,7 +70,7 @@ public class Config {
 
 		// Win Message
 		public static final String enWINMESSAGE = "             YOU DID IT !!! GREAT JOB!!!"
-				+ "\n Click on 'Start New Game' if you would like to play another game. ";
+				+ "\n Would you like to play again?. ";
 		
 		public static final String enLOSEMESSAGE = "             YOU DID NOT FINISH!!";
 

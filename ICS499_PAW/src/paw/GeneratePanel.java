@@ -34,7 +34,7 @@ class GeneratePanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private PAWgui internalgui;
-	private static GameGenerator newGame;
+	private static Game newGame;
 	private JPanel gridPanel;
 	private JPanel titlePanel;
 	private JPanel wordListPanel;
@@ -67,7 +67,7 @@ class GeneratePanel extends JPanel{
 		JEditorPane numWords = new JEditorPane();
 		numWords.setFont(font);
 		if(newGame != null){
-			numWords.setText("Number of Words = " + String.valueOf(newGame.getNewGame().getNumberWords()));
+			numWords.setText("Number of Words = " + String.valueOf(newGame.getNumberWords()));
 		}else{
 			numWords.setText("Number of Words = 0 \n You Have Found = 0");
 		}		wordListPanel.add(numWords, BorderLayout.NORTH);
@@ -76,7 +76,7 @@ class GeneratePanel extends JPanel{
 		words.setFont(font);
 		String list = "";
 		if(newGame!= null){
-			ArrayList<String> wordList = newGame.getNewGame().getWordList();
+			ArrayList<String> wordList = newGame.getWordList();
 			for(int i = 0; i < wordList.size(); i++){
 				list += wordList.get(i) + "\n";
 			}
@@ -100,8 +100,8 @@ class GeneratePanel extends JPanel{
 		titlePanel = new JPanel();
 		if(newGame != null){
 			JLabel titleLabel = new JLabel(newGame.getTitle() 
-					+ " - (Duplicates = " + internalgui.tmpConfigSettings.get(4) + ")"
-					+ " - (In Order = " + internalgui.tmpConfigSettings.get(5) + ")");
+					+ " - (Duplicates = " + newGame.getDuplicate() + ")"
+					+ " - (In Order = " + newGame.getCharOrder() + ")");
 			titleLabel.setFont(font);
 			titlePanel.add(titleLabel);
 		}else{
@@ -115,11 +115,11 @@ class GeneratePanel extends JPanel{
 		JScrollPane sp = new JScrollPane(columnPanel);
 		
 		if(newGame!= null){
-			ArrayList<ArrayList<String>> columnData = newGame.getNewGame().getColumnData();
-			columnData = newGame.getNewGame().getColumnData();
+			ArrayList<ArrayList<String>> columnData = newGame.getColumnData();
+			columnData = newGame.getColumnData();
 			for(int i = 0; i < columnData.size(); i++){
 				ArrayList<String> characters = columnData.get(i);
-				JPanel column = new JPanel(new GridLayout(newGame.getNewGame().getNumberWords(), 1));
+				JPanel column = new JPanel(new GridLayout(newGame.getNumberWords(), 1));
 				
 				for(int j = 0; j < characters.size(); j++){
 					GridTile newTile = new GridTile(characters.get(j));
@@ -147,7 +147,7 @@ class GeneratePanel extends JPanel{
 		createHTMLBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-//					CreateHTML ch = new CreateHTML(newGame.getNewGame());
+//					CreateHTML ch = new CreateHTML(newGame);
 					//TODO ?? add a popup to confirm the file was written
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -162,7 +162,7 @@ class GeneratePanel extends JPanel{
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GameSaver gs = new GameSaver(newGame.getNewGame());
+					GameSaver gs = new GameSaver(newGame);
 					//TODO ?? add a popup to confirm the file was written
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -199,7 +199,7 @@ class GeneratePanel extends JPanel{
 	 * sets the newGame for the Generate Panel
 	 */
 	public static void setNewGame(GameGenerator game){
-		newGame = game;
+		newGame = game.getNewGame();
 	}
 
 	/**

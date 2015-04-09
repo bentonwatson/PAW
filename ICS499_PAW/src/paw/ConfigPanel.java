@@ -2,6 +2,7 @@ package paw;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -102,6 +103,7 @@ public class ConfigPanel extends JPanel
 	private int numWordsFound;
 	private BigWordCollection allWords;
 	private GameGenerator gg;
+	private Font font;
 	// End of variables declaration  
 
    /**
@@ -111,7 +113,7 @@ public class ConfigPanel extends JPanel
 		
 		this.internalgui = paw;
 		allWords = new BigWordCollection();	
-		
+		font = internalgui.getFont();
 		minLenFormat = NumberFormat.getNumberInstance();		 
 		minStrFormat = NumberFormat.getNumberInstance();		 
 		numWordsFormat = NumberFormat.getNumberInstance();		 
@@ -133,28 +135,28 @@ public class ConfigPanel extends JPanel
 		
 		// label "Total Number of words"
 		totalWordsLabel = new JLabel("Total Number Input Words:");
-		totalWordsLabel.setFont(Config.LABELFONT);
+		totalWordsLabel.setFont(font);
 		showTotalWordsTF = new JTextField(String.valueOf(allWords.size()));		
-		showTotalWordsTF.setFont(Config.LABELFONT);
+		showTotalWordsTF.setFont(font);
 		showTotalWordsTF.setBorder(border);
 		showTotalWordsTF.setEditable(false);
 		
 		// Total "Number words found" words
 		numberWordsFoundLabel = new JLabel("Total Number this Configuration:");
-		numberWordsFoundLabel.setFont(Config.LABELFONT);
+		numberWordsFoundLabel.setFont(font);
 		showNumberWordsFoundTF = new JTextField();
-		showNumberWordsFoundTF.setFont(Config.LABELFONT);
+		showNumberWordsFoundTF.setFont(font);
 		showNumberWordsFoundTF.setBorder(border);
 		showNumberWordsFoundTF.setEditable(false);
 		
 		// Level
 		levelLabel = new JLabel("Level");
-		levelLabel.setFont(Config.LABELFONT);
+		levelLabel.setFont(font);
 		levelComboBox = new JComboBox<Integer>();
 		for(int i = 1; i <= 4; i++){
 			levelComboBox.addItem(i);
 		}
-		levelComboBox.setFont(Config.LABELFONT);
+		levelComboBox.setFont(font);
 		levelValue = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
 		levelComboBox.setSelectedItem(levelValue);
 		levelComboBox.addItemListener(new ItemListener(){
@@ -194,13 +196,13 @@ public class ConfigPanel extends JPanel
 		
 		// Topics
 		topicLabel = new JLabel("Topic");
-		topicLabel.setFont(Config.LABELFONT);
+		topicLabel.setFont(font);
 		topicComboBox = new JComboBox<String>();
 		topicComboBox.addItem("Any");
 		Set<String> keys = allWords.getBigWordsTopicsTable().keySet();		
 		for(String val: keys)
 			topicComboBox.addItem(val);		
-		topicComboBox.setFont(Config.LABELFONT);
+		topicComboBox.setFont(font);
 		topicValue = internalgui.tmpConfigSettings.get(0);
 		topicComboBox.setSelectedItem(internalgui.tmpConfigSettings.get(0));
 		topicComboBox.addItemListener(new ItemListener() {
@@ -212,34 +214,34 @@ public class ConfigPanel extends JPanel
 		
 		//Number Of Words
 		numWordsLabel = new JLabel("Number of Words (2 - 10)");
-		numWordsLabel.setFont(Config.LABELFONT);
+		numWordsLabel.setFont(font);
 		numWordsTF = new JFormattedTextField(numWordsFormat);
-		numWordsTF.setFont(Config.LABELFONT);
+		numWordsTF.setFont(font);
 		minNumWordsValue = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
 		numWordsTF.setValue(minNumWordsValue);
 		numWordsTF.addPropertyChangeListener("value",this);
 		
 		//Word Length
 		minLenLabel = new JLabel("Length of the word (2 - 10)");
-		minLenLabel.setFont(Config.LABELFONT);
+		minLenLabel.setFont(font);
 		minLenTF = new JFormattedTextField(minLenFormat);
-		minLenTF.setFont(Config.LABELFONT);
+		minLenTF.setFont(font);
 		minLenValue = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
 		minLenTF.setValue(minLenValue);
 		minLenTF.addPropertyChangeListener("value",this);
 
 		// Word Strength
 		minStrengthLabel = new JLabel("Strength of the word (2 - 10)");
-		minStrengthLabel.setFont(Config.LABELFONT);
+		minStrengthLabel.setFont(font);
 		minStrengthTF = new JFormattedTextField(minStrFormat);
-		minStrengthTF.setFont(Config.LABELFONT);
+		minStrengthTF.setFont(font);
 		minStrValue = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
 		minStrengthTF.setValue(minStrValue);
 		minStrengthTF.addPropertyChangeListener("value",this);
 
 		//allow duplicates
 		allowDupLabel = new JLabel("Allow Duplicate Characters");
-		allowDupLabel.setFont(Config.LABELFONT);
+		allowDupLabel.setFont(font);
 		allowDupYes = new JRadioButton("Yes");
 		allowDupYes.setMnemonic(KeyEvent.VK_Y);
 		allowDupYes.setActionCommand("Yes");
@@ -261,7 +263,7 @@ public class ConfigPanel extends JPanel
 
 		//characters in order
 		charOrderLabel = new JLabel("Display Characters in Order");
-		charOrderLabel.setFont(Config.LABELFONT);
+		charOrderLabel.setFont(font);
 		charOrderYes = new JRadioButton("Yes");
 		charOrderYes.setMnemonic(KeyEvent.VK_Y);
 		charOrderYes.setActionCommand("Yes");
@@ -283,7 +285,7 @@ public class ConfigPanel extends JPanel
 		
 		//show all words returned
 		allWordsLabel = new JLabel("Generate Game with All Words");
-		allWordsLabel.setFont(Config.LABELFONT);
+		allWordsLabel.setFont(font);
 		allWordsYes = new JRadioButton("Yes");
 		allWordsYes.setMnemonic(KeyEvent.VK_Y);
 		allWordsYes.setActionCommand("Yes");
@@ -305,7 +307,7 @@ public class ConfigPanel extends JPanel
 
 		// set configuration button
 		setConfigBttn = new JButton("Set Configuration");
-		setConfigBttn.setFont(Config.LABELFONT);
+		setConfigBttn.setFont(font);
 		setConfigBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if(allowDupYes.getModel() == allowDupGroup.getSelection()){

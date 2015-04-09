@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import paw.Config;
+import paw.PAWgui;
 
 public class GameCollection
 {
@@ -81,18 +82,16 @@ public class GameCollection
 	
 			} else if (line.startsWith("-"))
 			{
-				// Puzzle myPuzzle = parseGameSection(gameSec);
-				// allPuzzles.add(myPuzzle);
 				parsePuzzle(line2);
 				line2 = "";
 				delimiterFound = true;
 			}
 		}
 	
-//		if (!delimiterFound)
-//			errorMessage("The file " + a_pathName + " "
-//					+ " does not contain a puzzle separetor (---).");
-//	
+		if (!delimiterFound)
+			PAWgui.errorMessage("The file " + a_pathName + " "
+					+ " does not contain a puzzle separetor (---).");
+	
 		input.close();
 	
 	}
@@ -117,36 +116,25 @@ public class GameCollection
 		
 		Scanner input = new Scanner(a_text);
 		
-		while (input.hasNext())
-		{
-			
-			
+		while (input.hasNext())	{
 			String line = input.nextLine();
 			
-			if (line.contains("ID:"))
-			{
+			if (line.contains("ID:")) {
 				String[] split = line.split("ID:");
 				id = split[1].trim();
 				idFound = true;
 				
-			}
-			else if (line.contains("Title:"))
-			{
+			}else if (line.contains("Title:")) {
 				String[] split = line.split("Title:");
 				title = split[1].trim();
 				titleFound = true;
 				
-			}
-			else if (line.contains("Level:"))
-			{
+			}else if (line.contains("Level:")) {
 				String[] split = line.split("Level:");
 				level = Integer.valueOf(split[1].trim());
-				System.out.println(level);
 				levelFound = true;
 				
-			}
-			else if (line.contains("Other:"))
-			{
+			}else if (line.contains("Other:")) {
 				String[] split = line.split("Other:");
 				String other = split[1].trim();
 				String[] list = other.split("\\,");
@@ -154,9 +142,7 @@ public class GameCollection
 				charOrder = Boolean.valueOf(list[1]);
 				
 				otherFound = true;
-			}
-			else if (line.contains("Words:"))
-			{
+			}else if (line.contains("Words:")) {
 				String[] split = line.split("Words:");
 				String words = split[1].trim();
 				String[] list = words.split("\\,");
@@ -165,10 +151,7 @@ public class GameCollection
 					wordList.add(list[i].trim());					
 				}			
 				wordsFound = true;
-			}
-			
-			else if (line.contains("C:"))
-			{
+			}else if (line.contains("C:")) {
 				ArrayList<String> singleColumn = new ArrayList<String>();
 				String[] split = line.split("C:");
 				String words = split[1].trim();
@@ -180,34 +163,12 @@ public class GameCollection
 				columnList.add(singleColumn);
 				columnFound = true;
 			}
-//			else
-//				WordSearchPuzzlePlayer.errorMessage("The line: " +  line + "\n" +
-//												"does not contain an id, a title or a line with the characters are separated by commas");
-//				
 		}//end while 
 		
 		if (!idFound || !titleFound || !levelFound || !wordsFound || !columnFound){
-//			WordSearchPuzzlePlayer.errorMessage("The text: \n" + a_text + "\n" +
-//					" id, title, grid or words line are missing.");
+			PAWgui.errorMessage("The line: " +  a_text + "\n" +
+					"does not contain required data for game collection");
 		}
-//		int gridWidth = charGrid.get(0).length; 
-//		int gridHeight = charGrid.size();		
-//		puzzleGrid = new String[gridHeight][gridWidth];
-//		
-//		for (int row = 0; row < gridHeight; row++)
-//		{
-//			String[] string = charGrid.get(row);
-//			if (string.length != gridWidth) 
-//			{
-//				WordSearchPuzzlePlayer.errorMessage("Length of the rows are not equal");
-//			}
-//			for (int col = 0; col < gridWidth; col++)
-//			{				
-//				puzzleGrid[row][col] = string[col];
-//				//System.out.print(puzzleGrid[row][col] + " ");
-//			}
-//			//System.out.println("");
-//		}
 		input.close();
 		Game game = new Game(id, level, title, wordList, columnList, duplicate, charOrder);
 		allGames.add(game);

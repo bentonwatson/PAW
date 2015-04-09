@@ -19,15 +19,19 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
+import core.Game;
+import core.GameCollection;
+
 public class WelcomePanel extends JPanel {
 	
 	PAWgui internalgui;
 	private int gameLevel;
 	private int userGameLevel;
-	
+	private GameCollection gameCollection;
 	public WelcomePanel(Color color, PAWgui paw) {
 		
 		internalgui = paw;
+		gameCollection = internalgui.getGameCollection();
 		
 		setMinimumSize(new Dimension(640,480));
 		setBackground(color);
@@ -72,6 +76,8 @@ public class WelcomePanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						internalgui.setUserGameLevel(1);
+						//TODO get next level 1 game
+						internalgui.setCurrentGame(gameCollection.getGameByLevel(1));
 						internalgui.initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -88,6 +94,8 @@ public class WelcomePanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						internalgui.setUserGameLevel(2);
+						//TODO get next level 2 game
+						internalgui.setCurrentGame(gameCollection.getGameByLevel(2));
 						internalgui.initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -104,6 +112,8 @@ public class WelcomePanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						internalgui.setUserGameLevel(3);
+						//TODO get next level 3 game
+						internalgui.setCurrentGame(gameCollection.getGameByLevel(3));
 						internalgui.initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -120,6 +130,8 @@ public class WelcomePanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						internalgui.setUserGameLevel(4);
+						//TODO get next level 4 game
+						internalgui.setCurrentGame(gameCollection.getGameByLevel(4));
 						internalgui.initialize();
 					} catch (Exception e1) {
 						e1.printStackTrace();

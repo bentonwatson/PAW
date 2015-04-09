@@ -382,6 +382,7 @@ public class BigWordCollection
 					word = bw.getTelugu();
 					wp = new te.TeluguWordProcessor(word);
 				}
+				
 				if((wp.getLength() >= min || min == 0) && (wp.getLength() <= max || max == 0)){
 					bwList.add(bw);
 				}
@@ -389,7 +390,41 @@ public class BigWordCollection
 			return new BigWordCollection(bwList);
 		}
 		
-
+		/**
+		 * returns a big word collection based on a length with all symbols and spaces removed
+		 */
+		@SuppressWarnings("unused")
+		public BigWordCollection BigWordCollectionByLengthNoSpaceNoSymbol(int a_length){
+			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
+			String word = null;
+			WordProcessor wp = null;
+			for(int i = 0; i < bigWordsList.size(); i++){
+				BigWord bw = bigWordsList.get(i);
+				if(Config.DEFAULTLANGUAGE == 0){
+					word = bw.getEnglish();
+					wp = new WordProcessor(word);
+				}else if(Config.DEFAULTLANGUAGE == 1){
+					word = bw.getTelugu();
+					wp = new te.TeluguWordProcessor(word);
+				}
+				int initialWordLength = wp.getLength();
+				String editedWord = wp.stripAllSymbols();
+				wp.setWord(editedWord);
+				editedWord = wp.stripSpaces();
+				wp.setWord(editedWord);
+				if (wp.getLength() != initialWordLength){
+					continue;
+				}
+				if(wp.getLength() == a_length){
+					bwList.add(bw);
+				}
+			}
+			BigWordCollection collection = new BigWordCollection(bwList);
+			
+			return new BigWordCollection(bwList);
+			
+		}
+		
 		/**
 		 * Returns the Big Word Collection based on the strength of the Word
 		 * For English, strength = length
