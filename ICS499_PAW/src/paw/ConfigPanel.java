@@ -348,7 +348,7 @@ public class ConfigPanel extends JPanel
 					gg.chooseNumberOfWords(minNumWordsValue); 
 				}
 				GeneratePanel.setNewGame(gg);
-				goToGenerate(2); // switches tab to Generate tab when clicking setConfig button
+//				goToGenerate(2); // switches tab to Generate tab when clicking setConfig button
 			}
 		});
 

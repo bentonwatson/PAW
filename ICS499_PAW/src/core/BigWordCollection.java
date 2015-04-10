@@ -344,16 +344,14 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
-			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
 				if(Config.DEFAULTLANGUAGE == 0){
 					word = bw.getEnglish();
-					wp = new WordProcessor(word);
 				}else if(Config.DEFAULTLANGUAGE == 1){
 					word = bw.getTelugu();
-					wp = new te.TeluguWordProcessor(word);
 				}
+				WordProcessor wp = new WordProcessor(word);
 				if(wp.getLength() == a_length){
 					bwList.add(bw);
 				}
@@ -372,16 +370,14 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
-			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
 				if(Config.DEFAULTLANGUAGE == 0){
 					word = bw.getEnglish();
-					wp = new WordProcessor(word);
 				}else if(Config.DEFAULTLANGUAGE == 1){
 					word = bw.getTelugu();
-					wp = new te.TeluguWordProcessor(word);
 				}
+				WordProcessor wp = new WordProcessor(word);
 				
 				if((wp.getLength() >= min || min == 0) && (wp.getLength() <= max || max == 0)){
 					bwList.add(bw);
@@ -397,16 +393,14 @@ public class BigWordCollection
 		public BigWordCollection BigWordCollectionByLengthNoSpaceNoSymbol(int a_length){
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
-			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
 				if(Config.DEFAULTLANGUAGE == 0){
 					word = bw.getEnglish();
-					wp = new WordProcessor(word);
 				}else if(Config.DEFAULTLANGUAGE == 1){
 					word = bw.getTelugu();
-					wp = new te.TeluguWordProcessor(word);
 				}
+				WordProcessor wp = new WordProcessor(word);
 				int initialWordLength = wp.getLength();
 				String editedWord = wp.stripAllSymbols();
 				wp.setWord(editedWord);
@@ -435,16 +429,14 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
-			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
 				if(Config.DEFAULTLANGUAGE == 0){
 					word = bw.getEnglish();
-					wp = new WordProcessor(word);
 				}else if(Config.DEFAULTLANGUAGE == 1){
 					word = bw.getTelugu();
-					wp = new te.TeluguWordProcessor(word);
 				}
+				WordProcessor wp = new WordProcessor(word);
 				if(wp.getWordStrength() == strength){
 					bwList.add(bw);
 				}
@@ -463,16 +455,14 @@ public class BigWordCollection
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
-			WordProcessor wp = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
 				if(Config.DEFAULTLANGUAGE == 0){
 					word = bw.getEnglish();
-					wp = new WordProcessor(word);
 				}else if(Config.DEFAULTLANGUAGE == 1){
 					word = bw.getTelugu();
-					wp = new te.TeluguWordProcessor(word);
 				}
+				WordProcessor wp = new WordProcessor(word);
 				if((wp.getWordStrength() >= min || min == 0) && (wp.getWordStrength() <= max || max == 0)){
 					bwList.add(bw);
 				}

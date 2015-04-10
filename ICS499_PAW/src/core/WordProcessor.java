@@ -1,17 +1,8 @@
 package core;
-/*
- * Benton Watson
- * WordProcessor Class
- */
 
-// The complete implementation along with the documentation 
-// will count towards two software engineering assignments
-// Software Engineering Assignment 2
-// Software Engineering Assignment 3
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 /**
  * This class provides several operations in the context of single word.
@@ -20,34 +11,34 @@ import java.util.Random;
  */
 
 public class WordProcessor {
-	
+
 	//word represents the string we are processing in this class
 	private String word;
-	
+
 	// logicalChars are derived from the word
 	// word can also be derived from logicalChars
 	// these two are dependent on each other
 	// if one changes, the other changes
-	private ArrayList<String> logicalChars;
-	
+	private ArrayList<String> logicalChars = new ArrayList<>();
+
 	/**
 	 * Default constructor
 	 */
 	public WordProcessor()
 	{
-		
+
 	}
-	
+
 	/**
 	 * Overloaded constructor that takes the word
 	 * @param a_word
 	 */
-	
+
 	public WordProcessor(String a_word)
 	{
 		setWord(a_word);
 	}
-	
+
 	/**
 	 * Overloaded constructor that takes the logical characters as input
 	 * @param some_logical_chars
@@ -56,7 +47,7 @@ public class WordProcessor {
 	{
 		setLogicalChars(some_logical_chars);
 	}
-	
+
 	/**
 	 * set method for the word
 	 * @param a_word
@@ -66,22 +57,21 @@ public class WordProcessor {
 		word = a_word;
 		parseToLogicalChars();
 	}
-	
+
 	/**
 	 * set method for the logical characters
 	 * @param some_logical_chars
 	 */
 	public void setLogicalChars(ArrayList<String> some_logical_chars)
 	{
+		String newWord = "";
 		logicalChars = some_logical_chars;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < logicalChars.size(); i++){
-			sb.append(logicalChars.get(i));
+		for (String string : logicalChars) {
+			newWord += string;
 		}
-		word = sb.toString();
-		
+		word = newWord;
 	}
-	
+
 	/**
 	 * get method for the word
 	 * @return
@@ -90,7 +80,7 @@ public class WordProcessor {
 	{
 		return word;
 	}
-	
+
 	/**
 	 * get method for the logical characters
 	 * @return
@@ -99,7 +89,7 @@ public class WordProcessor {
 	{
 		return logicalChars;
 	}
-	
+
 	/**
 	 * Returns the length of the word
 	 * length = number of logical characters
@@ -109,20 +99,18 @@ public class WordProcessor {
 	{
 		return logicalChars.size();
 	}
-	
+
 	/**
 	 * Returns the number of code points in the word
 	 * @return
 	 */
 	public int getCodePointLength()
 	{
-		char[] tmp = word.toCharArray();
-		return tmp.length;
+		return word.codePointCount(0, word.length());
 	}
-	
+
 	/**
 	 * This method breaks the input word into logical characters
-	 * Changes for other languages...override with other language packages
 	 * For Engligh,
 	 * 	  convert the string to char array
 	 * 	  and convert each char to a string
@@ -130,25 +118,30 @@ public class WordProcessor {
 	 */
 	public void parseToLogicalChars()
 	{
-		logicalChars = new ArrayList<String>();
-		char[] tmp = word.toCharArray();
-		for(int i = 0; i < tmp.length; i++){
-			String s = String.valueOf(tmp[i]);
-			logicalChars.add(s);
-		}
+		logicalChars = new ArrayList<>();
+		logicalChars = Parser.parseToLogicalCharacters(word);
+//		for (int i = 0; i < word.length(); i++) {
+//			char [] ch = Character.toChars(word.codePointAt(i));
+//			if(Character.charCount(word.codePointAt(i)) == 2){
+//				i++;
+//			}
+//			String newChar = new String(ch);
+//			logicalChars.add(newChar);
+//		}
+
 	}
-	
+
 	/**
 	 * If the word starts with the logical character, 
 	 * this method returns true.
-	 * @param start_sub_string
+	 * @param start_char
 	 * @return
 	 */
-	public boolean startsWith(String start_sub_string)
+	public boolean startsWith(String start_char)
 	{
-		return word.startsWith(start_sub_string);
+		return word.startsWith(start_char);
 	}
-	
+
 	/**
 	 * If the word ends with the logical character, 
 	 * this method returns true.
@@ -158,8 +151,8 @@ public class WordProcessor {
 	public boolean endsWith(String end_string)
 	{
 		return word.endsWith(end_string);
-	}
-	
+	};
+
 	/**
 	 * This method checks whether the sub_string or logical character
 	 * is contained within the word
@@ -168,9 +161,10 @@ public class WordProcessor {
 	 */
 	public boolean containsString(String sub_string)
 	{
-		return word.contains(sub_string);
+		ArrayList<String> inputChars = parseInputString(sub_string);
+		return containsLogicalCharSequence(inputChars);
 	}
-	
+
 	/**
 	 * This method checks whether the sub_string or logical character
 	 * is contained within the word
@@ -179,9 +173,14 @@ public class WordProcessor {
 	 */
 	public boolean containsChar(String sub_string)
 	{
-		return containsString(sub_string);
+		for (String string : logicalChars) {
+			if (string.equals(sub_string)){
+				return true;
+			}
+		}
+		return false;
 	}
-	
+
 	/**
 	 * This method checks whether the logical characters
 	 * are contained within the string/word.
@@ -191,10 +190,16 @@ public class WordProcessor {
 	 */
 	public boolean containsLogicalChars(ArrayList<String> logical_chars)
 	{
-		return (containsAllLogicalChars(logical_chars));
+		for (String string : logical_chars) {
+			if(containsChar(string)){
+				continue;
+			}
+			return false;
+		}
+		return true;
 	}
-	
-	
+
+
 	/**
 	 * This method checks whether *ALL* the logical characters
 	 * are contained within the string/word.
@@ -204,34 +209,25 @@ public class WordProcessor {
 	 */
 	public boolean containsAllLogicalChars(ArrayList<String> logical_chars)
 	{
-		int count = 0;
-		for(int i = 0; i < getLength(); i++){
-			for(int j = 0; j < logical_chars.size(); j++){
-				if(logicalChars.get(i).equals(logical_chars.get(j))){
-					count++;
-				}
-			}
-		}
-		return (count == logical_chars.size());
+		return containsLogicalChars(logical_chars);
 	}
-	
+
 	/**
 	 * This method checks whether *ALL* the logical characters
-	 * in the sequence specified is in the word
+	 * are contained within the string/word.
+	 * is contained within the word
 	 * @param sub_string
 	 * @return
 	 */
 	public boolean containsLogicalCharSequence(ArrayList<String> logical_chars)
-	{
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < logical_chars.size(); i++){
-			sb.append(logical_chars.get(i));
+	{	
+		String tempWord = "";
+		for (String string : logical_chars) {
+			tempWord += string;
 		}
-		String tmp = sb.toString();
-		
-		return containsString(tmp);
-	}
-	
+		return word.contains(tempWord);
+	};
+
 	/**
 	 * This method checks whether a word can be made out of the original word
 	 * example:  original word = POST;   a_word = POT
@@ -240,32 +236,12 @@ public class WordProcessor {
 	 */
 	public boolean canMakeWord(String a_word)
 	{
-		
 		//parse the a_word into logical characters
-		ArrayList<String> lc = new ArrayList<String>();
-		char[] tmp = a_word.toCharArray();
-		for(int i = 0; i < tmp.length; i++){
-			String s = String.valueOf(tmp[i]);
-			lc.add(s);
-		}
-		ArrayList<String> origlc = new ArrayList<String>();
-		char[] tmp1 = word.toCharArray();
-		for(int i = 0; i < tmp1.length; i++){
-			String s = String.valueOf(tmp1[i]);
-			origlc.add(s);
-		}
-		
-		for(int j = 0; j<tmp.length; j++){
-			if(origlc.contains(lc.get(j))){
-				origlc.remove(lc.get(j));
-			}else{
-				return false;
-			}
-		}
-		return true;
-
+		// and call containsLogicalChars on those logical characters		
+		ArrayList<String> inputChars = parseInputString(a_word);
+		return containsLogicalChars(inputChars);
 	}
-	
+
 	/**
 	 * This method checks whether all the words in the collection
 	 * can be made out of the original word
@@ -277,76 +253,76 @@ public class WordProcessor {
 	{
 		// same as above method 
 		// but works on the entire collection
-		for(int j = 0; j<some_words.size(); j++){
-			if(!canMakeWord(some_words.get(j))){
-				return false;
+		for (String string : some_words) {
+			if(canMakeWord(string)){
+				continue;
 			}
+			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * returns true if the word contains the space
 	 * @return
 	 */
 	public boolean containsSpace()
 	{
-		return word.contains(" ");
+		for (String string : logicalChars) {
+			if(string.matches("\\s+")){
+				return true;
+			}
+		}
+		return false;
 	};
-	
+
 	/**
-	 * returns true if the word is a palimdrome
+	 * returns true if the word contains the space
 	 * @return
 	 */
 	public boolean isPalindrome()
 	{
-		int count = logicalChars.size() - 1;
-		for(int i = 0; i < logicalChars.size(); i++){
-			if(!logicalChars.get(i).equals(logicalChars.get(count))){
-				return false;
-			}else{
-				count--;
+		// find the logical characters of the word: we already have those
+		// reverse the array list of those logical characters
+		// in a loop, keep comparing 1 to N; 1+1, N-2 and so on
+		// 
+		int i = 0;
+		int j = logicalChars.size() - 1;
+		while (i < j) {
+			if(logicalChars.get(i++).equals(logicalChars.get(j--))){
+				continue;
 			}
+			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * returns true if the word_2 is an anagram of the word
 	 * @return
 	 */
 	public boolean isAnagram(String word_2)
 	{
-		char[] tmp = word_2.toCharArray();
-		char[] tmp2 = word.toCharArray();
-		if (tmp.length == tmp2.length){
-			for(int i = 0; i < tmp.length; i++){
-				if(!containsString(String.valueOf(tmp[i]))){
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
+		// split word_2 into logical characters
+		// call containsAllLogicalChars
+		ArrayList<String> inputChars = parseInputString(word_2);
+		return isAnagram(inputChars);
 	}
-	
+
 	/**
 	 * returns true if the logical_chars are contained with in the word
 	 * @return
 	 */
-	
+
 	public boolean isAnagram(ArrayList<String>  logical_chars)
 	{
-		if(logical_chars.size() == logicalChars.size()){
-			return containsAllLogicalChars(logical_chars);
-		} else {
-			return false;
-		}
+		//// call containsAllLogicalChars
+		return (logical_chars.size() == logicalChars.size() && containsLogicalChars(logical_chars));
 	}
-	
-	
 
-	
+
+
+
 	// String manipulation methods
 	/**
 	 * strips of leading and trailing spaces
@@ -354,66 +330,58 @@ public class WordProcessor {
 	 */
 	public String trim()
 	{
-		return word.trim();
+		setWord(word.trim());
+		return word;
 	}
-	
+
 	/**
 	 * strips of all spaces in the word
 	 * @return
 	 */
 	public String stripSpaces()
-	{
-		StringBuilder sb = new StringBuilder(); 
-		char[] lc = word.toCharArray();
-		for(int i = 0; i < lc.length; i++){
-			Character c = lc[i];
-			if(!Character.isSpaceChar(c)){
-				sb.append(lc[i]);
-			}
-		}
-		return sb.toString();
+	{			
+			setWord(word.replaceAll("\\s+", ""));
+		return word;
 	}
-	
+
 	/**
-	 * ?? should we be stripping spaces too or not??
 	 * strips of all special characters and symbols from the word
 	 * @return
 	 */
 	public String stripAllSymbols()
 	{
-		StringBuilder sb = new StringBuilder(); 
-		ArrayList<String> orig = new ArrayList<String>(logicalChars);
-		for(int i = 0; i < orig.size(); i++){
-			String s = orig.get(i);
-			if(s.length() == 1){
-				Character c = s.charAt(0);
-				if(Character.isLetterOrDigit(c)){
-					sb.append(s);
-				}
-			}else{
-				sb.append(s);
+		String newWord = "";
+		for (int i = 0; i < logicalChars.size(); i++) {
+			if(logicalChars.get(i).matches("[^\\p{L}\\p{N}]+")){
+				logicalChars.remove(i--);
+				continue;
 			}
+			newWord += logicalChars.get(i);
 		}
-		return sb.toString();
-	}
-	
+		setWord(newWord);
+		return word;
+	};
+
 	/**
 	 * Reverse the word and returns a new word
 	 * @return
 	 */
 	public String reverse()
 	{
-		ArrayList<String> reverse = new ArrayList<String>();
-		for(int i = logicalChars.size()-1; i >= 0; i--){
-			reverse.add(logicalChars.get(i));
+		// you already have logicalChars
+		// reverse that array list
+		// add the logical characters together
+		// return that new string
+		@SuppressWarnings("unchecked")
+		ArrayList<String> reverseList = (ArrayList<String>) logicalChars.clone();
+		Collections.reverse(reverseList);
+		String reversedWord = "";
+		for (String string : reverseList) {
+			reversedWord += string;
 		}
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < reverse.size(); i++){
-			sb.append(reverse.get(i));
-		}
-		return sb.toString();
-	}; 
-	
+		return reversedWord;
+	}
+
 	/**
 	 * Replaces a specific sub-string with a substitute_string
 	 * if the sub-string is not found, it does nothing
@@ -423,13 +391,10 @@ public class WordProcessor {
 	 */
 	public String replace(String sub_string, String substitute_string)
 	{
-		String newWord = new String(word);
-		if(containsString(sub_string)){
-			newWord = newWord.replace(sub_string, substitute_string);
-		}
-		return newWord;
+		String newWord = word;	
+		return newWord.replace(sub_string, substitute_string);
 	}
-	
+
 	/**
 	 * Add a logical character at the specified index
 	 * It does not disturb the original string
@@ -438,16 +403,16 @@ public class WordProcessor {
 	 */
 	public String addCharacterAt(int index, String a_logical_char)
 	{
-		ArrayList<String> lc = new ArrayList<String>(logicalChars);
-		lc.add(index, a_logical_char);
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < lc.size(); i++){
-			sb.append(lc.get(i));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> tempList = (ArrayList<String>) logicalChars.clone();
+		tempList.add(index, a_logical_char);
+		String newWord = "";
+		for (String string : tempList) {
+			newWord += string;
 		}
-		
-		return sb.toString();
+		return newWord;
 	}
-	
+
 	/**
 	 * Add a logical character at the end of the word
 	 * It does not disturb the original string
@@ -456,16 +421,16 @@ public class WordProcessor {
 	 */
 	public String addCharacterAtEnd(String a_logical_char)
 	{
-		ArrayList<String> lc = new ArrayList<String>(logicalChars);
-		lc.add(a_logical_char);
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < lc.size(); i++){
-			sb.append(lc.get(i));
+		@SuppressWarnings("unchecked")
+		ArrayList<String> tempList = (ArrayList<String>) logicalChars.clone();
+		tempList.add(a_logical_char);
+		String newWord = "";
+		for (String string : tempList) {
+			newWord += string;
 		}
-		
-		return sb.toString();
+		return newWord;
 	}
-	
+
 	/**
 	 * Compares the given word with the original word
 	 * If there is a match on any logical character, it returns true
@@ -473,14 +438,12 @@ public class WordProcessor {
 	 */
 	public boolean isIntersecting(String word_2)
 	{
-		for(int i = 0; i < logicalChars.size(); i++){
-			if(word_2.contains(logicalChars.get(i))){
+			if(getIntersectingRank(word_2) > 0){
 				return true;
 			}
-		}
 		return false;
 	}
-	
+
 	/**
 	 * Compares the given word with the original word
 	 * And returns the count of matches on the logical characters
@@ -489,15 +452,16 @@ public class WordProcessor {
 	public int getIntersectingRank(String word_2)
 	{
 		int count = 0;
-		for(int i = 0; i < logicalChars.size(); i++){
-			if(word_2.contains(logicalChars.get(i))){
+		ArrayList<String> inputWord = parseInputString(word_2);
+		for (String string : inputWord) {
+			if(containsChar(string)){
 				count++;
 			}
 		}
 		return count;
 	}
-	
-	
+
+
 	/**
 	 * This method gets a logical character at the specified index
 	 * @param index
@@ -507,7 +471,7 @@ public class WordProcessor {
 	{
 		return logicalChars.get(index);
 	}
-	
+
 	/**
 	 * This method gets a unicode code point at the specified index
 	 * @param index
@@ -515,46 +479,39 @@ public class WordProcessor {
 	 */ 
 	public int	codePointAt(int index)
 	{
-		
-		return (int)word.charAt(index);
+		return word.codePointAt(index);
 	}
-	
+
 	// Returns the position at which the first logical character is appearing in the string
-	
+
 	/**
 	 * This method returns the index at which the logical character is appearing
 	 * It returns the first appearance of the logical character
 	 * @param index
 	 * @return
-	 * @throws Exception 
 	 */ 
-	public int indexOf(String logical_char) throws Exception
+	public int indexOf(String logical_char)
 	{
-		int counter = 0;
-		for(int i = 0; i < logicalChars.size(); i++){
-			if(logical_char.equals(logicalChars.get(i))){
-				counter++;
+		for (int i = 0; i < logicalChars.size(); i++) {
+			if(logicalChars.get(i).equals(logical_char)){
 				return i;
 			}
 		}
-		if(counter == 0){
-			System.out.println("Character not in Word");
-		}
 		return -1;
 	}
-	
+
 	/**
 	 * This method compares two strings lexicographically.
 	 * It is simplay a wrapper on java compareTo
 	 * @param word_2
 	 * @return
 	 */
-	public int	compareTo(String word_2)
+	public int compareTo(String word_2)
 	{
 		return word.compareTo(word_2);
 	}
-	
-	
+
+
 	/**
 	 * This method compares two strings lexicographically, ignoring case differences.
 	 * It is simplay a wrapper on java compareTo
@@ -565,7 +522,7 @@ public class WordProcessor {
 	{
 		return word.compareToIgnoreCase(word_2);
 	}
-	
+
 	/**
 	 * This method takes one collection and returns another randomized collection
 	 * of string (or logical characters)
@@ -574,58 +531,41 @@ public class WordProcessor {
 	 */
 	public ArrayList<String> randomize(ArrayList<String> some_strings)
 	{
-		ArrayList<String> random = new ArrayList<String>();
-		int length = some_strings.size();
-		Random r = new Random();
-		for(int i = 0; i < length; i++){
-			int j = r.nextInt(some_strings.size());
-			random.add(some_strings.get(j));
-			some_strings.remove(j);
-		}
-		return random;
+		@SuppressWarnings("unchecked")
+		ArrayList<String> tempList = (ArrayList<String>) logicalChars.clone();
+		Collections.shuffle(tempList);
+		return tempList;
 	}
-	
+
 	/**
 	 * This method splits the word into a 2-dimensional matrix
 	 * based on the number of columns
-	 * spaces are included and any empty at the end are null
 	 * @param no_of_columns
 	 * @return
 	 */
 	public String[][]  splitWord(int no_of_columns)
 	{
-		int rows = 0;
-		if(logicalChars.size() % no_of_columns > 0){
-			rows = (int)(logicalChars.size() / no_of_columns)+1;
-		} else{
-			rows = (int)(logicalChars.size() / no_of_columns);
-		}
-		
-		String[][] split = new String[rows][no_of_columns];
-		int count = 0;
-		for(int i = 0; i < rows; i++){
-			for(int j = 0; j < no_of_columns; j++){
-				if(count < logicalChars.size()){
-					split[i][j] = logicalChars.get(0 + count);
-					count++;
-				}else{
-					break;
-				}
+		int numOfRows = Math.floorDiv(logicalChars.size(), no_of_columns)+1;
+		String[][] wordArraySplit = new String[numOfRows][no_of_columns];
+		int k = 0;
+		for (int i = 0; i < wordArraySplit.length; i++) {
+			for (int j = 0;j < wordArraySplit[0].length && k < logicalChars.size();) {
+				wordArraySplit[i][j] = logicalChars.get(k);
+				k = (i * wordArraySplit[0].length) + j++;
 			}
 		}
-		return split;
+		return wordArraySplit;
 	}
-	
+
 	/**
 	 * Returns the string representation of WordProcessor
-	 * Basically, prints the word and logicalChars
-	 */
-	public String toString()
-	{
-		String s = "word = "+ word + "; Logical characters = " + logicalChars;
-		return s;
+	 * Basially, prints the word and logicalChars
+	*/
+	@Override
+	public String toString() {
+		return word + ", " + logicalChars;
 	}
-	
+
 	/**
 	 * compares two strings; wrapper on the java method
 	 */
@@ -633,44 +573,73 @@ public class WordProcessor {
 	{
 		return word.equals(word_2);
 	}
-	
+
 	/**
 	 * compares two strings after reversing the original word
 	 */
 	public boolean reverseEquals(String word_2)
 	{
-		String s = reverse();
-		if(s.equals(word_2)){
-			return true;
+		String reversedWord = reverse();
+		return reversedWord.equals(word_2);
+	}
+	
+	public ArrayList<String> parseInputString(String a_word){
+		String wordPlaceholder =  word;
+		setWord(a_word);
+		ArrayList<String> inputChars = logicalChars;
+		setWord(wordPlaceholder);
+		return inputChars;
+	}
+	public int getWordStrength()
+	{	
+		// get the length of the word in terms of logical characters
+		int length = this.getLength();  
+		
+		// counter variable to keep track of the strength
+		// strength = number of code points in each logical characters
+		int strength = 1; 
+		if (this.logicalCharAt(0).matches("[A-Za-z0-9]")){
+			return length;
 		}
-		return false;
-	}
-
-	/**
-	 * helper method to match telugu wordprocessor methods
-	 * English this is same as length
-	 * @return int
-	 */
-	public int getWordStrength() {
-		return this.getLength();
-	}
-	
-	/**
-	 * helper method to shuffle all characters in the word
-	 * @return ArrayList<String>
-	 */
-	public ArrayList<String> shuffleChars(){
-		ArrayList<String> chars = new ArrayList<String>();
-		chars.addAll(logicalChars);
-		Collections.shuffle(chars);
-		return chars;
+		for (int i=0; i < length; i++)
+		{
+			// get the logical character
+			String logical_char = this.logicalCharAt(i);
+			
+			// len_2 gives the code point length of the logical character
+			int no_code_points = logical_char.length();  
+			
+			// increase the strength if needed
+			if (no_code_points > strength)  { strength = no_code_points;}	
+		}
+		
+		return strength;  
 	}
 	
-	
+	public int getWordWeight()
+	{	
+		// get the length of the word in terms of logical characters
+		int length = this.getLength();  
+		
+		// counter variable to keep track of the strength
+		// weight  = total number of code points in each logical characters
+		int weight = 0; 
+		if (this.logicalCharAt(0).matches("[A-Za-z0-9]")){
+			return length;
+		}
+		for (int i=0; i < length; i++)
+		{
+			// get the logical character
+			String logical_char = this.logicalCharAt(i);
+			
+			// len_2 gives the code point length of the logical character
+			weight = weight + logical_char.length();  
+			
+		}
+		System.out.println( this.getWord() + " = " + weight);
+		return weight;  
+	}
 	/**
-	 * Broke Testing into another class, Testing.java
 	 * This is the main method for testing all of the above methods
 	 */
-	
-
 }

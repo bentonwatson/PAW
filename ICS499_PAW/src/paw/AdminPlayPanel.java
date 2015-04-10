@@ -26,7 +26,6 @@ import javax.swing.border.LineBorder;
 
 
 
-import te.TeluguWordProcessor;
 import core.Game;
 import core.SpringUtility;
 import core.WordProcessor;
@@ -161,7 +160,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					if(!currentGame.getDuplicate()){
 						String tmp = characters.get(j);
 						if(tmp.length() > 1){
-							WordProcessor wp = new TeluguWordProcessor(tmp);
+							WordProcessor wp = new WordProcessor(tmp);
 							ArrayList<String> ch = wp.getLogicalChars();
 							int count = Integer.valueOf(ch.get(1));
 							GridTile newTile = new GridTile(wp.logicalCharAt(0), j);
@@ -397,7 +396,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					long pause = 500;
 					for (GridTile gridTile : gridTiles) {
 						if (gridTile.clickedPosition > -1) {
-//							pause += 500; // creates a bug
+							pause += 500; // creates a bug
 							timer.schedule(new TimerTask() {
 								@Override
 								public void run() {
@@ -432,7 +431,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 								answerTile.setBackground(Color.YELLOW);
 							}
 						}, pause);
-//						pause -= 500; // creates a bug
+						pause -= 500; // creates a bug
 					}
 					generateWordListPanel();
 					if(foundWordList.size() == currentGame.getNumberWords()){

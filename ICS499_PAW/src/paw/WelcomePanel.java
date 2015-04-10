@@ -79,6 +79,7 @@ public class WelcomePanel extends JPanel {
 						//TODO get next level 1 game
 						internalgui.setCurrentGame(gameCollection.getGameByLevel(1));
 						internalgui.initialize();
+						internalgui.selectTabbedPaneIndex(1);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -97,6 +98,7 @@ public class WelcomePanel extends JPanel {
 						//TODO get next level 2 game
 						internalgui.setCurrentGame(gameCollection.getGameByLevel(2));
 						internalgui.initialize();
+						internalgui.selectTabbedPaneIndex(1);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -115,6 +117,7 @@ public class WelcomePanel extends JPanel {
 						//TODO get next level 3 game
 						internalgui.setCurrentGame(gameCollection.getGameByLevel(3));
 						internalgui.initialize();
+						internalgui.selectTabbedPaneIndex(1);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -133,6 +136,7 @@ public class WelcomePanel extends JPanel {
 						//TODO get next level 4 game
 						internalgui.setCurrentGame(gameCollection.getGameByLevel(4));
 						internalgui.initialize();
+						internalgui.selectTabbedPaneIndex(1);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

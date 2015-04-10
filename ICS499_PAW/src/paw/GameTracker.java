@@ -3,7 +3,6 @@ package paw;
 import java.util.ArrayList;
 import java.util.List;
 
-import te.TeluguWordProcessor;
 import core.Game;
 import core.WordProcessor;
 
@@ -80,7 +79,7 @@ public class GameTracker
 	public boolean isWordInTheList(String[] inputWord){
 		WordProcessor wp = new WordProcessor("");
 		if(language == 1){
-			wp = new TeluguWordProcessor("");
+			wp = new WordProcessor("");
 		}
 		String guessWord = "";
 		for (String string : inputWord) {

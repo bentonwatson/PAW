@@ -19,7 +19,6 @@ import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import te.TeluguWordProcessor;
 import core.Game;
 import core.SpringUtility;
 import core.WordProcessor;
@@ -128,7 +127,7 @@ class GeneratePanel extends JPanel{
 					if(!newGame.getDuplicate()){
 						String tmp = characters.get(j);
 						if(tmp.length() > 1){
-							WordProcessor wp = new TeluguWordProcessor(tmp);
+							WordProcessor wp = new WordProcessor(tmp);
 							ArrayList<String> ch = wp.getLogicalChars();
 							int count = Integer.valueOf(ch.get(1));
 							GridTile newTile = new GridTile(wp.logicalCharAt(0), j);

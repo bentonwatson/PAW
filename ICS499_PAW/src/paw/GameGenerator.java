@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import te.TeluguWordProcessor;
 import core.BigWord;
 import core.BigWordCollection;
 import core.Game;
@@ -163,7 +162,7 @@ public class GameGenerator {
 	public void chooseNumberOfWords(int num){
 		numWords = num;
 		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
-		WordProcessor wp = new TeluguWordProcessor("");
+		WordProcessor wp = new WordProcessor("");
 		if (language == 0) {
 			if(custom){
 				for(String word : customWords){
@@ -318,7 +317,7 @@ public class GameGenerator {
 		for(int i = 0; i < wordLength; i++){
 			ArrayList<String> single = new ArrayList<String>();
 			for(String word : wordList){
-				WordProcessor wp = new TeluguWordProcessor(word);
+				WordProcessor wp = new WordProcessor(word);
 				single.add(wp.logicalCharAt(i));
 			}
 			single = shuffleChars(single);
