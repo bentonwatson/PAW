@@ -28,35 +28,39 @@ public class WelcomePanel extends JPanel {
 	private int gameLevel;
 	private int userGameLevel;
 	private GameCollection gameCollection;
+	private Color bgColor;
+	private Color btnColor;
+	
 	public WelcomePanel(Color color, PAWgui paw) {
-		
+		bgColor = color;
+		btnColor = Config.WELCOME_PANEL_BUTTONS;
 		internalgui = paw;
 		gameCollection = internalgui.getGameCollection();
 		
 		setMinimumSize(new Dimension(640,480));
-		setBackground(color);
+		setBackground(bgColor);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new GridLayout(1, 2));
 		
 		JPanel pic = new JPanel();
-		pic.setBackground(color);
-		JLabel logoImage = new JLabel("", new ImageIcon("src/logo.jpg"), SwingConstants.CENTER);
+		pic.setBackground(bgColor);
+		JLabel logoImage = new JLabel("", new ImageIcon(Config.LOGO_FILE), SwingConstants.CENTER);
 		pic.add(logoImage);
 		add(pic);
 		
 		JPanel text = new JPanel();
-		text.setBackground(color);
+		text.setBackground(bgColor);
 		text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
 		text.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		
 		JTextPane title = new JTextPane();
-		title.setBackground(color);
+		title.setBackground(bgColor);
 		title.setText(Config.WELCOME_TITLE);
 		title.setFont(new Font("Tempus Sans ITC", Font.PLAIN, 30));
 		text.add(title);
 		
 		JTextPane body = new JTextPane();
-		body.setBackground(color);
+		body.setBackground(bgColor);
 		if(Config.DEFAULTMODE.equals("admin")){
 			body.setText(Config.ADMIN_WELCOME);
 		}else{
@@ -67,7 +71,7 @@ public class WelcomePanel extends JPanel {
 		
 		
 		JPanel button = new JPanel();
-		button.setBackground(color);
+		button.setBackground(bgColor);
 		button.setLayout(new FlowLayout());
 //		gameLevel = getGameLevel();
 		if(Config.DEFAULTMODE.equals("user")){
@@ -87,7 +91,7 @@ public class WelcomePanel extends JPanel {
 			});
 			setLevelOne.setSize(100, 100);
 			setLevelOne.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevelOne.setBackground(Color.yellow);
+			setLevelOne.setBackground(btnColor);
 			button.add(setLevelOne);
 			
 			JButton setLevelTwo = new JButton("Medium");
@@ -106,7 +110,7 @@ public class WelcomePanel extends JPanel {
 			});
 			setLevelTwo.setSize(100, 50);
 			setLevelTwo.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevelTwo.setBackground(Color.yellow);
+			setLevelTwo.setBackground(btnColor);
 			button.add(setLevelTwo);
 			
 			JButton setLevelThree = new JButton("Hard");
@@ -125,7 +129,7 @@ public class WelcomePanel extends JPanel {
 			});
 			setLevelThree.setSize(100, 50);
 			setLevelThree.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevelThree.setBackground(Color.yellow);
+			setLevelThree.setBackground(btnColor);
 			button.add(setLevelThree);
 			
 			JButton setLevelFour = new JButton("Impossible");
@@ -144,7 +148,7 @@ public class WelcomePanel extends JPanel {
 			});
 			setLevelFour.setSize(100, 50);
 			setLevelFour.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			setLevelFour.setBackground(Color.yellow);
+			setLevelFour.setBackground(btnColor);
 			button.add(setLevelFour);
 			
 		}else{
@@ -160,7 +164,7 @@ public class WelcomePanel extends JPanel {
 			});
 			goToConfig.setSize(100, 50);
 			goToConfig.setFont(new Font("Sitka Display", Font.BOLD, 16));
-			goToConfig.setBackground(Color.yellow);
+			goToConfig.setBackground(btnColor);
 			button.add(goToConfig);
 		}
 		text.add(button);

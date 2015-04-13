@@ -56,9 +56,9 @@ public class PAWgui extends 	JFrame
 		}
 
 		setTitle(Config.APP_TITLE);
-		setSize( 1050, 800 );
+		setSize( 1100, 850 );
 		setBackground( Color.gray );
-		setMinimumSize(new Dimension(600, 500));
+		setMinimumSize(new Dimension(800, 600));
 		
 		topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );

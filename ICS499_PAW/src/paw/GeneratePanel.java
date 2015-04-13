@@ -42,13 +42,17 @@ class GeneratePanel extends JPanel{
 	private JPanel buttonPanel;
 	private JPanel columnPanel;
 	private Font font;
+	private Color tileColor;
+	private Color bgColor;
 	
 	public GeneratePanel(Color color, PAWgui paw) {
 		this.internalgui = paw;
 		font = internalgui.getFont();
+		tileColor = Config.PLAY_TILE_COLOR;
+		bgColor = color;
 		
 		setMinimumSize(new Dimension(1000,550));
-		setBackground(color);
+		setBackground(bgColor);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 
@@ -166,8 +170,7 @@ class GeneratePanel extends JPanel{
 		createHTMLBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-//					CreateHTML ch = new CreateHTML(newGame);
-					//TODO ?? add a popup to confirm the file was written
+					new CreateHTML(newGame);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -176,7 +179,7 @@ class GeneratePanel extends JPanel{
 		buttonPanel.add(createHTMLBtn);
 		
 		//calls gameSaver and displays saved message
-		JButton saveGameBtn = new JButton("Save\nGame");
+		JButton saveGameBtn = new JButton("Save Game");
 		saveGameBtn.setFont(font);
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -191,7 +194,7 @@ class GeneratePanel extends JPanel{
 		buttonPanel.add(saveGameBtn);
 		
 		//sends the game to play Tab and opens play tab
-		JButton playGameBtn = new JButton("Play\nGame");
+		JButton playGameBtn = new JButton("Play Game");
 		playGameBtn.setFont(font);
 		playGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -224,7 +227,7 @@ class GeneratePanel extends JPanel{
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *
 	 */
-	class Tile extends JToggleButton {
+	class Tile extends JButton {
 		private static final long serialVersionUID = 1L;
 		int clickedPosition = -1;
 		int tileId = -1;
@@ -246,14 +249,13 @@ class GeneratePanel extends JPanel{
 		int tileId = -1;
 		int columnNum;
 		int repeat;
-		Color pressedColor = Color.WHITE;
 		String character;
 
 		GridTile(String character, int iD) {
 			super();
 			this.character = character;
 			setText(character);
-			setBackground(Color.yellow);
+			setBackground(tileColor);
 			tileId = iD;
 		}
 

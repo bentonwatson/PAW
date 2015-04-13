@@ -5,12 +5,31 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
@@ -19,10 +38,21 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+import javax.swing.JButton;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -42,7 +72,6 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	private JPanel wordListPanel;
 	private JPanel buttonPanel;
 	private JPanel buttPanel;
-	private JLabel message;
 	private Font font;
 	private int clickCount = 0;
 	private List<GridTile> gridTiles = new ArrayList<>();
@@ -51,12 +80,17 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	private GameTracker tracker;
 	private JEditorPane numWords;
 	private JEditorPane words;
+	private Color bgColor;
+	private Color tileColor;
+	
+	
 	
 	ArrayList<String> notFoundWords = new ArrayList<String>();
 	ArrayList<String> foundWordList = new ArrayList<String>();
 	
 	public AdminPlayPanel(Color color, PAWgui paw){
-		
+		bgColor = color;
+		tileColor = Config.PLAY_TILE_COLOR;
 		this.internalgui = paw;
 		font = internalgui.getFont();
 //		gameCollection = internalgui.getGameCollection();
@@ -66,7 +100,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 			tracker = new GameTracker(currentGame);
 		}
 		setMinimumSize(new Dimension(1000,550));
-		setBackground(color);
+		setBackground(bgColor);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		
@@ -96,7 +130,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 
 		numWords = new JEditorPane();
 		numWords.setFont(font);
-		numWords.setBackground(Color.yellow);
+		numWords.setBackground(bgColor);
 		if(currentGame != null){
 			numWords.setText("Number of Words = " + String.valueOf(currentGame.getNumberWords())
 				+ "\n You Have Found = " + foundWordList.size());
@@ -107,7 +141,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 
 		words = new JEditorPane();
 		words.setFont(font);
-		words.setBackground(Color.yellow);
+		words.setBackground(bgColor);
 		String foundList = "";
 		if(foundWordList != null){
 			for(int i = 0; i < foundWordList.size(); i++){
@@ -206,17 +240,12 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 			for (int i = 0; i < columnData.size(); i++) {
 				AnswerTile newTile = new AnswerTile(" ", i);
 				newTile.addMouseListener(this);
-				
 				newTile.setVisible(true);
 				guessPanel.add(newTile);
 				answerTiles.add(newTile);
 			}
 			answerPanel.add(guessPanel, BorderLayout.CENTER);
 		}
-		message = new JLabel();
-		message.setFont(font);
-		message.setText("");
-		answerPanel.add(message, BorderLayout.SOUTH);
 		gridPanel.add(answerPanel, BorderLayout.SOUTH);
 	
 		add(gridPanel, BorderLayout.CENTER);
@@ -246,9 +275,9 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	 */
 	public void generateButtonPanel(){
 		buttPanel = new JPanel();
-		buttPanel.setBackground(Color.yellow);
+		buttPanel.setBackground(bgColor);
 		buttonPanel = new JPanel(new SpringLayout());
-		buttonPanel.setBackground(Color.yellow);
+		buttonPanel.setBackground(bgColor);
 		
 		// generates the HTML
 		JButton createHTMLBtn = new JButton("Create\nHTML");
@@ -256,7 +285,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		createHTMLBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-//					new CreateHTML(currentGame);
+					new CreateHTML(currentGame);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -264,8 +293,8 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		});
 		buttonPanel.add(createHTMLBtn);
 		
-		//calls gameSaver and displays saved message
-		JButton saveGameBtn = new JButton("Save\nGame");
+		//calls gameSaver 
+		JButton saveGameBtn = new JButton("Save Game");
 		saveGameBtn.setFont(font);
 		saveGameBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -276,8 +305,30 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 				}
 			}
 		});
+		
+		//clears the guess tiles
+		JButton clearGuessBtn = new JButton("Clear Guess");
+		clearGuessBtn.setFont(font);
+		clearGuessBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (AnswerTile answerTile : answerTiles) {
+					answerTile.setText(" ");
+					answerTile.setBackground(bgColor);
+				}
+				for (GridTile gridTile : gridTiles) {
+					gridTile.clickedPosition = -1;
+					gridTile.setSelected(false);
+					gridTile.setBackground(bgColor);
+				}
+				for (int i = 0; i < guessWord.length; i++) {
+					guessWord[i] = "";
+				}
+				clickCount = 0;
+			}
+		});
 		buttonPanel.add(saveGameBtn);
-		SpringUtility.makeGrid(buttonPanel, 2, 1, 25, 15, 15, 15);
+		buttonPanel.add(clearGuessBtn);
+		SpringUtility.makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
 		buttPanel.add(buttonPanel);
 		add(buttPanel, BorderLayout.EAST);
 		
@@ -291,189 +342,19 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		currentGame = game;
 		
 	}
+	
+	public static void errorMessage(String a_string) {
 
+		JOptionPane.showMessageDialog(null, a_string, "Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
+
+	}
+	
+	long timer = 0;
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		if (arg0.getSource() instanceof GridTile) {
-			GridTile pressedButton = (GridTile) arg0.getSource();
-			for (GridTile gridTile : gridTiles) {
-				if (gridTile.columnNum == pressedButton.columnNum
-						&& gridTile.clickedPosition > -1
-						&& gridTile.tileId != pressedButton.tileId) {
-					return;
-				}
-			}
-			if (clickCount == currentGame.getWordLength()) {
-				if (pressedButton.clickedPosition < 0) {
-					return;
-				}
-			}
-			if (pressedButton.clickedPosition == -1 && currentGame.getCharOrder()) {
-				
-				pressedButton.clickedPosition += 1;
-				clickCount++;
-				AnswerTile at = answerTiles.get(pressedButton.columnNum);
-				at.character = pressedButton.character;
-				at.setText(pressedButton.character);
-				at.setVisible(true);
-				pressedButton.setBackground(Color.YELLOW);
-				guessWord[pressedButton.columnNum] = pressedButton.character;
-				
-			}else if(pressedButton.clickedPosition == -1 && !currentGame.getCharOrder()){
-				
-				pressedButton.clickedPosition += 1;
-				AnswerTile at = answerTiles.get(clickCount);
-				at.character = pressedButton.character;
-				at.tileId = pressedButton.columnNum;
-				at.clickOrder = clickCount;
-				at.setText(pressedButton.character);
-				at.setVisible(true);
-				pressedButton.setBackground(Color.YELLOW);
-				guessWord[clickCount] = pressedButton.character;
-				clickCount++;
-				
-			}else if (!currentGame.getCharOrder()){
-				
-				for(AnswerTile ans : answerTiles){
-					if(ans.tileId == pressedButton.columnNum){
-						ans.setText(" ");
-						guessWord[ans.clickOrder] = "";
-						pressedButton.setVisible(true);
-						pressedButton.clickedPosition = -1;
-						
-						break;
-					}
-				}
-				AnswerTile nt = answerTiles.get(pressedButton.columnNum);
-				if (nt.getBackground().equals(Color.RED)) {
-					for (AnswerTile answerTile : answerTiles) {
-						answerTile.setSelected(false);
-						answerTile.setBackground(Color.YELLOW);
-					}
-				}
-				clickCount--;
-				for (GridTile gridTile : gridTiles) {
-					if (gridTile.clickedPosition > pressedButton.clickedPosition) {
-						gridTile.clickedPosition -= 1;
-					}
-				}
-				
-			}else{
-				AnswerTile nt = answerTiles.get(pressedButton.columnNum);
-				if (nt.getBackground().equals(Color.RED)) {
-					for (AnswerTile answerTile : answerTiles) {
-						answerTile.setSelected(false);
-						answerTile.setBackground(Color.YELLOW);
-						pressedButton.setSelected(false);
-					}
-				}
-				nt.setText(" ");
-//				pressedButton.setVisible(true);
-				clickCount--;
-				guessWord[pressedButton.columnNum] = "";
-				for (GridTile gridTile : gridTiles) {
-					if (gridTile.clickedPosition > pressedButton.clickedPosition) {
-						gridTile.clickedPosition -= 1;
-					}
-				}
-				pressedButton.clickedPosition = -1;
-			}
-			
-			if (clickCount == currentGame.getWordLength()) {
-				
-				if (tracker.isWordInTheList(guessWord)) {
-					String found = "";
-					for(String s: guessWord){
-						found += s;
-					}
-					foundWordList.add(found);
-					
-					java.util.Timer timer = new java.util.Timer();
-					for (AnswerTile answerTile : answerTiles) {
-						answerTile.setSelected(false);
-						answerTile.setBackground(Color.GREEN);
-					}
-					long pause = 500;
-					for (GridTile gridTile : gridTiles) {
-						if (gridTile.clickedPosition > -1) {
-							pause += 500; // creates a bug
-							timer.schedule(new TimerTask() {
-								@Override
-								public void run() {
-									if (currentGame.getDuplicate()) {
-										gridTile.setVisible(false);
-										
-									} else {
-										//i want to know if there are any more of this letter needed
-										if(gridTile.repeat > 1){
-											gridTile.setSelected(false);
-											gridTile.setBackground(Color.YELLOW);
-											gridTile.clickedPosition = -1;
-											gridTile.setSelected(false);
-											gridTile.repeat -= 1;
-										}else{
-											gridTile.setVisible(false);
-										}
-									}
-									gridTile.clickedPosition = -1;
-								}
-							}, pause);
-						}
-					}
-					clickCount = 0;
-					guessWord = new String[currentGame.getWordLength()];
-					for (AnswerTile answerTile : answerTiles) {
-						timer.schedule(new TimerTask() {
-							@Override
-							public void run() {
-								answerTile.setText(" ");
-								answerTile.setSelected(false);
-								answerTile.setBackground(Color.YELLOW);
-							}
-						}, pause);
-						pause -= 500; // creates a bug
-					}
-					generateWordListPanel();
-					if(foundWordList.size() == currentGame.getNumberWords()){
-						endGame();
-					}
-				} else {
-					for (AnswerTile answerTile : answerTiles) {
-						answerTile.setSelected(false);
-						answerTile.setBackground(Color.RED);
-						message.setText("Incorrect Keep Trying!");
-					}
-				}
-
-			}
-		}
-		if (arg0.getSource() instanceof AnswerTile) {
-			AnswerTile pressedButton = (AnswerTile) arg0.getSource();
-			if (pressedButton.getText().equals(" ")) {
-				pressedButton.setSelected(false);
-				return;
-			}
-			if (pressedButton.getBackground().equals(Color.RED)) {
-				for (AnswerTile answerTile : answerTiles) {
-					answerTile.setSelected(false);
-					answerTile.setBackground(Color.YELLOW);
-					message.setText("");
-				}
-			}
-			guessWord[pressedButton.tileId] = "";
-			pressedButton.setText(" ");
-			pressedButton.setSelected(false);
-			clickCount--;
-			for (GridTile gridTile : gridTiles) {
-				if (gridTile.columnNum == pressedButton.tileId) {
-					gridTile.clickedPosition = -1;
-					gridTile.setSelected(false);
-					gridTile.setBackground(Color.YELLOW);
-				}
-			}
-
-		}
-		
 	}
 
 	@Override
@@ -486,24 +367,607 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	
 	@Override
 	public void mousePressed(MouseEvent arg0) {
+		timer = System.currentTimeMillis();
 	}
 	
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		System.out.println("clickCount - mouseReleased " + clickCount);
+		if (System.currentTimeMillis() - timer < 150) {
+			if (arg0.getSource() instanceof GridTile) {
+				GridTile pressedButton = (GridTile) arg0.getSource();
+				for (GridTile gridTile : gridTiles) {
+					if (gridTile.columnNum == pressedButton.columnNum
+							&& gridTile.clickedPosition > -1
+							&& gridTile.tileId != pressedButton.tileId) {
+						return;
+					}
+				}
+				if (clickCount == currentGame.getWordLength()) {
+					if (pressedButton.clickedPosition < 0) {
+						return;
+					}
+				}
+				if (pressedButton.clickedPosition == -1 && currentGame.getCharOrder()) {
+					
+					pressedButton.clickedPosition += 1;
+					pressedButton.setBackground(Color.WHITE);
+					clickCount++;
+					AnswerTile at = answerTiles.get(pressedButton.columnNum);
+					at.character = pressedButton.character;
+					at.setText(pressedButton.character);
+					at.setVisible(true);
+					guessWord[pressedButton.columnNum] = pressedButton.character;
+					
+				}else if(pressedButton.clickedPosition == -1 && !currentGame.getCharOrder()){
+					
+					pressedButton.clickedPosition += 1;
+					pressedButton.setBackground(Color.white);
+					AnswerTile at = answerTiles.get(clickCount);
+					at.character = pressedButton.character;
+					at.tileId = pressedButton.columnNum;
+					at.clickOrder = clickCount;
+					at.setText(pressedButton.character);
+					at.setVisible(true);
+					guessWord[clickCount] = pressedButton.character;
+					clickCount++;
+					
+				}else if (!currentGame.getCharOrder()){
+					//set
+					for(AnswerTile ans : answerTiles){
+						if(ans.tileId == pressedButton.columnNum){
+							ans.setText(" ");
+							guessWord[ans.clickOrder] = "";
+							pressedButton.setVisible(true);
+							pressedButton.setBackground(tileColor);
+							pressedButton.clickedPosition = -1;
+							
+							break;
+						}
+					}
+					AnswerTile nt = answerTiles.get(pressedButton.columnNum);
+					if (nt.getBackground().equals(Color.RED)) {
+						for (AnswerTile answerTile : answerTiles) {
+							answerTile.setSelected(false);
+							answerTile.setBackground(tileColor);
+						}
+					}
+					clickCount--;
+					for (GridTile gridTile : gridTiles) {
+						if (gridTile.clickedPosition > pressedButton.clickedPosition) {
+							gridTile.clickedPosition -= 1;
+						}
+					}
+					
+				}else if(currentGame.getCharOrder()){
+					for(AnswerTile ans : answerTiles){
+						if(ans.tileId == pressedButton.columnNum){
+							ans.setText(" ");
+							guessWord[ans.clickOrder] = "";
+							pressedButton.setVisible(true);
+							pressedButton.setBackground(tileColor);
+							pressedButton.clickedPosition = -1;
+							
+							break;
+						}
+					}
+					AnswerTile nt = answerTiles.get(pressedButton.columnNum);
+					if (nt.getBackground().equals(Color.RED)) {
+						for (AnswerTile answerTile : answerTiles) {
+							answerTile.setSelected(false);
+							answerTile.setBackground(tileColor);
+							pressedButton.setSelected(false);
+							pressedButton.setBackground(tileColor);
+						}
+					}
+					nt.setText(" ");
+	//				pressedButton.setVisible(true);
+					clickCount--;
+					guessWord[pressedButton.columnNum] = "";
+					for (GridTile gridTile : gridTiles) {
+						if (gridTile.clickedPosition > pressedButton.clickedPosition) {
+							gridTile.clickedPosition -= 1;
+						}
+					}
+					pressedButton.clickedPosition = -1;
+				}
+				
+				if (clickCount == currentGame.getWordLength()) {
+					
+					if (tracker.isWordInTheList(guessWord)) {
+						String found = "";
+						for(String s: guessWord){
+							found += s;
+						}
+						foundWordList.add(found);
+						
+						java.util.Timer timer = new java.util.Timer();
+						for (AnswerTile answerTile : answerTiles) {
+							answerTile.setSelected(false);
+							answerTile.setBackground(Color.GREEN);
+						}
+						long pause = 500;
+						for (GridTile gridTile : gridTiles) {
+							if (gridTile.clickedPosition > -1) {
+								pause += 500; // creates a bug
+								timer.schedule(new TimerTask() {
+									@Override
+									public void run() {
+										if (currentGame.getDuplicate()) {
+											gridTile.setVisible(false);
+											
+										} else {
+											//i want to know if there are any more of this letter needed
+											if(gridTile.repeat > 1){
+												gridTile.setSelected(false);
+												gridTile.setBackground(tileColor);
+												gridTile.clickedPosition = -1;
+												gridTile.setSelected(false);
+												gridTile.repeat -= 1;
+											}else{
+												gridTile.setVisible(false);
+											}
+										}
+										gridTile.clickedPosition = -1;
+									}
+								}, pause);
+							}
+						}
+						clickCount = 0;
+						guessWord = new String[currentGame.getWordLength()];
+						for (AnswerTile answerTile : answerTiles) {
+							timer.schedule(new TimerTask() {
+								@Override
+								public void run() {
+									answerTile.setText(" ");
+									answerTile.setSelected(false);
+									answerTile.setBackground(tileColor);
+								}
+							}, pause);
+							pause -= 500; // creates a bug
+						}
+						generateWordListPanel();
+						if(foundWordList.size() == currentGame.getNumberWords()){
+							endGame();
+						}
+					} else {
+						for (AnswerTile answerTile : answerTiles) {
+							answerTile.setSelected(false);
+							answerTile.setBackground(Color.RED);
+						}
+					}
+	
+				}
+			}
+			if (arg0.getSource() instanceof AnswerTile) {
+				AnswerTile pressedButton = (AnswerTile) arg0.getSource();
+				if (pressedButton.getText().equals(" ")) {
+					pressedButton.setSelected(false);
+					return;
+				}
+				if (pressedButton.getBackground().equals(Color.RED)) {
+					for (AnswerTile answerTile : answerTiles) {
+						answerTile.setSelected(false);
+						answerTile.setBackground(tileColor);
+					}
+				}
+				guessWord[pressedButton.tileId] = "";
+				pressedButton.setText(" ");
+				pressedButton.setSelected(false);
+				clickCount--;
+				for (GridTile gridTile : gridTiles) {
+					if (gridTile.columnNum == pressedButton.tileId) {
+						gridTile.clickedPosition = -1;
+						gridTile.setSelected(false);
+						gridTile.setBackground(tileColor);
+					}
+				}
+	
+			}
+		}
 	}
 
+	
+	public boolean canShiftRight(List<AnswerTile> atList, int currentLocation) {
+		for (int i = currentLocation; i < atList.size(); i++) {
+			if (atList.get(i).getText().equals(" ")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean canShiftLeft(List<AnswerTile> atList, int currentLocation) {
+		for (int i = currentLocation; i > -1; i--) {
+			if (atList.get(i).getText().equals(" ")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int shiftTilesRight(List<AnswerTile> atList, int currentLocation,
+			List<GridTile> gtList) {
+		AnswerTile currentTile = atList.get(currentLocation);
+		String currentChar = currentTile.getText();
+		int currentCP = currentTile.clickedPosition;
+		currentTile.setText(" ");
+		currentTile.clickedPosition = -1;
+		while (currentLocation < atList.size() - 1) {
+			AnswerTile nextTile = atList.get(++currentLocation);
+			String nextChar = nextTile.getText();
+			int nextCP = nextTile.clickedPosition;
+			nextTile.setText(currentChar);
+			nextTile.clickedPosition = currentCP;
+			currentCP = nextCP;
+			currentChar = nextChar;
+			if (currentChar.equals(" ")) {
+				return currentLocation;
+			}
+		}
+		return 0;
+	}
+
+	public int shiftTilesLeft(List<AnswerTile> atList, int currentLocation,
+			List<GridTile> gtList) {
+		AnswerTile currentTile = atList.get(currentLocation);
+		String currentChar = currentTile.getText();
+		int currentCP = currentTile.clickedPosition;
+		currentTile.setText(" ");
+		currentTile.clickedPosition = -1;
+		while (currentLocation > 0) {
+			AnswerTile nextTile = atList.get(--currentLocation);
+			String nextChar = nextTile.getText();
+			int nextCP = nextTile.clickedPosition;
+			nextTile.setText(currentChar);
+			nextTile.clickedPosition = currentCP;
+			currentCP = nextCP;
+			currentChar = nextChar;
+			if (currentChar.equals(" ")) {
+				return currentLocation;
+			}
+		}
+		return 0;
+	}
+
+	public void shiftAnswerTilesLeft(List<AnswerTile> atList,
+			int currentLocation, List<GridTile> gtList) {
+		for (AnswerTile answerTile : atList) {
+			if(answerTile.clickedPosition == currentLocation){
+				currentLocation = answerTile.tileId;
+				break;
+			}
+		}
+		AnswerTile currentTile = atList.get(currentLocation);
+		for (GridTile gridTile : gtList) {
+			if (gridTile.clickedPosition == currentTile.clickedPosition) {
+				gridTile.clickedPosition = -1;
+				gridTile.setBackground(tileColor);
+				gridTile.setSelected(false);
+				gridTile.getParent().revalidate();
+			} else if (gridTile.clickedPosition > currentTile.clickedPosition) {
+				gridTile.clickedPosition--;
+			}
+		}
+		for (AnswerTile answerTile : atList) {
+			if (answerTile.clickedPosition > currentTile.clickedPosition) {
+				answerTile.clickedPosition--;
+			}
+		}
+		while (currentLocation < atList.size() - 1) {
+			currentTile = atList.get(currentLocation);
+			AnswerTile nextTile = atList.get(++currentLocation);
+			currentTile.setText(nextTile.getText());
+			currentTile.clickedPosition = nextTile.clickedPosition;
+		}
+		atList.get(currentLocation).setText(" ");
+		atList.get(currentLocation).clickedPosition = -1;
+	}
+
+	public void shiftAnswerTilesRight(List<AnswerTile> atList,
+			int currentLocation) {
+		while (currentLocation > 0) {
+			atList.get(currentLocation).setText(
+					atList.get(--currentLocation).getText());
+		}
+		atList.get(currentLocation).setText(" ");
+	}
+	public void setGuessWord(){
+		for (int i = 0; i < guessWord.length; i++) {
+			guessWord[i] = answerTiles.get(i).getText();
+ 		}
+	}
+	
 	/**
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *
 	 */
-	class Tile extends JToggleButton {
+	class Tile extends JButton implements DragGestureListener, 
+		DragSourceListener, MouseListener{
 		private static final long serialVersionUID = 1L;
 		int clickedPosition = -1;
 		int tileId = -1;
-
+		DragSource ds = new DragSource();
+		long timer = 0;
+		
 		Tile() {
 			setFont(font);
+			ds.createDefaultDragGestureRecognizer(this,
+					DnDConstants.ACTION_COPY_OR_MOVE, this);
+			
 		}
+
+		@Override
+		public void dragDropEnd(DragSourceDropEvent arg0) {
+			if (this instanceof GridTile) {
+				System.out.println("clickCount - gridTile drag drop end" + clickCount);
+				GridTile pressedButton = (GridTile) this;
+				if (!arg0.getDropSuccess()) {
+				} else if (arg0.getDropSuccess()) {
+					if (pressedButton.clickedPosition == -1) {
+						pressedButton.setBackground(Color.WHITE);
+						pressedButton.getParent().revalidate();
+						pressedButton.clickedPosition = clickCount - 1;
+						clickCount++;
+					}
+					if (clickCount == currentGame.getWordLength()) {
+						setGuessWord();
+						if (tracker.isWordInTheList(guessWord)) {
+							String foundWord = "";
+							for (String string : guessWord) {
+								foundWord += string;
+							}
+							foundWordList.add(foundWord);
+							numWords.setText("Number of Words = "
+									+ String.valueOf(currentGame.getNumberWords())
+									+ "\n You Have Found = "
+									+ foundWordList.size());
+							String foundList = "";
+							for (String string : foundWordList) {
+								foundList += string + "\n";
+							}
+							words.setText(foundList);
+							wordListPanel.revalidate();
+							Timer timer = new Timer();
+							for (AnswerTile answerTile : answerTiles) {
+								answerTile.setBackground(Color.GREEN);
+							}
+							long pause = 0;
+
+							for (GridTile gridTile : gridTiles) {
+								pause = 500;
+								if (gridTile.clickedPosition > -1) {
+									pause = pause * (gridTile.columnNum + 1);
+									timer.schedule(new TimerTask() {
+
+										@Override
+										public void run() {
+											if (currentGame.getDuplicate()) {
+												gridTile.setVisible(false);
+											} else {
+												gridTile.setBackground(Color.YELLOW);
+											}
+											gridTile.clickedPosition = -1;
+										}
+									}, pause);
+
+								}
+							}
+
+							pause = 500 * guessWord.length;
+							clickCount = 0;
+							guessWord = new String[currentGame.getWordLength()];
+							for (AnswerTile answerTile : answerTiles) {
+								timer.schedule(new TimerTask() {
+
+									@Override
+									public void run() {
+										answerTile.setText(" ");
+										answerTile.setBackground(Color.YELLOW);
+									}
+								}, pause);
+								pause -= 500;
+
+							}
+						} else {
+							for (AnswerTile answerTile : answerTiles) {
+								answerTile.setBackground(Color.RED);
+							}
+						}
+
+					}
+				}
+			}
+			if (this instanceof AnswerTile) {
+				System.out.println("clickCount - answerTile drag drop end" + clickCount);
+				AnswerTile pressedButton = (AnswerTile) this;
+				if (!arg0.getDropSuccess()) {
+					if (pressedButton.getBackground().equals(Color.RED)) {
+						for (AnswerTile answerTile : answerTiles) {
+							answerTile.setBackground(Color.YELLOW);
+						}
+					}
+					guessWord[pressedButton.clickedPosition] = "";
+					shiftAnswerTilesLeft(answerTiles, pressedButton.clickedPosition,
+							gridTiles);
+					pressedButton.getParent().revalidate();
+				} else if (arg0.getDropSuccess()) {
+					
+					if (clickCount == currentGame.getWordLength()) {
+						setGuessWord();
+						if (tracker.isWordInTheList(guessWord)) {
+							String foundWord = "";
+							for (String string : guessWord) {
+								foundWord += string;
+							}
+							foundWordList.add(foundWord);
+							numWords.setText("Number of Words = "
+									+ String.valueOf(currentGame.getNumberWords())
+									+ "\n You Have Found = "
+									+ foundWordList.size());
+							String foundList = "";
+							for (String string : foundWordList) {
+								foundList += string + "\n";
+							}
+							words.setText(foundList);
+							wordListPanel.revalidate();
+							Timer timer = new Timer();
+							for (AnswerTile answerTile : answerTiles) {
+								answerTile.setBackground(Color.GREEN);
+							}
+							long pause = 0;
+
+							for (GridTile gridTile : gridTiles) {
+								pause = 500;
+								if (gridTile.clickedPosition > -1) {
+									pause = pause * (gridTile.columnNum + 1);
+									timer.schedule(new TimerTask() {
+
+										@Override
+										public void run() {
+											if (currentGame.getDuplicate()) {
+												gridTile.setVisible(false);
+											} else {
+												gridTile.setBackground(Color.YELLOW);
+											}
+											gridTile.clickedPosition = -1;
+										}
+									}, pause);
+
+								}
+							}
+
+							pause = 500 * guessWord.length;
+							clickCount = 0;
+							guessWord = new String[currentGame.getWordLength()];
+							for (AnswerTile answerTile : answerTiles) {
+								timer.schedule(new TimerTask() {
+
+									@Override
+									public void run() {
+										answerTile.setText(" ");
+										answerTile.setBackground(Color.YELLOW);
+									}
+								}, pause);
+								pause -= 500;
+
+							}
+						} else {
+							for (AnswerTile answerTile : answerTiles) {
+								answerTile.setBackground(Color.RED);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		@Override
+		public void dragEnter(DragSourceDragEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void dragExit(DragSourceEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void dragOver(DragSourceDragEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void dropActionChanged(DragSourceDragEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void dragGestureRecognized(DragGestureEvent arg0) {
+			if (this instanceof GridTile) {
+				GridTile pressedButton = (GridTile) this;
+				for (GridTile gridTile : gridTiles) {
+					if (gridTile.columnNum == pressedButton.columnNum
+							&& gridTile.clickedPosition > -1) {
+						return;
+					}
+				}
+				if (clickCount == currentGame.getWordLength()) {
+					if (pressedButton.clickedPosition < 0) {
+						return;
+					}
+				}
+				Transferable transferable;
+				if (currentGame.getCharOrder()) {
+					transferable = new StringSelection(getText() + " "
+							+ pressedButton.columnNum);
+				} else {
+					transferable = new StringSelection(getText() + " "
+							+ clickCount);
+
+				}
+				if (System.currentTimeMillis() - timer > 150) {
+					ds.startDrag(arg0, DragSource.DefaultCopyDrop,
+							transferable, this);
+				}
+			} else if (this instanceof AnswerTile) {
+				if (getText().equals(" ")) {
+					return;
+				}
+				AnswerTile pressedButton = (AnswerTile) this;
+				Transferable transferable;
+				if (currentGame.getCharOrder()) {
+					transferable = new StringSelection(getText() + " "
+							+ pressedButton.tileId);
+				} else {
+					transferable = new StringSelection(getText() + " "
+							+ pressedButton.clickedPosition);
+					setText(" ");
+				}
+				if (System.currentTimeMillis() - timer > 150) {
+					ds.startDrag(arg0, DragSource.DefaultCopyDrop,
+							transferable, this);
+				}
+			}
+
+		}
+		
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			timer = System.currentTimeMillis();
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		
 		
 	}
 	
@@ -525,20 +989,46 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 			super();
 			this.character = character;
 			setText(character);
-			setBackground(Color.yellow);
+			setBackground(tileColor);
 			tileId = iD;
 		}
+
+		DropTarget dt = new DropTarget(this, new DropTargetListener() {
+
+			@Override
+			public void dropActionChanged(DropTargetDragEvent dtde) {
+			}
+
+			@Override
+			public void drop(DropTargetDropEvent dtde) {
+				dtde.rejectDrop();
+			}
+
+			@Override
+			public void dragOver(DropTargetDragEvent dtde) {
+			}
+
+			@Override
+			public void dragExit(DropTargetEvent dte) {
+			}
+
+			@Override
+			public void dragEnter(DropTargetDragEvent dtde) {
+			}
+		});
 
 	}
 
 	class AnswerTile extends Tile {
-
+		
 		private static final long serialVersionUID = 1L;
+		private static final int RIGHT_SHIFT = 0;
+		private static final int LEFT_SHIFT = 1;
 		int tileId = -1;
 		int clickOrder;
 		String character = "";
-		Color color = Color.YELLOW;
-
+		int tileShiftEnd = -1;
+		int lastShift;
 		/**
 		 * Instantiates a new answer tile.
 		 * @param character, the character
@@ -548,18 +1038,107 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 			super();
 			setText(character);
 			tileId = iD;
-			setBackground(color);
+			setBackground(tileColor);
 			setVisible(false);
 		}
+		
+		
+		public void undoLastShift(int lastShift, int tileShiftEnd) {
+			if (lastShift == RIGHT_SHIFT) {
+				shiftTilesLeft(answerTiles, tileShiftEnd, gridTiles);
+			} else if (lastShift == LEFT_SHIFT) {
+				shiftTilesRight(answerTiles, tileShiftEnd, gridTiles);
+			}
+		}
 
+		DropTarget dt = new DropTarget(this, new DropTargetListener() {
+
+			@Override
+			public void dropActionChanged(DropTargetDragEvent dtde) {
+			}
+
+			@Override
+			public void drop(DropTargetDropEvent dtde) {
+				try {
+
+					Transferable transferable = dtde.getTransferable();
+
+					if (transferable
+							.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+
+						String dragContents = (String) transferable
+								.getTransferData(DataFlavor.stringFlavor);
+						String[] text = dragContents.split(" ");
+						if (currentGame.getCharOrder()) {
+							if (tileId != Integer.parseInt(text[1])) {
+								dtde.rejectDrop();
+							} else {
+								dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+								setText(text[0]);
+								guessWord[tileId] = text[0];
+								dtde.getDropTargetContext().dropComplete(true);
+							}
+						} else {
+							dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+							clickedPosition = Integer.parseInt(text[1]);
+							setText(text[0]);
+							guessWord[tileId] = text[0];
+							dtde.getDropTargetContext().dropComplete(true);
+						}
+
+					} else {
+
+						dtde.rejectDrop();
+
+					}
+
+				} catch (IOException e) {
+
+					dtde.rejectDrop();
+
+				} catch (UnsupportedFlavorException e) {
+
+					dtde.rejectDrop();
+
+				}
+			}
+
+			@Override
+			public void dragOver(DropTargetDragEvent dtde) {
+
+			}
+
+			@Override
+			public void dragExit(DropTargetEvent dte) {
+				if (lastShift > -1) {
+					undoLastShift(lastShift, tileShiftEnd);
+				}
+			}
+
+			@Override
+			public void dragEnter(DropTargetDragEvent dtde) {
+				if (getText().equals(" ") | currentGame.getCharOrder()) {
+					lastShift = -1;
+					return;
+				}
+				if (canShiftRight(answerTiles, tileId)) {
+					System.out.println("can shift right");
+					tileShiftEnd = shiftTilesRight(answerTiles, tileId,
+							gridTiles);
+					lastShift = RIGHT_SHIFT;
+				} else if (canShiftLeft(answerTiles, tileId)) {
+					System.out.println("can shift left");
+					tileShiftEnd = shiftTilesLeft(answerTiles, tileId,
+							gridTiles);
+					lastShift = LEFT_SHIFT;
+				}
+				// if (!getText().equals(" ")){
+				//
+				// }
+			}
+		});
 	}
 
-	public static void errorMessage(String a_string) {
 
-		JOptionPane.showMessageDialog(null, a_string, "Error",
-				JOptionPane.ERROR_MESSAGE);
-		System.exit(0);
 
-	}
-	
 }

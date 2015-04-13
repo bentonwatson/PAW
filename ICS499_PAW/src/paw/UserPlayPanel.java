@@ -34,7 +34,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -59,6 +58,8 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	private JPanel gameDetails;
 	private JLabel message;
 	private Font font;
+	private Color bgColor;
+	private Color tileColor;
 	
 	private int userGameLevel;
 	private String userGameLevelByName;
@@ -84,6 +85,8 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	ArrayList<String> foundWordList = new ArrayList<String>();
 	
 	public UserPlayPanel(Color color, PAWgui paw){
+		bgColor = color;
+		tileColor = Config.PLAY_TILE_COLOR;
 		this.internalgui = paw;
 		font = internalgui.getFont();
 		gameCollection = internalgui.getGameCollection();
@@ -94,7 +97,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		}
 		
 		setMinimumSize(new Dimension(1000,550));
-		setBackground(color);
+		setBackground(bgColor);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		
@@ -125,7 +128,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		numWords = new JEditorPane();
 		numWords.setEditable(false);
 		numWords.setFont(font);
-		numWords.setBackground(Color.yellow);
+		numWords.setBackground(bgColor);
 		
 		if(currentGame != null){
 			numWords.setText("Number of Words = " + String.valueOf(currentGame.getNumberWords())
@@ -138,7 +141,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		words = new JEditorPane();
 		words.setEditable(false);
 		words.setFont(font);
-		words.setBackground(Color.yellow);
+		words.setBackground(bgColor);
 		String foundList = "";
 		if(foundWordList != null){
 			for(int i = 0; i < foundWordList.size(); i++){
@@ -223,7 +226,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		gridPanel.add(columnPanel, BorderLayout.CENTER);
 		
 		JPanel instructPanel = new JPanel();
-		JLabel ansLabel = new JLabel("Click tile to quess word.");
+		JLabel ansLabel = new JLabel("Click or Drag tile to quess word.");
 		ansLabel.setFont(font);
 		instructPanel.add(ansLabel);
 
@@ -292,15 +295,15 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	public void generateButtonPanel(){
 		buttPanel = new JPanel();
 		buttPanel.setLayout(new BorderLayout());
-		buttPanel.setBackground(Color.yellow);
+		buttPanel.setBackground(bgColor);
 		buttonPanel = new JPanel(new SpringLayout());
-		buttonPanel.setBackground(Color.yellow);
+		buttonPanel.setBackground(bgColor);
 		
 		if(currentGame != null){
 //			gameDetails = new JPanel(new SpringLayout());
 			JEditorPane gameDetails = new JEditorPane();
 			gameDetails.setEditable(false);
-			gameDetails.setBackground(Color.yellow);
+			gameDetails.setBackground(bgColor);
 			gameDetails.setFont(font);
 			String dup;
 			String ord;
@@ -394,7 +397,29 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		timerPanel.setBounds(0, 330, 300, 70);
 		time.start();
 		
-		SpringUtility.makeGrid(buttonPanel, 4, 1, 25, 15, 15, 15);
+		//clears the guess tiles
+		JButton clearGuessBtn = new JButton("Clear \nGuess");
+		clearGuessBtn.setFont(font);
+		clearGuessBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (AnswerTile answerTile : answerTiles) {
+					answerTile.setText(" ");
+					answerTile.setBackground(tileColor);
+				}
+				for (GridTile gridTile : gridTiles) {
+					gridTile.clickedPosition = -1;
+					gridTile.setSelected(false);
+					gridTile.setBackground(tileColor);
+				}
+				for (int i = 0; i < guessWord.length; i++) {
+					guessWord[i] = "";
+				}
+				clickCount = 0;
+			}
+		});
+		buttonPanel.add(clearGuessBtn);
+		
+		SpringUtility.makeGrid(buttonPanel, 5, 1, 25, 15, 15, 15);
 		
 		buttPanel.add(buttonPanel, BorderLayout.SOUTH);
 		add(buttPanel, BorderLayout.EAST);
@@ -407,6 +432,20 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	public void setCurrentGame(Game game){
 		currentGame = game;
 		
+	}
+
+	private class ClockListener implements ActionListener {
+		int counter;
+	
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			NumberFormat formatter = new DecimalFormat("00");
+			String hour = formatter.format(counter / 3600);
+			String minute = formatter.format(counter / 60 % 60);
+			String second = formatter.format(counter % 60);
+			jlbTimer.setText(String.valueOf(hour + ":" + minute + ":" + second));
+			counter++;
+		}
 	}
 
 	@Override
@@ -433,7 +472,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				at.character = pressedButton.character;
 				at.setText(pressedButton.character);
 				at.setVisible(true);
-				pressedButton.setBackground(Color.YELLOW);
+				pressedButton.setBackground(tileColor);
 				guessWord[pressedButton.columnNum] = pressedButton.character;
 				
 			}else if(pressedButton.clickedPosition == -1 && !currentGame.getCharOrder()){
@@ -445,7 +484,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				at.clickOrder = clickCount;
 				at.setText(pressedButton.character);
 				at.setVisible(true);
-				pressedButton.setBackground(Color.YELLOW);
+				pressedButton.setBackground(tileColor);
 				guessWord[clickCount] = pressedButton.character;
 				clickCount++;
 				
@@ -465,7 +504,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				if (nt.getBackground().equals(Color.RED)) {
 					for (AnswerTile answerTile : answerTiles) {
 						answerTile.setSelected(false);
-						answerTile.setBackground(Color.YELLOW);
+						answerTile.setBackground(tileColor);
 					}
 				}
 				clickCount--;
@@ -480,7 +519,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				if (nt.getBackground().equals(Color.RED)) {
 					for (AnswerTile answerTile : answerTiles) {
 						answerTile.setSelected(false);
-						answerTile.setBackground(Color.YELLOW);
+						answerTile.setBackground(tileColor);
 						pressedButton.setSelected(false);
 					}
 				}
@@ -524,7 +563,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 										//i want to know if there are any more of this letter needed
 										if(gridTile.repeat > 1){
 											gridTile.setSelected(false);
-											gridTile.setBackground(Color.YELLOW);
+											gridTile.setBackground(tileColor);
 											gridTile.clickedPosition = -1;
 											gridTile.setSelected(false);
 											gridTile.repeat -= 1;
@@ -545,7 +584,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 							public void run() {
 								answerTile.setText(" ");
 								answerTile.setSelected(false);
-								answerTile.setBackground(Color.YELLOW);
+								answerTile.setBackground(tileColor);
 							}
 						}, pause);
 //						pause -= 500; // creates a bug
@@ -573,7 +612,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 			if (pressedButton.getBackground().equals(Color.RED)) {
 				for (AnswerTile answerTile : answerTiles) {
 					answerTile.setSelected(false);
-					answerTile.setBackground(Color.YELLOW);
+					answerTile.setBackground(tileColor);
 					message.setText("");
 				}
 			}
@@ -585,7 +624,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				if (gridTile.columnNum == pressedButton.tileId) {
 					gridTile.clickedPosition = -1;
 					gridTile.setSelected(false);
-					gridTile.setBackground(Color.YELLOW);
+					gridTile.setBackground(tileColor);
 				}
 			}
 
@@ -614,7 +653,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *
 	 */
-	class Tile extends JToggleButton implements DragGestureListener,
+	class Tile extends JButton implements DragGestureListener,
 	DragSourceListener {
 		private static final long serialVersionUID = 1L;
 		int clickedPosition = -1;
@@ -690,7 +729,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 			super();
 			this.character = character;
 			setText(character);
-			setBackground(Color.yellow);
+			setBackground(tileColor);
 			tileId = iD;
 		}
 		
@@ -702,7 +741,6 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		int tileId = -1;
 		int clickOrder;
 		String character = "";
-		Color color = Color.YELLOW;
 		
 		/**
 		 * Instantiates a new answer tile.
@@ -713,7 +751,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 			super();
 			setText(character);
 			tileId = iD;
-			setBackground(color);
+			setBackground(tileColor);
 			setVisible(false);
 		}
 
@@ -781,20 +819,6 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 //			}
 //		});
 
-	}
-
-	private class ClockListener implements ActionListener {
-		int counter;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			NumberFormat formatter = new DecimalFormat("00");
-			String hour = formatter.format(counter / 3600);
-			String minute = formatter.format(counter / 60 % 60);
-			String second = formatter.format(counter % 60);
-			jlbTimer.setText(String.valueOf(hour + ":" + minute + ":" + second));
-			counter++;
-		}
 	}
 
 	public static void errorMessage(String a_string) {
