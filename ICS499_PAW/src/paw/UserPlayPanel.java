@@ -1,9 +1,7 @@
 package paw;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -36,12 +34,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.swing.JFrame;
-
 import java.util.Timer;
 import java.util.TimerTask;
-
 //import javax.swing.Timer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -50,12 +44,10 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import paw.AdminPlayPanel.GridTile;
 import core.Game;
 import core.GameCollection;
 import core.SpringUtility;
@@ -97,7 +89,6 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	private JEditorPane words;
 	private GameCollection currentCollection;	
 	private ProgressTracker progress;
-	private boolean newGameBtnPressed = false;
 	
 	ArrayList<String> notFoundWords = new ArrayList<String>();
 	ArrayList<String> foundWordList = new ArrayList<String>();
@@ -676,18 +667,18 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 				}
 				
 				if (clickCount == currentGame.getWordLength()) {
-					for (GridTile gridTile : gridTiles) {
-//						System.out.println(gridTile.clickedPosition);
-					}
+//					for (GridTile gridTile : gridTiles) {
+////						System.out.println(gridTile.clickedPosition);
+//					}
 					setGuessWord();
 					String found = "";
 					for(String s: guessWord){
 						found += s;
 					}
 					if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
-						for (GridTile gridTile : gridTiles) {
-//							System.out.println(gridTile.clickedPosition);
-						}
+//						for (GridTile gridTile : gridTiles) {
+////							System.out.println(gridTile.clickedPosition);
+//						}
 						tracker.setSelectedWordAsFound(found);
 						foundWordList.add(found);
 						numWords.setText("Number of Words = "

@@ -38,7 +38,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;

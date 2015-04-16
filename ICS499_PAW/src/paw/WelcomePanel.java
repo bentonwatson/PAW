@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -19,15 +18,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
-import core.Game;
-import core.GameCollection;
-
 public class WelcomePanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	PAWgui internalgui;
-	private int gameLevel;
-	private int userGameLevel;
-	private GameCollection gameCollection;
 	private Color bgColor;
 	private Color btnColor;
 	
@@ -35,7 +32,6 @@ public class WelcomePanel extends JPanel {
 		bgColor = color;
 		btnColor = Config.WELCOME_PANEL_BUTTONS;
 		internalgui = paw;
-		gameCollection = internalgui.getGameCollection();
 		
 		setMinimumSize(new Dimension(640,480));
 		setBackground(bgColor);

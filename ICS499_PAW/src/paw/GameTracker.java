@@ -20,7 +20,6 @@ import core.WordProcessor;
 public class GameTracker
 {
 
-	private Game game; // this is the selected puzzle;
 	private List<Boolean> wordListStatus;
 	private List<String> wordList;
 	private int numberOfWords;

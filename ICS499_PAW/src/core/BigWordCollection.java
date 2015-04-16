@@ -20,6 +20,7 @@ import paw.Config;
 
 public class BigWordCollection 
 {    
+		private int language = Config.DEFAULTLANGUAGE;
 	    // FUTURE: We can serialize it for a later/faster retrieval 
 	    // this is the single collection we hold in memory
 		private ArrayList<BigWord>  bigWordsList = new ArrayList<BigWord>();
@@ -346,9 +347,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(Config.DEFAULTLANGUAGE == 0){
+				if(language == 0){
 					word = bw.getEnglish();
-				}else if(Config.DEFAULTLANGUAGE == 1){
+				}else if(language == 1){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -365,16 +366,15 @@ public class BigWordCollection
 		 * Returns the Big Word Collection based on the length (min and max) of the word
 		 * This method matches all the strings between MIN and MAX (including)
 		 */
-		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordLength(int min, int max)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(Config.DEFAULTLANGUAGE == 0){
+				if(language == 0){
 					word = bw.getEnglish();
-				}else if(Config.DEFAULTLANGUAGE == 1){
+				}else if(language == 1){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -395,9 +395,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(Config.DEFAULTLANGUAGE == 0){
+				if(language== 0){
 					word = bw.getEnglish();
-				}else if(Config.DEFAULTLANGUAGE == 1){
+				}else if(language == 1){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -424,16 +424,15 @@ public class BigWordCollection
 		 * For English, strength = length
 		 * For Telugu, different algorithm is already provided
 		 * */
-		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordStrength(int strength)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(Config.DEFAULTLANGUAGE == 0){
+				if(language == 0){
 					word = bw.getEnglish();
-				}else if(Config.DEFAULTLANGUAGE == 1){
+				}else if(language == 1){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -450,16 +449,15 @@ public class BigWordCollection
 		 * For English, strength = length
 		 * For Telugu, different algorithm is already provided
 		 * */
-		@SuppressWarnings("unused")
 		public BigWordCollection getBigWordCollectionByWordStrength(int min, int max)
 		{
 			ArrayList<BigWord> bwList = new ArrayList<BigWord>();
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(Config.DEFAULTLANGUAGE == 0){
+				if(language == 0){
 					word = bw.getEnglish();
-				}else if(Config.DEFAULTLANGUAGE == 1){
+				}else if(language== 1){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -480,7 +478,6 @@ public class BigWordCollection
 		public BigWordCollection getBigWordCollectionByCriteria
 		                 (String a_topic, int min_len, int max_len, int min_strength, int max_strength)
 		{
-			ArrayList<BigWord> returnList = new ArrayList<BigWord>();
 			BigWordCollection bwcTopics = getBigWordCollectionByTopic(a_topic);
 //			System.out.println("by topic size - " + bwcTopics.size());
 			BigWordCollection bwcLength = bwcTopics.getBigWordCollectionByWordLength(min_len, max_len);

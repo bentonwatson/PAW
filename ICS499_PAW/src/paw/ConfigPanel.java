@@ -520,14 +520,14 @@ public class ConfigPanel extends JPanel
 		// ends layout
 	}  // end initComponents
    
-	/**
-	 * this method switches the tab to Generate tab
-	 * @param index of generate tab only called internally
-	 */
-	private void goToGenerate(int index) {
-		if(index != -1)
-			internalgui.selectTabbedPaneIndex(index);		
-	}
+//	/**
+//	 * this method switches the tab to Generate tab
+//	 * @param index of generate tab only called internally
+//	 */
+//	private void goToGenerate(int index) {
+//		if(index != -1)
+//			internalgui.selectTabbedPaneIndex(index);		
+//	}
 
 
 	/**
