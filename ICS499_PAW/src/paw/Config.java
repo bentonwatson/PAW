@@ -27,11 +27,20 @@ public class Config {
 	public static final float FONTSIZETELUGU = 26.0f;
 
 	// some gui code will need additions to incorporate more languages.
-	//default language  (0 = english, 1 = telugu);
+	//default language  (0 = english, 1 = telugu); change input default when language changes
 	public static final int DEFAULTLANGUAGE = 0;
 	
+	//this is the file for BigWordCollection default to English
+	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\en\\input_words.txt";
+	//this is the file for BigWordCollection default to Telugu
+//	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\te\\input_words.txt";
+	
+	// When using bigwordcollection
+	public static final String DELIMETER = "\\|";
+	public static final int MAX_ITEMS_PER_LINE = 7;
+	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "admin";
+	public static String DEFAULTMODE = "user";
 	
 	//default game configurations
 	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};
@@ -47,16 +56,9 @@ public class Config {
 //	public static String progressFile = "src\\PAW_Progress.txt";
 
 	// user mode gets game to play from this set
-	public static final String GAME_SET = System.getProperty("user.home") + "\\PAW\\enGameSet.txt";
+	public static final String EN_GAME_SET = System.getProperty("user.home") + "\\PAW\\en\\enGameSet.txt";
+	public static final String TE_GAME_SET = System.getProperty("user.home") + "\\PAW\\te\\teGameSet.txt";
 //	public static final String GAME_SET = "src\\enGameSet.txt";	
-	
-	//this is the file for BigWordCollection default
-	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\input_words.txt";
-//	public static final String INPUT_FILE = "src\\input_words.txt";	
-
-	// When using bigwordcollection
-	public static final String DELIMETER = "\\|";
-	public static final int MAX_ITEMS_PER_LINE = 7;
 	/*
 	 * English Options
 	 */

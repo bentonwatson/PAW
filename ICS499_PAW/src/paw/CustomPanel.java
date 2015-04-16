@@ -97,6 +97,7 @@ public class CustomPanel extends JPanel {
 				internalgui.customWords = customWords;
 				if(customWords.get(0).length() > 1 && customWords.size() > 0){
 					internalgui.tmpConfigSettings.set(0, "Custom Topic");
+					internalgui.tmpConfigSettings.set(6, "true");
 				}
 				internalgui.selectTabbedPaneIndex(3);
 			}

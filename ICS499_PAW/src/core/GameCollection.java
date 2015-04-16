@@ -15,8 +15,10 @@ public class GameCollection
 
 	// for maintaining a puzzle collection
 	private List<Game> allGames = new ArrayList<Game>();
+	
 	private int currentIndex = 0;
 	private String currentID = null;
+	private int language = Config.DEFAULTLANGUAGE;
 
 	/*
 	 * No-arg constructor uses the default file name
@@ -25,20 +27,31 @@ public class GameCollection
 	{
 		try
 		{
-			readGame(Config.GAME_SET);
+			if(language == 0){
+				readGame(Config.EN_GAME_SET);
+			}else{
+				readGame(Config.TE_GAME_SET);
+			}
 		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Constructor take an arraylist of games
+	 * @param arraylist of games
+	 */
+	public GameCollection(ArrayList<Game> gameList){
+		for(Game game : gameList){
+			allGames.add(game);
+		}
+	}
+	
 	/*
-	 * Constructor takes the input file name and * Reads each set of the puzzles
-	 * * Creates a Puzzle using Puzzle.java * and adds the Puzzle to the
-	 * collection allPuzzles * NOTE: Please make sure that you remove * from
-	 * puzzle.txt before using it * NOTE: If you are keeping it, then you have
-	 * to handle it here (additional complexity) * That is there in the puzzle
-	 * text file for representation only The file is a UTF-8 file so that
+	 * Constructor takes the input file name and * Reads each set of the games
+	 * * Creates a Game using Game.java * and adds the Game to the
+	 * collection allGames * The file is a UTF-8 file so that
 	 * multi-byte characters can be handled
 	 */
 	public GameCollection(String a_file_name)
@@ -52,22 +65,10 @@ public class GameCollection
 		}
 	}
 
-	/**
-	 * Method for adding a game to a game collection
-	 * 
-	 * @param a_game
-	 */
-	
-	public void add(Game a_game)
-	{
-		allGames.add(a_game);
-	}
-
-	public void readGame(String a_pathName) throws IOException
-	{
+	public void readGame(String a_pathName) throws IOException {
 	
 		FileInputStream in = new FileInputStream(a_pathName);
-//		InputStream in = getClass().getResourceAsStream(a_pathName);
+//		FileInputStream in = getClass().getResourceAsStream(a_pathName);
 		Scanner input = new Scanner(in, "UTF-8");
 		String line2 = "";
 		boolean delimiterFound = false;
@@ -105,8 +106,6 @@ public class GameCollection
 		boolean charOrder = false;
 		ArrayList<String> wordList = new ArrayList<String>();
 		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
-		String[][] puzzleGrid;
-		ArrayList<String[]> charGrid = new ArrayList<String[]>();
 		boolean idFound = false;
 		boolean titleFound = false;
 		boolean levelFound = false;
@@ -165,7 +164,7 @@ public class GameCollection
 			}
 		}//end while 
 		
-		if (!idFound || !titleFound || !levelFound || !wordsFound || !columnFound){
+		if (!idFound || !titleFound || !levelFound || !wordsFound || !columnFound || !otherFound){
 			PAWgui.errorMessage("The line: " +  a_text + "\n" +
 					"does not contain required data for game collection");
 		}
@@ -176,12 +175,61 @@ public class GameCollection
 	}
 
 	/**
-	 * method returns a game based ont he level
+	 * Method for adding a game to a game collection
+	 * 
+	 * @param a_game
+	 */
+	
+	public void add(Game a_game)
+	{
+		allGames.add(a_game);
+	}
+	
+	/**
+	 * Method to remove a game form the collection
+	 * @param a_game
+	 */
+	public void removeGame(Game a_game){
+		GameCollection tmpCollection = this;
+		GCIterator iterator = new GCIterator(tmpCollection);
+		iterator.start();
+		
+		if(iterator.getCurrent().getId().equals(a_game.getId())){
+			allGames.remove(iterator.getCurrentIndex());
+		}else{
+			while(iterator.hasNext()){
+				if(iterator.getNext().getId().equals(a_game.getId())){
+					allGames.remove(iterator.getCurrentIndex() - 1);
+					break;
+				}
+			}
+		}
+	}
+
+	public GameCollection getGameCollectionByLevel(int a_level){
+		GCIterator iterator = new GCIterator(this);
+		ArrayList<Game> levelList = new ArrayList<Game>();
+		iterator.start();
+		int level = iterator.getCurrent().getLevel();
+		if(level == a_level){
+			levelList.add(iterator.getCurrent());
+		}
+		while(iterator.hasNext()){
+			Game tmp = iterator.getNext();
+			level = tmp.getLevel();
+			if(level == a_level){
+				levelList.add(tmp);
+			}
+		}
+		return new GameCollection(levelList);
+	}
+
+	/**
+	 * method returns a game based on the level
 	 * @param a_level
 	 * @return Game
 	 */
 	public Game getGameByLevel(int a_level){
-		
 		for (int i = 0; i < allGames.size(); i++)
 		{
 			int level = allGames.get(i).getLevel();
@@ -276,6 +324,10 @@ public class GameCollection
 		return allGames.get(randomIndex);
 	}
 
+	public List<Game> getAllGames(){
+		return allGames;
+	}
+	
 	public boolean isDelimiter(String a_String)
 	{
 		if (a_String.startsWith("---") || a_String == null
@@ -324,6 +376,14 @@ public class GameCollection
 		}
 		return gameIds;
 	}
-	
+
+	public int size() {
+		return allGames.size();
+	}
+
+	public Game getGame(int index) {
+		return allGames.get(index);
+	}
+
 
 }

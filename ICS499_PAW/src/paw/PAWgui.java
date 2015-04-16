@@ -28,6 +28,7 @@ public class PAWgui extends 	JFrame
 	private Font font;
 	private int userGameLevel;
 	private Game currentGame;
+	private boolean playRandom = false;
 	
 	public String customTopic = "";
 	public ArrayList<String> customWords = new ArrayList<String>();
@@ -68,7 +69,7 @@ public class PAWgui extends 	JFrame
 		tabbedPane.setFont(font);
 		topPanel.add( tabbedPane, BorderLayout.CENTER );
 		
-		gameCollection = new GameCollection();
+//		gameCollection = new GameCollection();
 		
 		
 		//sets the default configurations to level 1
@@ -182,6 +183,14 @@ public class PAWgui extends 	JFrame
 		return userGameLevel;
 	}
 
+	public void setPlayRandom(boolean b){
+		playRandom = b;
+	}
+	
+	public boolean getPlayRandom(){
+		return playRandom;
+	}
+	
 	public void setCurrentGame(Game a_game){
 		currentGame = a_game;
 	}

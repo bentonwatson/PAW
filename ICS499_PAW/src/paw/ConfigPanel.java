@@ -330,9 +330,25 @@ public class ConfigPanel extends JPanel
 		useCustomValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(6));
 		if(useCustomValue){
 			useCustomYes.setSelected(true);
+			showTotalWordsTF.setText(String.valueOf(internalgui.customWords.size()));
 		}else{
 			useCustomNo.setSelected(true);
 		}
+		useCustomYes.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(!useCustomYes.isSelected()){
+					internalgui.tmpConfigSettings.set(0, "Any");
+					topicComboBox.setSelectedItem(internalgui.tmpConfigSettings.get(0));
+					showTotalWordsTF.setText(String.valueOf(allWords.size()));
+				}
+				if(useCustomYes.isSelected()){
+					internalgui.tmpConfigSettings.set(0, "Custom Topic");
+					topicComboBox.setSelectedItem(internalgui.tmpConfigSettings.get(0));
+					showTotalWordsTF.setText(String.valueOf(internalgui.customWords.size()));
+				}
+			}
+		});
 		JPanel useCustomPanel = new JPanel(new FlowLayout());
 		useCustomPanel.add(useCustomYes);
 		useCustomPanel.add(useCustomNo);
@@ -367,7 +383,7 @@ public class ConfigPanel extends JPanel
 				if(useCustomNo.getModel() == useCustomGroup.getSelection()){
 					useCustomValue = false;
 				}
-				if(internalgui.customWords.size() > 0 && useCustomValue){
+				if(useCustomValue){
 					String topic = internalgui.customTopic;
 					ArrayList<String> custWords = new ArrayList<String>();
 					for(String word : internalgui.customWords){
@@ -379,6 +395,7 @@ public class ConfigPanel extends JPanel
 					gg = new GameGenerator(topic, levelValue, minLenValue, 
 							minStrValue, allowDupValue, charOrderValue, custWords);
 					numWordsFound = gg.getNumCustomWords();
+					showTotalWordsTF.setText(String.valueOf(internalgui.customWords.size()));
 					
 				}else{
 					gg = new GameGenerator(topicValue, levelValue, minLenValue, 

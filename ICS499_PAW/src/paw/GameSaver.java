@@ -18,7 +18,7 @@ import core.Game;
  * Dependent on data from Game Generator
  */
 public class GameSaver {
-	
+	private int language = Config.DEFAULTLANGUAGE;
 	private Game newGame;
 	private String gameId;
 	private boolean saveSuccessful;
@@ -38,7 +38,11 @@ public class GameSaver {
 		BufferedReader br = null;
 		try {
 			String sCurrentLine;
-			br = new BufferedReader(new FileReader(Config.GAME_SET));
+			if(language == 0){
+				br = new BufferedReader(new FileReader(Config.EN_GAME_SET));
+			}else{
+				br = new BufferedReader(new FileReader(Config.TE_GAME_SET));
+			}
 			while ((sCurrentLine = br.readLine()) != null) {
 				if(sCurrentLine.contains("ID")){
 					id = sCurrentLine.split(" ")[1];
@@ -59,7 +63,12 @@ public class GameSaver {
 	 */
 	public void writeNewGame() {
 		saveSuccessful = false;
-		String path= Config.GAME_SET;  //  set the value to the game get folder by path
+		String path;
+		if(language == 0){
+			path = Config.EN_GAME_SET;  //  set the value to the game get folder by path
+		}else{
+			path = Config.TE_GAME_SET;  //  set the value to the game get folder by path
+		}
 		String title = newGame.getTitle();
 		generateNewId();
 		String level = newGame.getLevel()+"";
@@ -67,13 +76,13 @@ public class GameSaver {
 		String order = String.valueOf(newGame.getCharOrder());
 		String wordList = formatWordList(newGame.getWordList());
 		String columns = formatColumnData(newGame.getColumnData());
-		String data="\n"+"ID: "+gameId+"\n"
-				+ "Title:  "+ title+"\n"
-				+ "Level: "+ level+ "\n"
-				+ "Other: "+ dup + "," + order + "\n"
-				+ "Words:   "+ wordList+"\n"
+		String data="\n\r"+"ID: "+gameId+"\n\r"
+				+ "Title:  "+ title+"\n\r"
+				+ "Level: "+ level+ "\n\r"
+				+ "Other: "+ dup + "," + order + "\n\r"
+				+ "Words:   "+ wordList+"\n\r"
 				+ columns
-				+"-----------------------------------------";
+				+"-----------------------------------------\r";
 		try {
 			FileWriter fileWritter = new FileWriter(path,true);
 			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
