@@ -155,4 +155,77 @@ public class GCIterator {
 	}
 	
 
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+	   System.out.println("Generating a first Iterator on the first BWC");
+       BigWordCollection bwc_1 = new BigWordCollection();
+       BWCIterator bwc_1_iterator_1 = new BWCIterator(bwc_1);
+       
+       System.out.println(bwc_1_iterator_1.getCurrent());
+       
+       bwc_1_iterator_1.next();
+       System.out.println(bwc_1_iterator_1.getCurrent());
+       
+       bwc_1_iterator_1.previous();
+       System.out.println(bwc_1_iterator_1.getCurrent());
+      
+       bwc_1_iterator_1.previous();
+       System.out.println(bwc_1_iterator_1.getCurrent());
+      
+       bwc_1_iterator_1.end();
+       System.out.println(bwc_1_iterator_1.getCurrent());
+       
+       bwc_1_iterator_1.next();
+       System.out.println(bwc_1_iterator_1.getCurrent());
+       
+       
+       System.out.println("Generating a second Iterator on the first BWC");
+       BWCIterator bwc_1_iterator_2= new BWCIterator(bwc_1);
+       
+       bwc_1_iterator_2.next();
+       bwc_1_iterator_2.next();
+       bwc_1_iterator_2.next();
+       
+       System.out.println(bwc_1_iterator_2.getCurrent());  
+       bwc_1_iterator_2.end();
+       System.out.println(bwc_1_iterator_2.getCurrent());
+
+       bwc_1_iterator_2.start();
+       System.out.println(bwc_1_iterator_2.getCurrent());
+       
+       bwc_1_iterator_2.next();
+       System.out.println(bwc_1_iterator_2.getCurrent());
+       
+       
+       System.out.println("Creating a mini collection for Presidents");
+       System.out.println("Generating another iterator on thaat collection");
+       BigWordCollection bwc_2 = new BigWordCollection();
+       BigWordCollection presidents_bwc = bwc_2.getBigWordCollectionByKeyWord("Presidents");
+       System.out.println("size of president's collection = " + presidents_bwc.size());
+       
+       BWCIterator p_bwc_iterator = new BWCIterator(presidents_bwc);
+       
+       System.out.println(p_bwc_iterator.getCurrent());
+       
+       p_bwc_iterator.next();
+       System.out.println(p_bwc_iterator.getCurrent());
+       
+       p_bwc_iterator.previous();
+       System.out.println(p_bwc_iterator.getCurrent());
+      
+       p_bwc_iterator.previous();
+       System.out.println(p_bwc_iterator.getCurrent());
+      
+       p_bwc_iterator.end();
+       System.out.println(p_bwc_iterator.getCurrent());
+       
+       p_bwc_iterator.next();
+       System.out.println(p_bwc_iterator.getCurrent());
+       
+       
+	}
+
 }
