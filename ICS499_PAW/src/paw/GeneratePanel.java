@@ -62,6 +62,13 @@ class GeneratePanel extends JPanel{
 	}
 	
 	/**
+	 * sets the newGame for the Generate Panel
+	 */
+	public static void setNewGame(GameGenerator game){
+		newGame = game.getNewGame();
+	}
+
+	/**
 	 * generates the panel to display words returned from config panel
 	 */
 	public void generateWordListPanel(){
@@ -216,13 +223,6 @@ class GeneratePanel extends JPanel{
 		
 	}
 	
-	/**
-	 * sets the newGame for the Generate Panel
-	 */
-	public static void setNewGame(GameGenerator game){
-		newGame = game.getNewGame();
-	}
-
 	/**
 	 * This defines the basic tile used to hold the logical characters in the game
 	 *

@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import core.GCIterator;
 import core.Game;
+import core.GameCollection;
 
 /**
  * 
@@ -33,28 +35,19 @@ public class GameSaver {
 	 * Method generates a new Id based on existing Ids in the gameSet
 	 */
 	public void generateNewId(){
-		String id = "";
-
-		BufferedReader br = null;
-		try {
-			String sCurrentLine;
-			if(language == 0){
-				br = new BufferedReader(new FileReader(Config.EN_GAME_SET));
-			}else{
-				br = new BufferedReader(new FileReader(Config.TE_GAME_SET));
-			}
-			while ((sCurrentLine = br.readLine()) != null) {
-				if(sCurrentLine.contains("ID")){
-					id = sCurrentLine.split(" ")[1];
-				}
-			}
-		} catch (IOException e) { e.printStackTrace(); } 
-		if(!id.equals("")){
-			int idSetup= (Integer.parseInt(id)+1);
-			gameId = ("00"+ idSetup);
+		GameCollection gc = new GameCollection();
+		GCIterator iterator = new GCIterator(gc);
+		iterator.end();
+		String lastGameId = iterator.getCurrent().getId();
+		int newID = (Integer.valueOf(lastGameId)) + 1;
+		if(newID < 10){
+			gameId = "00" +String.valueOf(newID);
+		}else if(newID > 9 && newID < 100){
+			gameId = "0" + String.valueOf(newID);
 		}else{
-			gameId = "001";
+			gameId = String.valueOf(newID);
 		}
+		
 	}
 	 
 	/**

@@ -29,6 +29,7 @@ public class PAWgui extends 	JFrame
 	private int userGameLevel;
 	private Game currentGame;
 	private boolean playRandom = false;
+	private boolean newBtnPressed = false;
 	
 	public String customTopic = "";
 	public ArrayList<String> customWords = new ArrayList<String>();
@@ -88,7 +89,7 @@ public class PAWgui extends 	JFrame
 		tabbedPane.addTab( "Welcome", welcomePanel );
 		
 		if(mode.equals("user")){
-			createUserPlayPage();
+//			createUserPlayPage();
 			tabbedPane.addTab( "Play", userPlayPanel );
 			
 			ChangeListener changeListener = new ChangeListener() {
@@ -189,6 +190,14 @@ public class PAWgui extends 	JFrame
 	
 	public boolean getPlayRandom(){
 		return playRandom;
+	}
+	
+	public void setNewBtnPressed(boolean b){
+		newBtnPressed = b;
+	}
+	
+	public boolean getNewBtnPressed(){
+		return newBtnPressed;
 	}
 	
 	public void setCurrentGame(Game a_game){

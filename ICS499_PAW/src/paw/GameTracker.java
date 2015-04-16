@@ -35,12 +35,13 @@ public class GameTracker
 	GameTracker(Game a_game)
 	{
 		language = Config.DEFAULTLANGUAGE;
-		wordListStatus = new ArrayList<Boolean>(); // by default, all will be
 													// FALSE
 		// numberOfWords = puzzle.getWordList().size();
 		numberOfWordsFound = 0;
 		wordList = a_game.getWordList();
 		numberOfWords = wordList.size();
+
+		wordListStatus = new ArrayList<Boolean>(); // by default, all will be
 		for (int i = 0; i < numberOfWords; i++)
 		{
 			wordListStatus.add(false);
@@ -59,7 +60,7 @@ public class GameTracker
 	{
 		boolean theReturn = false;
 		
-		for (int i = 0; i < numberOfWords; i++)
+		for (int i = 0; i < wordList.size(); i++)
 		{
 			String word = wordList.get(i);
 			word = word.replaceAll("\\s+", "");
@@ -67,8 +68,6 @@ public class GameTracker
 			if (word.equalsIgnoreCase(a_selected_word.replaceAll("\\s+", "")))
 			{
 				theReturn = true;
-				// set the word status
-				setSelectedWordAsFound(i);
 			}
 		}
 		
@@ -89,7 +88,6 @@ public class GameTracker
 		for (String gameWord : wordList) {
 			wp.setWord(gameWord);
 				if(wp.equals(guessWord)){
-					numberOfWordsFound++;
 					return true;
 				}
 		}
@@ -113,9 +111,10 @@ public class GameTracker
 	 * this method sets the a_selected_word as FOUND precondition is
 	 * isWordInTheList = true
 	 */
-	public void setSelectedWordAsFound(int a_index)
+	public void setSelectedWordAsFound(String a_word)
 	{
-		wordListStatus.add(a_index, true);
+		int index = wordList.indexOf(a_word);
+		wordListStatus.set(index, true);
 		numberOfWordsFound++;
 
 	}
@@ -128,11 +127,49 @@ public class GameTracker
 	 */
 	public boolean isWordAlreadyFound(String a_selected_word)
 	{
+		int index = wordList.indexOf(a_selected_word);
+		if(wordListStatus.get(index)){
+			return true;
+		}
+		return false;
+//		for (int i = 0; i < numberOfWords; i++)
+//		{
+//			if (wordListStatus.get(i).equals(true))
+//			{
+//				if (wordList.get(i).equals(a_selected_word))
+//				{
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+	}
+	/**
+	 * This method checks whether a word has already been marked as found
+	 * 
+	 * @param string[]
+	 * @return
+	 */
+	public boolean isWordAlreadyFound(String[] inputWord)
+	{
+		WordProcessor wp = new WordProcessor("");
+		wp = new WordProcessor("");
+		String guessWord = "";
+		for (String string : inputWord) {
+			guessWord += string;
+		}
+		
+		for (String gameWord : wordList) {
+			wp.setWord(gameWord);
+				if(wp.equals(guessWord)){
+					numberOfWordsFound++;
+				}
+		}
 		for (int i = 0; i < numberOfWords; i++)
 		{
 			if (wordListStatus.get(i).equals(true))
 			{
-				if (wordList.get(i).equals(a_selected_word))
+				if (wordList.get(i).equals(guessWord))
 				{
 					return true;
 				}

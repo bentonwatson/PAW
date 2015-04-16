@@ -219,6 +219,13 @@ public class ConfigPanel extends JPanel
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				topicValue = topicComboBox.getSelectedItem().toString();
+				if(!topicValue.equals("Custom Topic")){
+					useCustomYes.setSelected(false);
+					useCustomNo.setSelected(true);
+				}else{
+					useCustomYes.setSelected(true);
+					useCustomNo.setSelected(false);
+				}
 			}
 		});		
 		

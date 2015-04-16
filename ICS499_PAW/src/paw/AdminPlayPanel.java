@@ -465,11 +465,12 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 				
 				if (clickCount == currentGame.getWordLength()) {
 					
-					if (tracker.isWordInTheList(guessWord)) {
-						String found = "";
-						for(String s: guessWord){
-							found += s;
-						}
+					String found = "";
+					for(String s: guessWord){
+						found += s;
+					}
+					if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
+						tracker.setSelectedWordAsFound(found);
 						foundWordList.add(found);
 						numWords.setText("Number of Words = "
 								+ String.valueOf(currentGame.getNumberWords())
@@ -727,12 +728,13 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					}
 					if (clickCount == currentGame.getWordLength()) {
 						setGuessWord();
-						if (tracker.isWordInTheList(guessWord)) {
-							String foundWord = "";
-							for (String string : guessWord) {
-								foundWord += string;
-							}
-							foundWordList.add(foundWord);
+						String found = "";
+						for(String s: guessWord){
+							found += s;
+						}
+						if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
+							tracker.setSelectedWordAsFound(found);
+							foundWordList.add(found);
 							numWords.setText("Number of Words = "
 									+ String.valueOf(currentGame.getNumberWords())
 									+ "\n You Have Found = "
@@ -816,12 +818,13 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					
 					if (clickCount == currentGame.getWordLength()) {
 						setGuessWord();
-						if (tracker.isWordInTheList(guessWord)) {
-							String foundWord = "";
-							for (String string : guessWord) {
-								foundWord += string;
-							}
-							foundWordList.add(foundWord);
+						String found = "";
+						for(String s: guessWord){
+							found += s;
+						}
+						if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
+							tracker.setSelectedWordAsFound(found);
+							foundWordList.add(found);
 							numWords.setText("Number of Words = "
 									+ String.valueOf(currentGame.getNumberWords())
 									+ "\n You Have Found = "
