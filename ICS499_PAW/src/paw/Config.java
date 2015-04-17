@@ -28,7 +28,7 @@ public class Config {
 
 	// some gui code will need additions to incorporate more languages.
 	//default language  (0 = english, 1 = telugu); change input default when language changes
-	public static final int DEFAULTLANGUAGE = 0;
+	public static final int DEFAULTLANGUAGE = 1;
 	
 	//this is the file for BigWordCollection default to English
 	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\en\\input_words.txt";
@@ -40,7 +40,7 @@ public class Config {
 	public static final int MAX_ITEMS_PER_LINE = 7;
 	
 	// modes may be "user" or "admin"
-	public static String DEFAULTMODE = "user";
+	public static String DEFAULTMODE = "admin";
 	
 	//default game configurations
 	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};

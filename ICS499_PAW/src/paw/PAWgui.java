@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -47,7 +48,8 @@ public class PAWgui extends 	JFrame
 	public PAWgui()
 	{
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("src/te/Gidugu.ttf"));
+			font = Font.createFont(Font.TRUETYPE_FONT, new File
+					(System.getProperty("user.home") + "\\PAW\\te\\Gidugu.ttf"));
 			font = font.deriveFont(Config.FONTSIZETELUGU);
 		} catch (FontFormatException e) {
 			// TODO Auto-generated catch block

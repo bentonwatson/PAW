@@ -391,49 +391,55 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					
 				}else if(pressedButton.clickedPosition == -1 && !currentGame.getCharOrder()){
 					
-					pressedButton.clickedPosition += 1;
+//					pressedButton.clickedPosition += 1;
+					pressedButton.clickedPosition = clickCount;
+					clickCount++;
 					pressedButton.setBackground(Color.white);
-					AnswerTile at = answerTiles.get(clickCount);
+					AnswerTile at = answerTiles.get(pressedButton.clickedPosition);
 					at.character = pressedButton.character;
-					at.tileId = pressedButton.columnNum;
-					at.clickOrder = clickCount;
+//					at.tileId = pressedButton.columnNum;// drag n drop uses clickedPosition
+//					at.clickedPosition = clickCount;
+					at.clickedPosition = pressedButton.clickedPosition;
 					at.setText(pressedButton.character);
 					at.setVisible(true);
-					guessWord[clickCount] = pressedButton.character;
-					clickCount++;
 					
 				}else if (pressedButton.clickedPosition > -1 && !currentGame.getCharOrder()){
 					//set
 					for(AnswerTile ans : answerTiles){
-						if(ans.tileId == pressedButton.columnNum){
-							ans.setText(" ");
-							guessWord[ans.clickOrder] = "";
-							pressedButton.setVisible(true);
-							pressedButton.setBackground(tileColor);
-							pressedButton.clickedPosition = -1;
-							
-							break;
+//						if(ans.clickedPosition == pressedButton.clickedPosition){
+//							ans.setText(" ");
+//							guessWord[ans.clickedPosition] = "";
+//							pressedButton.setVisible(true);
+//							pressedButton.setBackground(tileColor);
+//							pressedButton.clickedPosition = -1;
+//							
+//							break;
+//						}
+						if(ans.getBackground().equals(Color.RED)){
+							ans.setBackground(tileColor);
 						}
 					}
-					AnswerTile nt = answerTiles.get(pressedButton.columnNum);
-					if (nt.getBackground().equals(Color.RED)) {
-						for (AnswerTile answerTile : answerTiles) {
-							answerTile.setSelected(false);
-							answerTile.setBackground(tileColor);
-						}
-					}
+					shiftAnswerTilesLeft(answerTiles, pressedButton.clickedPosition, gridTiles);
+					
+//					AnswerTile nt = answerTiles.get(pressedButton.columnNum);
+//					if (nt.getBackground().equals(Color.RED)) {
+//						for (AnswerTile answerTile : answerTiles) {
+//							answerTile.setSelected(false);
+//							answerTile.setBackground(tileColor);
+//						}
+//					}
 					clickCount--;
-					for (GridTile gridTile : gridTiles) {
-						if (gridTile.clickedPosition > pressedButton.clickedPosition) {
-							gridTile.clickedPosition -= 1;
-						}
-					}
+//					for (GridTile gridTile : gridTiles) {
+//						if (gridTile.clickedPosition > pressedButton.clickedPosition) {
+//							gridTile.clickedPosition -= 1;
+//						}
+//					}
 					
 				}else if(pressedButton.clickedPosition > -1 && currentGame.getCharOrder()){
 					for(AnswerTile ans : answerTiles){
 						if(ans.tileId == pressedButton.columnNum){
 							ans.setText(" ");
-							guessWord[ans.clickOrder] = "";
+							guessWord[ans.clickedPosition] = "";
 							pressedButton.setVisible(true);
 							pressedButton.setBackground(tileColor);
 							pressedButton.clickedPosition = -1;
@@ -463,7 +469,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 				}
 				
 				if (clickCount == currentGame.getWordLength()) {
-					
+					setGuessWord();
 					String found = "";
 					for(String s: guessWord){
 						found += s;
@@ -566,17 +572,21 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 						answerTile.setBackground(tileColor);
 					}
 				}
-				guessWord[pressedButton.tileId] = "";
-				pressedButton.setText(" ");
-				pressedButton.setSelected(false);
-				clickCount--;
-				for (GridTile gridTile : gridTiles) {
-					if (gridTile.columnNum == pressedButton.tileId) {
-						gridTile.clickedPosition = -1;
-						gridTile.setSelected(false);
-						gridTile.setBackground(tileColor);
+				if(currentGame.getCharOrder()){
+					
+					pressedButton.setText(" ");
+					pressedButton.setSelected(false);
+					for (GridTile gridTile : gridTiles) {
+						if (gridTile.columnNum == pressedButton.tileId) {
+							gridTile.clickedPosition = -1;
+							gridTile.setSelected(false);
+							gridTile.setBackground(tileColor);
+						}
 					}
+				} else{
+					shiftAnswerTilesLeft(answerTiles, pressedButton.clickedPosition, gridTiles);
 				}
+				clickCount--;
 	
 			}
 		}
@@ -744,7 +754,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							}
 							words.setText(foundList);
 							wordListPanel.revalidate();
-							Timer timer = new Timer();
+							java.util.Timer timer = new java.util.Timer();
 							for (AnswerTile answerTile : answerTiles) {
 								answerTile.setBackground(Color.GREEN);
 							}
@@ -813,6 +823,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					shiftAnswerTilesLeft(answerTiles, pressedButton.clickedPosition,
 							gridTiles);
 					pressedButton.getParent().revalidate();
+					clickCount--;
 				} else if (arg0.getDropSuccess()) {
 					
 					if (clickCount == currentGame.getWordLength()) {
@@ -834,7 +845,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							}
 							words.setText(foundList);
 							wordListPanel.revalidate();
-							Timer timer = new Timer();
+							java.util.Timer timer = new java.util.Timer();
 							for (AnswerTile answerTile : answerTiles) {
 								answerTile.setBackground(Color.GREEN);
 							}
@@ -1054,7 +1065,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		private static final int RIGHT_SHIFT = 0;
 		private static final int LEFT_SHIFT = 1;
 		int tileId = -1;
-		int clickOrder;
+		int clickedPosition;
 		String character = "";
 		int tileShiftEnd = -1;
 		int lastShift;
