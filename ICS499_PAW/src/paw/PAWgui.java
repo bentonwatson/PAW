@@ -29,10 +29,13 @@ public class PAWgui extends 	JFrame
 	private Font font;
 	private int userGameLevel;
 	private Game currentGame;
+	private GameGenerator currentGameGenerator = 
+			new GameGenerator(Config.defaultSettings);
 	private boolean playRandom = false;
-	private boolean newBtnPressed = false;
 	
 	public String customTopic = "";
+	public boolean customGame;
+	private ArrayList<String> configPool = new ArrayList<String>();
 	public ArrayList<String> customWords = new ArrayList<String>();
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
@@ -60,9 +63,9 @@ public class PAWgui extends 	JFrame
 		}
 
 		setTitle(Config.APP_TITLE);
-		setSize( 1100, 850 );
+//		setSize( 1100, 850 );
 		setBackground( Color.gray );
-		setMinimumSize(new Dimension(800, 600));
+		setMinimumSize(new Dimension(900, 850));
 		
 		topPanel = new JPanel();
 		topPanel.setLayout( new BorderLayout() );
@@ -194,14 +197,6 @@ public class PAWgui extends 	JFrame
 		return playRandom;
 	}
 	
-	public void setNewBtnPressed(boolean b){
-		newBtnPressed = b;
-	}
-	
-	public boolean getNewBtnPressed(){
-		return newBtnPressed;
-	}
-	
 	public void setCurrentGame(Game a_game){
 		currentGame = a_game;
 	}
@@ -209,9 +204,25 @@ public class PAWgui extends 	JFrame
 	public Game getCurrentGame(){
 		return currentGame;
 	}
+	
+	public void setCurrentGameGenerator(GameGenerator a_gameGen){
+		currentGameGenerator = a_gameGen;
+	}
+	
+	public GameGenerator getCurrentGameGenerator(){
+		return currentGameGenerator;
+	}
 
 	public GameCollection getGameCollection(){
 		return gameCollection;
+	}
+	
+	public ArrayList<String> getCurrentConfigPool(){
+		return configPool;
+	}
+	
+	public void setCurrentConfigPool(ArrayList<String> pool){
+		configPool = pool;
 	}
 	
 	public Font getFont(){

@@ -3,23 +3,25 @@ package paw;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import core.Game;
-import core.SpringUtility;
 import core.WordProcessor;
 
 /**
@@ -34,7 +36,7 @@ class GeneratePanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private PAWgui internalgui;
-	private static Game newGame;
+	private Game newGame;
 	private JPanel gridPanel;
 	private JPanel titlePanel;
 	private JPanel wordListPanel;
@@ -43,6 +45,8 @@ class GeneratePanel extends JPanel{
 	private Font font;
 	private Color tileColor;
 	private Color bgColor;
+	private boolean charOrderValue;
+	private boolean allowDupValue;
 	
 	public GeneratePanel(Color color, PAWgui paw) {
 		this.internalgui = paw;
@@ -55,6 +59,8 @@ class GeneratePanel extends JPanel{
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 
+		setNewGame(internalgui.getCurrentGameGenerator());
+		
 		generateWordListPanel();
 		generateGridPanel();
 		generateButtonPanel();
@@ -63,7 +69,7 @@ class GeneratePanel extends JPanel{
 	/**
 	 * sets the newGame for the Generate Panel
 	 */
-	public static void setNewGame(GameGenerator game){
+	public void setNewGame(GameGenerator game){
 		newGame = game.getNewGame();
 	}
 
@@ -168,7 +174,8 @@ class GeneratePanel extends JPanel{
 	 */
 	public void generateButtonPanel(){
 		JPanel buttPanel = new JPanel();
-		buttonPanel = new JPanel(new SpringLayout());
+//		buttonPanel = new JPanel(new SpringLayout());
+		buttonPanel = new JPanel(new GridLayout(6,1));
 		
 		// generates the HTML
 		JButton createHTMLBtn = new JButton("Create\nHTML");
@@ -214,8 +221,90 @@ class GeneratePanel extends JPanel{
 		});
 		buttonPanel.add(playGameBtn);
 		
+		//allow duplicates
+		JLabel allowDupLabel = new JLabel("Duplicates");
+		allowDupLabel.setFont(font);
+		JRadioButton allowDupYes = new JRadioButton("Yes");
+		allowDupYes.setMnemonic(KeyEvent.VK_Y);
+		allowDupYes.setActionCommand("Yes");
+		JRadioButton allowDupNo = new JRadioButton("No");
+		allowDupNo.setMnemonic(KeyEvent.VK_N);
+		allowDupNo.setActionCommand("No");
+		ButtonGroup allowDupGroup = new ButtonGroup();
+		allowDupGroup.add(allowDupYes);
+		allowDupGroup.add(allowDupNo);
+		allowDupValue = Boolean.valueOf(newGame.getDuplicate());
+		if(allowDupValue){
+			allowDupYes.setSelected(true);
+		}else{
+			allowDupNo.setSelected(true);
+		}
+		JPanel allowDupPanel = new JPanel(new FlowLayout());
+		allowDupPanel.add(allowDupLabel);
+		allowDupPanel.add(allowDupYes);
+		allowDupPanel.add(allowDupNo);
+		
+		//characters in order
+		JLabel charOrderLabel = new JLabel("In Order");
+		charOrderLabel.setFont(font);
+		JRadioButton charOrderYes = new JRadioButton("Yes");
+		charOrderYes.setMnemonic(KeyEvent.VK_Y);
+		charOrderYes.setActionCommand("Yes");
+		JRadioButton charOrderNo = new JRadioButton("No");
+		charOrderNo.setMnemonic(KeyEvent.VK_N);
+		charOrderNo.setActionCommand("No");
+		ButtonGroup charOrderGroup = new ButtonGroup();
+		charOrderGroup.add(charOrderYes);
+		charOrderGroup.add(charOrderNo);
+		charOrderValue = Boolean.valueOf(newGame.getCharOrder());
+		if(charOrderValue){
+			charOrderYes.setSelected(true);
+		}else{
+			charOrderNo.setSelected(true);
+		}
+		JPanel charOrderPanel = new JPanel(new FlowLayout());
+		charOrderPanel.add(charOrderLabel);
+		charOrderPanel.add(charOrderYes);
+		charOrderPanel.add(charOrderNo);
+		
+		JPanel optionPanel = new JPanel(new GridLayout(2,3));
+		optionPanel.add(allowDupLabel);
+		optionPanel.add(allowDupYes);
+		optionPanel.add(allowDupNo);
+		optionPanel.add(charOrderLabel);
+		optionPanel.add(charOrderYes);
+		optionPanel.add(charOrderNo);
+		buttonPanel.add(optionPanel);
+		
+		JButton changeConfigBttn = new JButton("Update Game");
+		changeConfigBttn.setFont(font);
+		changeConfigBttn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				// updates the already existing gg and pushes the update to internalgui.setCurrentGameGenerator
+				if(allowDupYes.getModel() == allowDupGroup.getSelection()){
+					allowDupValue = true;
+				}
+				if(allowDupNo.getModel() == allowDupGroup.getSelection()){
+					allowDupValue = false;
+				}
+				if(charOrderYes.getModel() == charOrderGroup.getSelection()){
+					charOrderValue = true;
+				}
+				if(charOrderNo.getModel() == charOrderGroup.getSelection()){
+					charOrderValue = false;
+				}
+				GameGenerator old = internalgui.getCurrentGameGenerator();
+				GameGenerator gg = new GameGenerator(old.getTopic(), old.getLevel(), old.getWordLength(), 
+								old.getWordStrength(), allowDupValue, charOrderValue, old.getWordList());
+				internalgui.setCurrentGameGenerator(gg);
+				setNewGame(gg);
+				internalgui.selectTabbedPaneIndex(3);
+				internalgui.selectTabbedPaneIndex(2);
+			}
+		});
+		buttonPanel.add(changeConfigBttn);
 
-		SpringUtility.makeGrid(buttonPanel, 3, 1, 25, 15, 15, 15);
+//		SpringUtility.makeGrid(buttonPanel, 5, 1, 25, 15, 15, 15);
 		
 		buttPanel.add(buttonPanel);
 		add(buttPanel, BorderLayout.EAST);
@@ -254,6 +343,9 @@ class GeneratePanel extends JPanel{
 			super();
 			this.character = character;
 			setText(character);
+			if(character.equals("")){
+				setVisible(false);
+			}
 			setBackground(tileColor);
 			tileId = iD;
 		}

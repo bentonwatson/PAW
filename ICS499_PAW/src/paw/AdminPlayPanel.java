@@ -29,7 +29,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
@@ -98,7 +97,6 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	}
 	
 	public void initialize(){
-
 		//if newGame == null the panels will generate empty 
 		generateWordListPanel();
 		generateGridPanel();

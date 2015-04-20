@@ -42,6 +42,9 @@ public class Config {
 	// modes may be "user" or "admin"
 	public static String DEFAULTMODE = "admin";
 	
+	//sets max number of words er game
+	public static int maxNumberWords = 10;
+	
 	//default game configurations
 	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};
 	

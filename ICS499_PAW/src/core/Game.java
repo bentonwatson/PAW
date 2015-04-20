@@ -83,7 +83,7 @@ public class Game
 	{
 		return title;
 	}
-	
+
 	/**
 	 * Set method for the variable level
 	 */

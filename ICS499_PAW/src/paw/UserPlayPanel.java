@@ -49,7 +49,6 @@ import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import paw.AdminPlayPanel.GridTile;
 import core.Game;
 import core.GameCollection;
 import core.SpringUtility;
@@ -471,7 +470,6 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					time.stop();
-					internalgui.setNewBtnPressed(true);
 					internalgui.setPlayRandom(false);
 					internalgui.initialize();
 					internalgui.selectTabbedPaneIndex(1);

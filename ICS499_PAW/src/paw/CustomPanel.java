@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -45,26 +44,30 @@ public class CustomPanel extends JPanel {
 		main.setMinimumSize(new Dimension(400, 500));
 		
 		JPanel topic = new JPanel();
-		topic.setLayout(new GridLayout(2,1));
+		topic.setLayout(new BorderLayout());
+		
+		JPanel tlabel = new JPanel();
 		JLabel label = new JLabel();
 		label.setFont(font);
-		label.setText("Custom Topic");
+		label.setText("Create a Custom Topic");
+		tlabel.add(label);
 		
 		JTextField tp = new JTextField();
 		tp.setFont(font);
 		tp.setText(internalgui.customTopic);
-		topic.add(label);
-		topic.add(tp);
+		
+		topic.add(tlabel, BorderLayout.NORTH);
+		topic.add(tp, BorderLayout.CENTER);
 		
 		main.add(topic, BorderLayout.NORTH);
 		
 		JPanel input = new JPanel();
 		input.setLayout(new BorderLayout());
+		JPanel inLabel = new JPanel();
 		
 		JLabel wlabel = new JLabel();
 		wlabel.setFont(font);
 		wlabel.setText("Custom Word List");
-		input.add(wlabel, BorderLayout.NORTH);
 		
 		JTextArea ta = new JTextArea(13, 50);
 		ta.setFont(font);
@@ -79,17 +82,15 @@ public class CustomPanel extends JPanel {
 		ta.setSize(450, 400);
 		JScrollPane scroll = new JScrollPane(ta);
 
-		input.add(scroll, BorderLayout.CENTER);
-		main.add(input, BorderLayout.CENTER);
 		
 		JButton setBtn = new JButton("Click to use words!");
 		setBtn.setBackground(Config.CONFIG_PANEL_BUTTONS);
 		setBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				//read textPane and set each word to list
+				internalgui.customGame = true;
 				String topic = tp.getText();
 				internalgui.customTopic = topic;
-
 				String [] tmp = ta.getText().split("\r?\n|\r");
 				for(String line : tmp){
 					customWords.add(line.trim());
@@ -97,13 +98,17 @@ public class CustomPanel extends JPanel {
 				internalgui.customWords = customWords;
 				if(customWords.get(0).length() > 1 && customWords.size() > 0){
 					internalgui.tmpConfigSettings.set(0, "Custom Topic");
-					internalgui.tmpConfigSettings.set(6, "true");
+					internalgui.customGame = true;
 				}
 				internalgui.selectTabbedPaneIndex(3);
 			}
 		});
-		main.add(setBtn, BorderLayout.SOUTH);
-			
+		
+		inLabel.add(wlabel);
+		inLabel.add(setBtn);
+		input.add(inLabel, BorderLayout.NORTH);
+		input.add(scroll, BorderLayout.CENTER);
+		main.add(input, BorderLayout.CENTER);
 		add(main);
 	}
 }

@@ -27,6 +27,8 @@ public class GameGenerator {
 	private ArrayList<String> customWords;
 	private ArrayList<ArrayList<String>> columnData;
 	private ArrayList<BigWord> bigWordList;
+	private ArrayList<String> returnedWordList;
+	
 	// game criteria variables
 	private int level;
 	private String topic;
@@ -68,6 +70,7 @@ public class GameGenerator {
 		setTitle();
 		setBigWordList();
 		chooseNumberOfWords(bigWordList.size());
+		setColumnData();
 		setNewGame();
 	}
 	
@@ -87,6 +90,26 @@ public class GameGenerator {
 		setTitle();
 		setBigWordList();
 		chooseNumberOfWords(a_num);
+		setColumnData();
+		setNewGame();
+	}
+	
+	public GameGenerator(String[] defaultSetting){
+		topic = defaultSetting[0];
+		wordLength = Integer.valueOf(defaultSetting[2]);
+		if (language == 0) {
+			wordStrength = Integer.valueOf(defaultSetting[2]);
+		}else{
+			wordStrength = Integer.valueOf(defaultSetting[3]);
+		}
+		level = Integer.valueOf(defaultSetting[1]);
+		duplicates = Boolean.valueOf(defaultSetting[4]);
+		charOrder = Boolean.valueOf(defaultSetting[5]);
+		custom = false;
+		setTitle();
+		setBigWordList();
+		chooseNumberOfWords(Integer.valueOf(defaultSetting[7]));
+		setColumnData();
 		setNewGame();
 	}
 
@@ -106,6 +129,7 @@ public class GameGenerator {
 		customWords = words;
 		setTitle();
 		chooseNumberOfWords(words.size());
+		setColumnData();
 		setNewGame();
 	}
 
@@ -124,6 +148,10 @@ public class GameGenerator {
 		return newGame;
 	}
 
+	public String getTopic(){
+		return topic;
+	}
+	
 	/**
 	 * Method to set the title
 	 * 
@@ -154,64 +182,6 @@ public class GameGenerator {
 		return level;
 	}
 	
-	/**
-	 * Method to randomly choose the number of words requested
-	 * and set the column data
-	 * @param num
-	 */
-	public void chooseNumberOfWords(int num){
-		numWords = num;
-		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
-		WordProcessor wp = new WordProcessor("");
-		if (language == 0) {
-			if(custom){
-				for(String word : customWords){
-					wp.setWord(word);
-					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getWord().length() != wordLength) {
-						continue;
-					}
-					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
-				}
-			}else{
-				for (BigWord bigWord : bigWordList) {
-					wp.setWord(bigWord.getEnglish());
-					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getWord().length() != wordLength) {
-						continue;
-					}
-					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
-				}
-			}
-		} else if (language == 1) {
-			if(custom){
-				for(String word : customWords){
-					wp.setWord(word);
-					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getWord().length() != wordLength) {
-						continue;
-					}
-					wordsOfCorrectLength.add(wp.getWord().toUpperCase());
-				}
-			}else{
-				for (BigWord bigWord : bigWordList) {
-					wp.setWord(bigWord.getTelugu());
-					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getLength() != wordLength) {
-						continue;
-					}
-					wordsOfCorrectLength.add(wp.getWord());
-				}
-			}
-		}
-		chooseRandomListOfWords(wordsOfCorrectLength);
-		setColumnData();
-	}
-
 	/**
 	 * Method to read input file, find words based on criteria and 
 	 * set the bigWordList variable
@@ -247,6 +217,42 @@ public class GameGenerator {
 		return bigWordList.size();
 	}
 	
+	public int getNumCustomWords() {
+		return customWords.size();
+	}
+	
+	public int getWordLength(){
+		return wordLength;
+	}
+	
+	public int getWordStrength(){
+		return wordStrength;
+	}
+	
+	public boolean getDuplicates(){
+		return duplicates;
+	}
+	
+	public boolean getCharOrder(){
+		return charOrder;
+	}
+	
+	public int getNumWords(){
+		return numWords;
+	}
+	
+	public ArrayList<String> getWordList(){
+		return wordList;
+	}
+	
+	public boolean getCustom(){
+		return custom;
+	}
+	
+	public ArrayList<String> getCustomWords(){
+		return customWords;
+	}
+
 	/**
 	 * Method to return a list of all words found by criteria
 	 * @return
@@ -263,30 +269,6 @@ public class GameGenerator {
 			}
 		}
 		return words;
-	}
-
-	/**
-	 * method called by chooseNumberOfWords 
-	 * randomly chooses the requested number of words
-	 * from the returned bigWordList
-	 * When bigWordList is < number requested all bigWords are used
-	 * @param wordsOfCorrectLength
-	 */
-	public void chooseRandomListOfWords(List<String> wordsOfCorrectLength) {
-		if(wordsOfCorrectLength.size() >= numWords){
-			Collections.shuffle(wordsOfCorrectLength);
-			wordList = new ArrayList<String>();
-			for (int i = 0; i < numWords; i++) {
-				wordList.add(wordsOfCorrectLength.get(i));
-			}
-		}else{
-			Collections.shuffle(wordsOfCorrectLength);
-			wordList = new ArrayList<String>();
-			for (int i = 0; i < wordsOfCorrectLength.size(); i++) {
-				wordList.add(wordsOfCorrectLength.get(i));
-			}
-			
-		}
 	}
 
 	/**
@@ -325,7 +307,93 @@ public class GameGenerator {
 		}
 		return columns;
 	}
+
+	/**
+	 * Method to randomly choose the number of words requested
+	 * and set the column data
+	 * @param num
+	 */
+	public void chooseNumberOfWords(int num){
+		numWords = num;
+		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
+		returnedWordList = new ArrayList<String>();
+		WordProcessor wp = new WordProcessor("");
+		if (language == 0) {
+			if(custom){
+				for(String word : customWords){
+					wp.setWord(word);
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getWord().length() == wordLength) {
+						wordsOfCorrectLength.add(wp.getWord().toUpperCase());
+						returnedWordList.add(wp.getWord());
+					}
+				}
+			}else{
+				for (BigWord bigWord : bigWordList) {
+					wp.setWord(bigWord.getEnglish());
+					wp.stripAllSymbols();
+					wp.stripSpaces();
+					if (wp.getWord().length() == wordLength) {
+						wordsOfCorrectLength.add(wp.getWord().toUpperCase());
+						returnedWordList.add(wp.getWord());
+					}
+				}
+			}
+		} else if (language == 1) {
+			//TODO this might be the issue
+			if(custom){
+				for(String word : customWords){
+					wp.setWord(word);
+					wp.trim();
+					if (wp.getLength() == wordLength) {
+						wordsOfCorrectLength.add(wp.getWord());
+						returnedWordList.add(wp.getWord());
+					}
+				}
+			}else{
+				for (BigWord bigWord : bigWordList) {
+					wp.setWord(bigWord.getTelugu());
+					wp.trim();
+					if (wp.getLength() == wordLength) {
+						wordsOfCorrectLength.add(wp.getWord());
+						returnedWordList.add(wp.getWord());
+					}
+				}
+			}
+		}
+		chooseRandomListOfWords(wordsOfCorrectLength);
+		
+	}
+
+	public ArrayList<String> getReturnedWordList(){
+		return returnedWordList;
+	}
 	
+	/**
+	 * method called by chooseNumberOfWords 
+	 * randomly chooses the requested number of words
+	 * from the returned bigWordList
+	 * When bigWordList is < number requested all bigWords are used
+	 * @param wordsOfCorrectLength
+	 */
+	public void chooseRandomListOfWords(List<String> wordsOfCorrectLength) {
+		if(wordsOfCorrectLength.size() >= numWords){
+			Collections.shuffle(wordsOfCorrectLength);
+			wordList = new ArrayList<String>();
+			for (int i = 0; i < numWords; i++) {
+				wordList.add(wordsOfCorrectLength.get(i));
+			}
+		}else{
+			Collections.shuffle(wordsOfCorrectLength);
+			wordList = new ArrayList<String>();
+			for (int i = 0; i < wordsOfCorrectLength.size(); i++) {
+				wordList.add(wordsOfCorrectLength.get(i));
+			}
+			
+		}
+	}
+
 	/**
 	 * Shuffle characters within a single column.
 	 * @param charsToShuffle: the chars to shuffle
@@ -364,10 +432,6 @@ public class GameGenerator {
 			
 			Collections.shuffle(arrayList);
 		}
-	}
-
-	public int getNumCustomWords() {
-		return customWords.size();
 	}
 	
 //	/**
