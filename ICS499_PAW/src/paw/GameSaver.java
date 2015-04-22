@@ -1,10 +1,10 @@
 package paw;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import core.GCIterator;
 import core.Game;
 import core.GameCollection;
@@ -17,10 +17,11 @@ import core.GameCollection;
  * Dependent on data from Game Generator
  */
 public class GameSaver {
-	private int language = Config.DEFAULTLANGUAGE;
+	private String language = Config.DEFAULTLANGUAGE;
 	private Game newGame;
 	private String gameId;
 	private boolean saveSuccessful;
+	private GameCollection gc;
 	
 	public GameSaver(Game a_game){
 		newGame = a_game; //this game will NOT have an id assigned yet
@@ -32,17 +33,35 @@ public class GameSaver {
 	 * Method generates a new Id based on existing Ids in the gameSet
 	 */
 	public void generateNewId(){
-		GameCollection gc = new GameCollection();
-		GCIterator iterator = new GCIterator(gc);
-		iterator.end();
-		String lastGameId = iterator.getCurrent().getId();
-		int newID = (Integer.valueOf(lastGameId)) + 1;
-		if(newID < 10){
-			gameId = "00" +String.valueOf(newID);
-		}else if(newID > 9 && newID < 100){
-			gameId = "0" + String.valueOf(newID);
+		try {
+			gc = new GameCollection();
+		} catch (IOException e) {
+			try {
+				if(language.equals("en")){
+					new File(Config.EN_GAME_SET).createNewFile();
+				}else{
+					new File(Config.TE_GAME_SET).createNewFile();
+				}
+				gc = new GameCollection();
+			} catch (IOException e1) {
+				PAWgui.errorMessageOpen("Unable to create Game Set File. \n"
+						+ "Ensure Path is configuraed correctly");
+			}
+		}
+		if(gc.size() == 0){
+			gameId = "001";
 		}else{
-			gameId = String.valueOf(newID);
+			GCIterator iterator = new GCIterator(gc);
+			iterator.end();
+			String lastGameId = iterator.getCurrent().getId();
+			int newID = (Integer.valueOf(lastGameId)) + 1;
+			if(newID < 10){
+				gameId = "00" +String.valueOf(newID);
+			}else if(newID > 9 && newID < 100){
+				gameId = "0" + String.valueOf(newID);
+			}else{
+				gameId = String.valueOf(newID);
+			}
 		}
 		
 	}
@@ -54,9 +73,10 @@ public class GameSaver {
 	public void writeNewGame() {
 		saveSuccessful = false;
 		String path;
-		if(language == 0){
+		if(language.equals("en")){
 			path = Config.EN_GAME_SET;  //  set the value to the game get folder by path
 		}else{
+			
 			path = Config.TE_GAME_SET;  //  set the value to the game get folder by path
 		}
 		String title = newGame.getTitle();
@@ -121,7 +141,6 @@ public class GameSaver {
 	 * @return
 	 */
 	public boolean isSuccessful(){
-		//TODO
 		return saveSuccessful;
 	}
 

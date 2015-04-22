@@ -20,7 +20,7 @@ import paw.Config;
 
 public class BigWordCollection 
 {    
-		private int language = Config.DEFAULTLANGUAGE;
+		private String language = Config.DEFAULTLANGUAGE;
 	    // FUTURE: We can serialize it for a later/faster retrieval 
 	    // this is the single collection we hold in memory
 		private ArrayList<BigWord>  bigWordsList = new ArrayList<BigWord>();
@@ -347,9 +347,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(language == 0){
+				if(language.equals("en")){
 					word = bw.getEnglish();
-				}else if(language == 1){
+				}else if(language.equals("te")){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -372,9 +372,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(language == 0){
+				if(language.equals("en")){
 					word = bw.getEnglish();
-				}else if(language == 1){
+				}else if(language.equals("te")){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -395,9 +395,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(language== 0){
+				if(language.equals("en")){
 					word = bw.getEnglish();
-				}else if(language == 1){
+				}else if(language.equals("te")){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -430,9 +430,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(language == 0){
+				if(language.equals("en")){
 					word = bw.getEnglish();
-				}else if(language == 1){
+				}else if(language.equals("te")){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);
@@ -455,9 +455,9 @@ public class BigWordCollection
 			String word = null;
 			for(int i = 0; i < bigWordsList.size(); i++){
 				BigWord bw = bigWordsList.get(i);
-				if(language == 0){
+				if(language.equals("en")){
 					word = bw.getEnglish();
-				}else if(language== 1){
+				}else if(language.equals("te")){
 					word = bw.getTelugu();
 				}
 				WordProcessor wp = new WordProcessor(word);

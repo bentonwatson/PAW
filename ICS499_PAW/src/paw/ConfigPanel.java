@@ -330,7 +330,7 @@ public class ConfigPanel extends JPanel
 		charOrderPanel.add(charOrderNo);
 		
 		//show all words returned
-		allWordsLabel = new JLabel("Generate Game with Max Available");
+		allWordsLabel = new JLabel("Generate with Max Available (up to 10)");
 		allWordsLabel.setFont(font);
 		allWordsYes = new JRadioButton("Yes");
 		allWordsYes.setMnemonic(KeyEvent.VK_Y);
@@ -352,7 +352,7 @@ public class ConfigPanel extends JPanel
 		allWordsPanel.add(allWordsNo);
 		
 		//use the custom words
-		useCustomLabel = new JLabel("Generate Game with Custom Words");
+		useCustomLabel = new JLabel("Generate with Custom Words");
 		useCustomLabel.setFont(font);
 		useCustomYes = new JRadioButton("Yes");
 		useCustomYes.setMnemonic(KeyEvent.VK_Y);
@@ -457,8 +457,6 @@ public class ConfigPanel extends JPanel
 				internalgui.tmpConfigSettings.set(6, String.valueOf(allWordsValue));
 				showNumberWordsFoundTF.setText(String.valueOf(internalPool.size()));
 				numWordsTF.setText(String.valueOf(numWords));
-				
-				
 				
 				internalgui.setCurrentGameGenerator(gg);
 //				GeneratePanel.setNewGame(gg);

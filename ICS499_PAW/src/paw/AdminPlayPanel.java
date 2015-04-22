@@ -78,8 +78,6 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		tileColor = Config.PLAY_TILE_COLOR;
 		this.internalgui = paw;
 		font = internalgui.getFont();
-//		gameCollection = internalgui.getGameCollection();
-//		userGameLevel = internalgui.getUserGameLevel();
 		if(internalgui.getCurrentGame() != null){
 			currentGame = internalgui.getCurrentGame();
 			tracker = new GameTracker(currentGame);

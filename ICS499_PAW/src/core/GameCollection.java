@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import paw.Config;
-import paw.PAWgui;
 
 public class GameCollection
 {
@@ -17,23 +15,18 @@ public class GameCollection
 	
 	private int currentIndex = 0;
 	private String currentID = null;
-	private int language = Config.DEFAULTLANGUAGE;
-
+	private String language = Config.DEFAULTLANGUAGE;
+	private boolean fileError = false;
+	
 	/*
 	 * No-arg constructor uses the default file name
 	 */
-	public GameCollection()
+	public GameCollection() throws IOException
 	{
-		try
-		{
-			if(language == 0){
+		if(language.equals("en")){
 				readGame(Config.EN_GAME_SET);
-			}else{
+		}else{
 				readGame(Config.TE_GAME_SET);
-			}
-		} catch (IOException e)
-		{
-			e.printStackTrace();
 		}
 	}
 
@@ -67,10 +60,9 @@ public class GameCollection
 	public void readGame(String a_pathName) throws IOException {
 	
 		FileInputStream in = new FileInputStream(a_pathName);
-//		FileInputStream in = getClass().getResourceAsStream(a_pathName);
 		Scanner input = new Scanner(in, "UTF-8");
 		String line2 = "";
-		boolean delimiterFound = false;
+//		boolean delimiterFound = false;
 	
 		while ((input.hasNext()))
 		{
@@ -84,14 +76,14 @@ public class GameCollection
 			{
 				parsePuzzle(line2);
 				line2 = "";
-				delimiterFound = true;
+//				delimiterFound = true;
 			}
 		}
 	
-		if (!delimiterFound)
-			PAWgui.errorMessage("The file " + a_pathName + " "
-					+ " does not contain a puzzle separetor (---).");
-	
+//		if (!delimiterFound)
+//			PAWgui.errorMessage("The file " + a_pathName + " "
+//					+ " does not contain a puzzle separetor (---).");
+//	
 		input.close();
 	
 	}
@@ -164,12 +156,13 @@ public class GameCollection
 		}//end while 
 		
 		if (!idFound || !titleFound || !levelFound || !wordsFound || !columnFound || !otherFound){
-			PAWgui.errorMessage("The line: " +  a_text + "\n" +
-					"does not contain required data for game collection");
+//			PAWgui.errorMessage("The line: " +  a_text + "\n" +
+//					"does not contain required data for game collection");
+			input.close();
+		}else{
+			Game game = new Game(id, level, title, wordList, columnList, duplicate, charOrder);
+			allGames.add(game);
 		}
-		input.close();
-		Game game = new Game(id, level, title, wordList, columnList, duplicate, charOrder);
-		allGames.add(game);
 		
 	}
 
@@ -365,6 +358,10 @@ public class GameCollection
 	//PAW group added
 	public String getCurrentID(){
 		return currentID;
+	}
+	
+	public boolean hasFileError(){
+		return fileError;
 	}
 	
 	//PAW added

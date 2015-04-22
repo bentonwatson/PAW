@@ -22,6 +22,7 @@ public class ProgressTracker  implements ProgressTrackerInterface{
 	private String timeElapsed;
 	private GameCollection incompleteGames;
 	private ArrayList<String> playedGameIds;
+	private GameCollection gc;
 	
 	/**
 	 * default constructor 
@@ -127,7 +128,12 @@ public class ProgressTracker  implements ProgressTrackerInterface{
 	}
 	
 	public boolean allGameSetPlayed(){
-		GameCollection gc = new GameCollection();
+		try {
+			gc = new GameCollection();
+		} catch (IOException e) {
+			PAWgui.errorMessageClose("A Game Set does not exist!"
+					+ " Contact Administrator!");
+		}
 		if(gc.size() == playedGameIds.size()){
 			return true;
 		}
@@ -137,7 +143,6 @@ public class ProgressTracker  implements ProgressTrackerInterface{
 	public ArrayList<Integer> levelsNotCompleted(){
 		ArrayList<Integer> levels = new ArrayList<Integer>();
 		if(!allGameSetPlayed()){
-			GameCollection gc = new GameCollection();
 			this.removeCompletedGamesFromGameCollection(gc);
 			ArrayList<Game> list = new ArrayList<Game>();
 			list.addAll(gc.getAllGames());

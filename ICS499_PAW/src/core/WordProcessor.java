@@ -339,8 +339,8 @@ public class WordProcessor {
 	 * @return
 	 */
 	public String stripSpaces()
-	{			
-			setWord(word.replaceAll("\\s+", ""));
+	{		
+		setLogicalChars(Parser.stripSpaces(logicalChars));
 		return word;
 	}
 

@@ -24,7 +24,6 @@ public class GameTracker
 	private List<String> wordList;
 	private int numberOfWords;
 	private int numberOfWordsFound;
-	private int language; // 1=Telugu 0=English
 
 	/**
 	 * constructor for setting the puzzle to play
@@ -33,8 +32,6 @@ public class GameTracker
 	 */
 	GameTracker(Game a_game)
 	{
-		language = Config.DEFAULTLANGUAGE;
-													// FALSE
 		// numberOfWords = puzzle.getWordList().size();
 		numberOfWordsFound = 0;
 		wordList = a_game.getWordList();
@@ -76,9 +73,6 @@ public class GameTracker
 	
 	public boolean isWordInTheList(String[] inputWord){
 		WordProcessor wp = new WordProcessor("");
-		if(language == 1){
-			wp = new WordProcessor("");
-		}
 		String guessWord = "";
 		for (String string : inputWord) {
 			guessWord += string;

@@ -42,7 +42,7 @@ public class GameGenerator {
 	// word order
 
 	private int numWords;
-	private int language = Config.DEFAULTLANGUAGE;
+	private String language = Config.DEFAULTLANGUAGE;
 
 	/**
 	 * Constructor starts the game generation
@@ -58,7 +58,7 @@ public class GameGenerator {
 			boolean dup, boolean order){
 		topic = a_topic;
 		wordLength = a_length;
-		if (language == 0) {
+		if (language.equals("en")) {
 			wordStrength = a_length;
 		} else {
 			wordStrength = a_strength;
@@ -78,7 +78,7 @@ public class GameGenerator {
 			boolean dup, boolean order, int a_num){
 		topic = a_topic;
 		wordLength = a_length;
-		if (language == 0) {
+		if (language.equals("en")) {
 			wordStrength = a_length;
 		}else{
 			wordStrength = a_strength;
@@ -97,7 +97,7 @@ public class GameGenerator {
 	public GameGenerator(String[] defaultSetting){
 		topic = defaultSetting[0];
 		wordLength = Integer.valueOf(defaultSetting[2]);
-		if (language == 0) {
+		if (language.equals("en")) {
 			wordStrength = Integer.valueOf(defaultSetting[2]);
 		}else{
 			wordStrength = Integer.valueOf(defaultSetting[3]);
@@ -117,7 +117,7 @@ public class GameGenerator {
 			int a_strength, boolean dup, boolean order, ArrayList<String> words) {
 		topic = a_topic;
 		wordLength = a_length;
-		if (language == 0) {
+		if (language.equals("en")) {
 			wordStrength = a_length;
 		} else {
 			wordStrength = a_strength;
@@ -191,7 +191,7 @@ public class GameGenerator {
 		BigWordCollection bwcByCriteria = bwc.getBigWordCollectionByCriteria(topic, 
 				wordLength, wordLength, wordStrength, wordStrength);
 		bigWordList = new ArrayList<BigWord>();
-		if (language == 0) {
+		if (language.equals("en") ){
 			if (!bwcByCriteria.containsDuplicateEnglishWords()) {
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			}else if(bwcByCriteria.containsDuplicateEnglishWords()){
@@ -199,7 +199,7 @@ public class GameGenerator {
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			}
 		}
-		if (language == 1) {
+		if (language.equals("te")) {
 			if (!bwcByCriteria.containsDuplicateTeluguWords()) {
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			} else if (bwcByCriteria.containsDuplicateTeluguWords()){
@@ -259,11 +259,11 @@ public class GameGenerator {
 	 */
 	public ArrayList<String> getWordsBigWordList(){
 		ArrayList<String> words = new ArrayList<String>();
-		if(language == 0){
+		if(language.equals("en")){
 			for(BigWord bigWord : bigWordList){
 				words.add(bigWord.getEnglish());
 			}
-		}else if(language == 1){
+		}else {
 			for(BigWord bigWord : bigWordList){
 				words.add(bigWord.getTelugu());
 			}
@@ -318,50 +318,35 @@ public class GameGenerator {
 		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
 		returnedWordList = new ArrayList<String>();
 		WordProcessor wp = new WordProcessor("");
-		if (language == 0) {
-			if(custom){
-				for(String word : customWords){
-					wp.setWord(word);
+		if(custom){
+			for(String word : customWords){
+				wp.setWord(word);
+				if (language.equals("en")){
 					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getWord().length() == wordLength) {
-						wordsOfCorrectLength.add(wp.getWord().toUpperCase());
-						returnedWordList.add(wp.getWord());
-					}
 				}
-			}else{
-				for (BigWord bigWord : bigWordList) {
-					wp.setWord(bigWord.getEnglish());
-					wp.stripAllSymbols();
-					wp.stripSpaces();
-					if (wp.getWord().length() == wordLength) {
-						wordsOfCorrectLength.add(wp.getWord().toUpperCase());
-						returnedWordList.add(wp.getWord());
-					}
+				wp.trim();
+				wp.stripSpaces();
+				if (wp.getLength() == wordLength) {
+					wordsOfCorrectLength.add(wp.getWord());
 				}
 			}
-		} else if (language == 1) {
-			//TODO this might be the issue
-			if(custom){
-				for(String word : customWords){
-					wp.setWord(word);
-					wp.trim();
-					if (wp.getLength() == wordLength) {
-						wordsOfCorrectLength.add(wp.getWord());
-						returnedWordList.add(wp.getWord());
-					}
-				}
-			}else{
-				for (BigWord bigWord : bigWordList) {
+		}else{
+			for (BigWord bigWord : bigWordList) {
+				if (language.equals("en")){
+					wp.setWord(bigWord.getEnglish());
+					wp.stripAllSymbols();
+				}else if (language.equals("te")){
 					wp.setWord(bigWord.getTelugu());
-					wp.trim();
-					if (wp.getLength() == wordLength) {
-						wordsOfCorrectLength.add(wp.getWord());
-						returnedWordList.add(wp.getWord());
-					}
+				}
+				wp.trim();
+				wp.stripSpaces();
+				if (wp.getLength() == wordLength) {
+					wordsOfCorrectLength.add(wp.getWord());
 				}
 			}
 		}
+		returnedWordList = wordsOfCorrectLength;
+		System.out.println("returnedword size "+ returnedWordList.size());
 		chooseRandomListOfWords(wordsOfCorrectLength);
 		
 	}

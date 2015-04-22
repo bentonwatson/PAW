@@ -229,10 +229,15 @@ public class PAWgui extends 	JFrame
 		return font;
 	}
 	
-	public static void errorMessage(String a_string) {
+	public static void errorMessageClose(String a_string) {
 		JOptionPane.showMessageDialog(null, a_string, "Error",
 				JOptionPane.ERROR_MESSAGE);
 		System.exit(0);
+	}
+	
+	public static void errorMessageOpen(String a_string) {
+		JOptionPane.showMessageDialog(null, a_string, "Error",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	

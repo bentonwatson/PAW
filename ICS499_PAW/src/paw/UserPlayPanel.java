@@ -28,6 +28,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -90,6 +91,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 	private JEditorPane words;
 	private GameCollection currentCollection;	
 	private ProgressTracker progress;
+	private String language;
 	
 	ArrayList<String> notFoundWords = new ArrayList<String>();
 	ArrayList<String> foundWordList = new ArrayList<String>();
@@ -99,8 +101,21 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 		tileColor = Config.PLAY_TILE_COLOR;
 		this.internalgui = paw;
 		font = internalgui.getFont();
+		language = Config.DEFAULTLANGUAGE;
+		if(language.equals("en")){
+			if(new File(Config.EN_GAME_SET).exists() && new File(Config.EN_GAME_SET).isFile()){
+				gameCollection = new GameCollection(Config.EN_GAME_SET);
+			}else{
+				PAWgui.errorMessageClose("A Game Collection does not exist! Contact Administrator!");
+			}
+		}else{
+			if(new File(Config.TE_GAME_SET).exists() && new File(Config.TE_GAME_SET).isFile()){
+				gameCollection = new GameCollection(Config.TE_GAME_SET);
+			}else{
+				PAWgui.errorMessageClose("A Game Collection does not exist! Contact Administrator!");
+			}
+		}
 		
-		gameCollection = new GameCollection();
 		setUserGameLevel(internalgui.getUserGameLevel());
 		
 		setMinimumSize(new Dimension(1000,550));
