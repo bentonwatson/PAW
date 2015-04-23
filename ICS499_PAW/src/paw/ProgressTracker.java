@@ -1,6 +1,7 @@
 package paw;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -69,7 +70,12 @@ public class ProgressTracker  implements ProgressTrackerInterface{
 				playedGameIds.add(sCurrentLine.split(",")[0]);
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			try {
+				new File(Config.progressFile).createNewFile();
+			} catch (IOException e11) {
+				PAWgui.errorMessageOpen("Unable to save Progress. \n"
+						+ "Contact Administration");
+			}
 		}
 	}
 

@@ -600,11 +600,7 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 						return;
 					}
 				}
-				if (clickCount == currentGame.getWordLength()) {
-					if (pressedButton.clickedPosition < 0) {
-						return;
-					}
-				}
+				
 				if (pressedButton.clickedPosition == -1 && currentGame.getCharOrder()) {
 					
 					pressedButton.clickedPosition += 1;
@@ -614,7 +610,6 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 					at.character = pressedButton.character;
 					at.setText(pressedButton.character);
 					at.setVisible(true);
-					guessWord[pressedButton.columnNum] = pressedButton.character;
 					
 				}else if(pressedButton.clickedPosition == -1 && !currentGame.getCharOrder()){
 					
@@ -644,34 +639,26 @@ public class UserPlayPanel extends JPanel implements MouseListener{
 					for(AnswerTile ans : answerTiles){
 						if(ans.tileId == pressedButton.columnNum){
 							ans.setText(" ");
-							guessWord[ans.clickedPosition] = "";
-							pressedButton.setVisible(true);
-							pressedButton.setBackground(tileColor);
-							pressedButton.clickedPosition = -1;
-							
 							break;
 						}
 					}
 					AnswerTile nt = answerTiles.get(pressedButton.columnNum);
 					if (nt.getBackground().equals(Color.RED)) {
 						for (AnswerTile answerTile : answerTiles) {
-							answerTile.setSelected(false);
 							answerTile.setBackground(tileColor);
-							pressedButton.setSelected(false);
-							pressedButton.setBackground(tileColor);
 						}
 					}
 					nt.setText(" ");
-					clickCount--;
-					guessWord[pressedButton.columnNum] = "";
-					for (GridTile gridTile : gridTiles) {
-						if (gridTile.clickedPosition > pressedButton.clickedPosition) {
-							gridTile.clickedPosition -= 1;
-						}
-					}
+					pressedButton.setVisible(true);
+					pressedButton.setBackground(tileColor);
 					pressedButton.clickedPosition = -1;
+					clickCount--;
 				}
-				
+				if (clickCount == currentGame.getWordLength()) {
+					if (pressedButton.clickedPosition < 0) {
+						return;
+					}
+				}
 				if (clickCount == currentGame.getWordLength()) {
 					setGuessWord();
 					String found = "";
