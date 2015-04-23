@@ -295,7 +295,8 @@ class GeneratePanel extends JPanel{
 				}
 				GameGenerator old = internalgui.getCurrentGameGenerator();
 				GameGenerator gg = new GameGenerator(old.getTopic(), old.getLevel(), old.getWordLength(), 
-								old.getWordStrength(), allowDupValue, charOrderValue, old.getWordList());
+								old.getMinWordStrength(), old.getMaxWordStrength(),
+								allowDupValue, charOrderValue, old.getWordList());
 				internalgui.setCurrentGameGenerator(gg);
 				setNewGame(gg);
 				internalgui.selectTabbedPaneIndex(3);

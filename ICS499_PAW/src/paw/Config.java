@@ -28,7 +28,7 @@ public class Config {
 
 	// some gui code will need additions to incorporate more languages.
 	//default language  ("en" = english, "te" = telugu); change input default when language changes
-	public static final String DEFAULTLANGUAGE = "te";
+	public static final String DEFAULTLANGUAGE = "en";
 	
 	//this is the file for BigWordCollection default to English
 	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\en\\input_words.txt";
@@ -45,8 +45,9 @@ public class Config {
 	//sets max number of words er game
 	public static int maxNumberWords = 10;
 	
-	//default game configurations
-	public static String[] defaultSettings = new String[]{"Any", "1", "4", "4", "true", "true", "false", "5"};
+	//default game configurations String[]  {0 - topic, 1- level, 2 - wordLength, 3 - minStrength, 4 - maxStrength, 
+	//								5 - duplicates, 6 - charOrder, 7 - allWords, 8 - numWords}
+	public static String[] defaultSettings = new String[]{"Any", "1", "4", "1", "7", "true", "true", "false", "5"};
 	
 	//default directory  and images for creating and storing HTML games
 	public static String directoryForHTMLFiles = System.getProperty("user.home") + "\\PAW\\HTMLFiles\\";

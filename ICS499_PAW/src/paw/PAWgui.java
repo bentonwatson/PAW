@@ -32,10 +32,10 @@ public class PAWgui extends 	JFrame
 	private GameGenerator currentGameGenerator = 
 			new GameGenerator(Config.defaultSettings);
 	private boolean playRandom = false;
+	private ArrayList<String> configPool = new ArrayList<String>();
 	
 	public String customTopic = "";
 	public boolean customGame;
-	private ArrayList<String> configPool = new ArrayList<String>();
 	public ArrayList<String> customWords = new ArrayList<String>();
 	public ArrayList<String> tmpWordList = new ArrayList<String>();
 	public ArrayList<String> tmpConfigSettings = new ArrayList<String>();
@@ -55,10 +55,8 @@ public class PAWgui extends 	JFrame
 					(System.getProperty("user.home") + "\\PAW\\te\\Gidugu.ttf"));
 			font = font.deriveFont(Config.FONTSIZETELUGU);
 		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

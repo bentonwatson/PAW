@@ -49,6 +49,7 @@ public class ConfigPanel extends JPanel
 	private JLabel numWordsLabel;
 	private JLabel minLenLabel;
 	private JLabel minStrengthLabel;
+	private JLabel maxStrengthLabel;
 	private JLabel allowDupLabel;
 	private JLabel charOrderLabel;
 	private JLabel allWordsLabel;
@@ -61,6 +62,7 @@ public class ConfigPanel extends JPanel
 	private JFormattedTextField numWordsTF; 	
 	private JFormattedTextField minLenTF; 	
 	private JFormattedTextField minStrengthTF;
+	private JFormattedTextField maxStrengthTF;
 	
 	private JRadioButton allowDupYes; 
 	private JRadioButton allowDupNo;
@@ -97,10 +99,11 @@ public class ConfigPanel extends JPanel
 	private int maxLenValue = 10;
 	
 	private NumberFormat minStrFormat;
+	private NumberFormat maxStrFormat;
 	private static int minStr = 1;
 	private int minStrValue;
-	private static int maxStr = 10;
-	private int maxStrValue = 10;
+	private static int maxStr = 7;
+	private int maxStrValue = 7;
 	
 	private boolean allowDupValue;
 	private boolean charOrderValue;
@@ -131,7 +134,8 @@ public class ConfigPanel extends JPanel
 			internalGG = internalgui.getCurrentGameGenerator();
 			levelValue = Integer.valueOf(internalGG.getLevel());
 			minLenValue = Integer.valueOf(internalGG.getWordLength());
-			minStrValue = Integer.valueOf(internalGG.getWordStrength());
+			minStrValue = Integer.valueOf(internalGG.getMinWordStrength());
+			maxStrValue = Integer.valueOf(internalGG.getMaxWordStrength());
 			allowDupValue = Boolean.valueOf(internalGG.getDuplicates());
 			charOrderValue = Boolean.valueOf(internalGG.getCharOrder());
 			minNumWordsValue = Integer.valueOf(internalGG.getNumWords());
@@ -139,9 +143,10 @@ public class ConfigPanel extends JPanel
 			levelValue = Integer.valueOf(internalgui.tmpConfigSettings.get(1));
 			minLenValue = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
 			minStrValue = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
-			allowDupValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
-			charOrderValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
-			minNumWordsValue = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
+			maxStrValue = Integer.valueOf(internalgui.tmpConfigSettings.get(4));
+			allowDupValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
+			charOrderValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(6));
+			minNumWordsValue = Integer.valueOf(internalgui.tmpConfigSettings.get(8));
 		}
 		if(internalgui.getCurrentConfigPool() != null){
 			internalPool = internalgui.getCurrentConfigPool();
@@ -204,28 +209,32 @@ public class ConfigPanel extends JPanel
 				if(levelValue == 1){
 					numWordsTF.setValue(5);
 					minLenTF.setValue(4);
-					minStrengthTF.setValue(4);
+					minStrengthTF.setValue(1);
+					maxStrengthTF.setValue(7);
 					allowDupYes.setSelected(true);
 					charOrderYes.setSelected(true);
 				}
 				if(levelValue == 2){
 					numWordsTF.setValue(5);
 					minLenTF.setValue(6);
-					minStrengthTF.setValue(6);
+					minStrengthTF.setValue(1);
+					maxStrengthTF.setValue(7);
 					allowDupYes.setSelected(true);
 					charOrderYes.setSelected(true);
 				}
 				if(levelValue == 3){
 					numWordsTF.setValue(8);
 					minLenTF.setValue(6);
-					minStrengthTF.setValue(6);
+					minStrengthTF.setValue(3);
+					maxStrengthTF.setValue(7);
 					allowDupNo.setSelected(true);
 					charOrderYes.setSelected(true);
 				}
 				if(levelValue == 4){
 					numWordsTF.setValue(5);
 					minLenTF.setValue(6);
-					minStrengthTF.setValue(6);
+					minStrengthTF.setValue(4);
+					maxStrengthTF.setValue(7);
 					allowDupNo.setSelected(true);
 					charOrderNo.setSelected(true);
 				}
@@ -263,27 +272,32 @@ public class ConfigPanel extends JPanel
 		numWordsLabel.setFont(font);
 		numWordsTF = new JFormattedTextField(numWordsFormat);
 		numWordsTF.setFont(font);
-//		minNumWordsValue = Integer.valueOf(internalgui.tmpConfigSettings.get(7));
 		numWordsTF.setValue(minNumWordsValue);
 		numWordsTF.addPropertyChangeListener("value",this);
 		
 		//Word Length
-		minLenLabel = new JLabel("Length of the word (2 - 10)");
+		minLenLabel = new JLabel("Word Length (2 - 10)");
 		minLenLabel.setFont(font);
 		minLenTF = new JFormattedTextField(minLenFormat);
 		minLenTF.setFont(font);
-//		minLenValue = Integer.valueOf(internalgui.tmpConfigSettings.get(2));
 		minLenTF.setValue(minLenValue);
 		minLenTF.addPropertyChangeListener("value",this);
 
 		// Word Strength
-		minStrengthLabel = new JLabel("Strength of the word (2 - 10)");
+		minStrengthLabel = new JLabel("Min Word Strength (1 - 7)");
 		minStrengthLabel.setFont(font);
+		
 		minStrengthTF = new JFormattedTextField(minStrFormat);
 		minStrengthTF.setFont(font);
-//		minStrValue = Integer.valueOf(internalgui.tmpConfigSettings.get(3));
 		minStrengthTF.setValue(minStrValue);
 		minStrengthTF.addPropertyChangeListener("value",this);
+		
+		maxStrengthLabel = new JLabel("Max Word Strength (1 - 7)");
+		maxStrengthLabel.setFont(font);
+		maxStrengthTF = new JFormattedTextField(maxStrFormat);
+		maxStrengthTF.setFont(font);
+		maxStrengthTF.setValue(maxStrValue);
+		maxStrengthTF.addPropertyChangeListener("value",this);
 
 		//allow duplicates
 		allowDupLabel = new JLabel("Allow Duplicate Characters");
@@ -297,7 +311,6 @@ public class ConfigPanel extends JPanel
 		allowDupGroup = new ButtonGroup();
 		allowDupGroup.add(allowDupYes);
 		allowDupGroup.add(allowDupNo);
-//		allowDupValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(4));
 		if(allowDupValue){
 			allowDupYes.setSelected(true);
 		}else{
@@ -319,7 +332,6 @@ public class ConfigPanel extends JPanel
 		charOrderGroup = new ButtonGroup();
 		charOrderGroup.add(charOrderYes);
 		charOrderGroup.add(charOrderNo);
-//		charOrderValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(5));
 		if(charOrderValue){
 			charOrderYes.setSelected(true);
 		}else{
@@ -341,7 +353,7 @@ public class ConfigPanel extends JPanel
 		allWordsGroup = new ButtonGroup();
 		allWordsGroup.add(allWordsYes);
 		allWordsGroup.add(allWordsNo);
-		allWordsValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(6));
+		allWordsValue = Boolean.valueOf(internalgui.tmpConfigSettings.get(7));
 		if(allWordsValue){
 			allWordsYes.setSelected(true);
 		}else{
@@ -428,13 +440,13 @@ public class ConfigPanel extends JPanel
 					}else{
 						internalgui.customGame = true;
 						String topic = internalgui.customTopic;
-						gg = new GameGenerator(topic, levelValue, minLenValue, 
-								minStrValue, allowDupValue, charOrderValue, internalgui.customWords);
+						gg = new GameGenerator(topic, levelValue, minLenValue, minStrValue,
+								maxStrValue, allowDupValue, charOrderValue, internalgui.customWords);
 					}
 				}else{
 					internalgui.customGame = false;
 					gg = new GameGenerator(topicValue, levelValue, minLenValue, 
-							minStrValue, allowDupValue, charOrderValue);
+							minStrValue, maxStrValue, allowDupValue, charOrderValue);
 				}
 				internalPool = gg.getReturnedWordList();
 				internalgui.setCurrentConfigPool(internalPool);
@@ -454,7 +466,7 @@ public class ConfigPanel extends JPanel
 				gg.setNewGame();
 				
 				internalgui.tmpConfigSettings.set(0, topicValue);
-				internalgui.tmpConfigSettings.set(6, String.valueOf(allWordsValue));
+				internalgui.tmpConfigSettings.set(7, String.valueOf(allWordsValue));
 				showNumberWordsFoundTF.setText(String.valueOf(internalPool.size()));
 				numWordsTF.setText(String.valueOf(numWords));
 				
@@ -472,20 +484,22 @@ public class ConfigPanel extends JPanel
 					.addGap(40)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addComponent(useCustomLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-						.addComponent(allWordsLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-						.addComponent(charOrderLabel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-						.addComponent(allowDupLabel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-						.addComponent(minStrengthLabel, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
-						.addComponent(minLenLabel, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
-						.addComponent(numWordsLabel, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
+//						.addComponent(allWordsLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+						.addComponent(charOrderLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+						.addComponent(allowDupLabel, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+						.addComponent(maxStrengthLabel, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE)
+						.addComponent(minStrengthLabel, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE)
+						.addComponent(minLenLabel, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
+						.addComponent(numWordsLabel, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
 						.addComponent(levelLabel)
 						.addComponent(topicLabel))
 					.addGap(15)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addComponent(useCustomPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
-						.addComponent(allWordsPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
+//						.addComponent(allWordsPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(charOrderPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(allowDupPanel, 0, 150, GroupLayout.PREFERRED_SIZE)
+						.addComponent(maxStrengthTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(minStrengthTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(minLenTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
 						.addComponent(numWordsTF, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
@@ -536,6 +550,10 @@ public class ConfigPanel extends JPanel
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(minStrengthLabel)
 						.addComponent(minStrengthTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(10)
+					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(maxStrengthLabel)
+						.addComponent(maxStrengthTF, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(19)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(allowDupLabel)
@@ -545,10 +563,10 @@ public class ConfigPanel extends JPanel
 						.addComponent(charOrderLabel)
 						.addComponent(charOrderPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(17)
-					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(allWordsLabel)
-						.addComponent(allWordsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(17)
+//					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+//						.addComponent(allWordsLabel)
+//						.addComponent(allWordsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+//					.addGap(17)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(useCustomLabel)
 						.addComponent(useCustomPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -592,6 +610,12 @@ public class ConfigPanel extends JPanel
             minStrValue = minStrValue > maxStr ? maxStr : minStrValue;
             minStrValue = minStrValue > maxStrValue ? maxStrValue : minStrValue;
             minStrengthTF.setValue(minStrValue);
+        } else if (source == maxStrengthTF) {
+        	maxStrValue = ((Number)maxStrengthTF.getValue()).intValue();
+        	maxStrValue = maxStrValue < maxStr ? maxStr : maxStrValue;
+        	maxStrValue = maxStrValue > maxStr ? maxStr : maxStrValue;
+        	maxStrValue = maxStrValue > maxStrValue ? maxStrValue : maxStrValue;
+        	maxStrengthTF.setValue(maxStrValue);
 		} else if (source == numWordsTF) {
 			minNumWordsValue = ((Number)numWordsTF.getValue()).intValue();
 			minNumWordsValue = minNumWordsValue < minNumWords ? minNumWords : minNumWordsValue;

@@ -335,6 +335,14 @@ public class WordProcessor {
 	}
 
 	/**
+	 * method to set the word in caps
+	 */
+	public void toCaps(){
+		String upper = word.toUpperCase();
+		this.setWord(upper);
+	}
+	
+	/**
 	 * strips of all spaces in the word
 	 * @return
 	 */
