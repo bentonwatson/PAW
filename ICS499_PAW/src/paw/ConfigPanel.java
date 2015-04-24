@@ -612,12 +612,12 @@ public class ConfigPanel extends JPanel
             minStrValue = minStrValue > maxStr ? maxStr : minStrValue;
             minStrValue = minStrValue > maxStrValue ? maxStrValue : minStrValue;
             minStrengthTF.setValue(minStrValue);
-//        } else if (source == maxStrengthTF) {
-//        	maxStrValue = ((Number)maxStrengthTF.getValue()).intValue();
-//        	maxStrValue = maxStrValue < maxStr ? maxStr : maxStrValue;
-//        	maxStrValue = maxStrValue > maxStr ? maxStr : maxStrValue;
-//        	maxStrValue = maxStrValue > maxStrValue ? maxStrValue : maxStrValue;
-//        	maxStrengthTF.setValue(maxStrValue);
+        } else if (source == maxStrengthTF) {
+        	maxStrValue = ((Number)maxStrengthTF.getValue()).intValue();
+        	maxStrValue = maxStrValue > maxStr ? maxStr : maxStrValue;
+        	maxStrValue = maxStrValue < minStr ? minStr : maxStrValue;
+        	maxStrValue = maxStrValue < minStrValue ? minStrValue : maxStrValue;
+        	maxStrengthTF.setValue(maxStrValue);
 		} else if (source == numWordsTF) {
 			minNumWordsValue = ((Number)numWordsTF.getValue()).intValue();
 			minNumWordsValue = minNumWordsValue < minNumWords ? minNumWords : minNumWordsValue;
