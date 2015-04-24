@@ -190,7 +190,7 @@ public class GameGenerator {
 				}
 			}
 		}
-		chooseRandomListOfWords(wordsOfCorrectLength);
+		chooseRandomListOfWords();
 		
 	}
 
@@ -201,18 +201,21 @@ public class GameGenerator {
 	 * When bigWordList is < number requested all bigWords are used
 	 * @param wordsOfCorrectLength
 	 */
-	public void chooseRandomListOfWords(List<String> wordsOfCorrectLength) {
-		if(wordsOfCorrectLength.size() >= numWords){
-			Collections.shuffle(wordsOfCorrectLength);
+	public void chooseRandomListOfWords() {
+		if(returnedWordList.size() >= numWords){
+			System.out.println("more");
+			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
 			for (int i = 0; i < numWords; i++) {
-				wordList.add(wordsOfCorrectLength.get(i));
+				wordList.add(returnedWordList.get(i));
 			}
+			System.out.println("wordList " + wordList.toString());
 		}else{
-			Collections.shuffle(wordsOfCorrectLength);
+			System.out.println("less");
+			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
-			for (int i = 0; i < wordsOfCorrectLength.size(); i++) {
-				wordList.add(wordsOfCorrectLength.get(i));
+			for (int i = 0; i < returnedWordList.size(); i++) {
+				wordList.add(returnedWordList.get(i));
 			}
 			
 		}
@@ -245,7 +248,7 @@ public class GameGenerator {
 		ArrayList<ArrayList<String>> columns = new ArrayList<ArrayList<String>>();
 		for(int i = 0; i < wordLength; i++){
 			ArrayList<String> single = new ArrayList<String>();
-			for(String word : returnedWordList){
+			for(String word : wordList){
 				WordProcessor wp = new WordProcessor(word);
 				wp.stripSpaces();
 				single.add(wp.logicalCharAt(i));
@@ -443,15 +446,22 @@ public class GameGenerator {
 		return returnedWordList;
 	}
 	
-	/**
-	 * Main method to test the generator
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		WordProcessor wp = new WordProcessor("ఐస్ ల్యాండ్");
-		System.out.println(wp.getLength());
-		wp.stripSpaces();
-		System.out.println(wp.getLength());
-		
+	public String toString(){
+		String s = "";
+		s += "NumWords " + numWords + " - returnedWordList " + returnedWordList.toString()
+				+ " - wordList " + wordList.toString();
+		return s;
 	}
+	
+//	/**
+//	 * Main method to test the generator
+//	 * @param args
+//	 */
+//	public static void main(String[] args) {
+//		WordProcessor wp = new WordProcessor("ఐస్ ల్యాండ్");
+//		System.out.println(wp.getLength());
+//		wp.stripSpaces();
+//		System.out.println(wp.getLength());
+//		
+//	}
 }
