@@ -440,6 +440,8 @@ public class ConfigPanel extends JPanel
 					}else{
 						internalgui.customGame = true;
 						String topic = internalgui.customTopic;
+						// custom words need to have length determined before calling generator
+						
 						gg = new GameGenerator(topic, levelValue, minLenValue, minStrValue,
 								maxStrValue, allowDupValue, charOrderValue, internalgui.customWords);
 					}
@@ -466,7 +468,7 @@ public class ConfigPanel extends JPanel
 				gg.setNewGame();
 				
 				internalgui.tmpConfigSettings.set(0, topicValue);
-				internalgui.tmpConfigSettings.set(7, String.valueOf(allWordsValue));
+//				internalgui.tmpConfigSettings.set(7, String.valueOf(allWordsValue));
 				showNumberWordsFoundTF.setText(String.valueOf(internalPool.size()));
 				numWordsTF.setText(String.valueOf(numWords));
 				
@@ -610,12 +612,12 @@ public class ConfigPanel extends JPanel
             minStrValue = minStrValue > maxStr ? maxStr : minStrValue;
             minStrValue = minStrValue > maxStrValue ? maxStrValue : minStrValue;
             minStrengthTF.setValue(minStrValue);
-        } else if (source == maxStrengthTF) {
-        	maxStrValue = ((Number)maxStrengthTF.getValue()).intValue();
-        	maxStrValue = maxStrValue < maxStr ? maxStr : maxStrValue;
-        	maxStrValue = maxStrValue > maxStr ? maxStr : maxStrValue;
-        	maxStrValue = maxStrValue > maxStrValue ? maxStrValue : maxStrValue;
-        	maxStrengthTF.setValue(maxStrValue);
+//        } else if (source == maxStrengthTF) {
+//        	maxStrValue = ((Number)maxStrengthTF.getValue()).intValue();
+//        	maxStrValue = maxStrValue < maxStr ? maxStr : maxStrValue;
+//        	maxStrValue = maxStrValue > maxStr ? maxStr : maxStrValue;
+//        	maxStrValue = maxStrValue > maxStrValue ? maxStrValue : maxStrValue;
+//        	maxStrengthTF.setValue(maxStrValue);
 		} else if (source == numWordsTF) {
 			minNumWordsValue = ((Number)numWordsTF.getValue()).intValue();
 			minNumWordsValue = minNumWordsValue < minNumWords ? minNumWords : minNumWordsValue;

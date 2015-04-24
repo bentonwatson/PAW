@@ -28,7 +28,7 @@ public class Config {
 
 	// some gui code will need additions to incorporate more languages.
 	//default language  ("en" = english, "te" = telugu); change input default when language changes
-	public static final String DEFAULTLANGUAGE = "en";
+	public static final String DEFAULTLANGUAGE = "te";
 	
 	//this is the file for BigWordCollection default to English
 	public static final String INPUT_FILE = System.getProperty("user.home") + "\\PAW\\en\\input_words.txt";

@@ -114,6 +114,9 @@ public class GameGenerator {
 		setNewGame();
 	}
 
+	/*
+	 * Constructor for the custom words tab
+	 */
 	public GameGenerator(String a_topic, int a_level, int a_length,
 			int min_strength, int max_strength, 
 			boolean dup, boolean order, ArrayList<String> words) {
@@ -153,10 +156,16 @@ public class GameGenerator {
 				if (language.equals("en")){
 					wp.stripAllSymbols();
 					wp.toCaps();
+				}else if(language.equals("te")){
+					int strength = wp.getWordStrength();
+					if(!(strength >= minWordStrength) || !(strength <= maxWordStrength)){
+						continue;
+					}
 				}
 				wp.trim();
 				wp.stripSpaces();
 				if (wp.getLength() == wordLength) {
+					returnedWordList.add(word);
 					wordsOfCorrectLength.add(wp.getWord());
 				}
 			}
@@ -172,11 +181,15 @@ public class GameGenerator {
 				wp.trim();
 				wp.stripSpaces();
 				if (wp.getLength() == wordLength) {
+					if (language.equals("en")){
+						returnedWordList.add(bigWord.getEnglish());
+					}else if (language.equals("te")){
+						returnedWordList.add(bigWord.getTelugu());
+					}
 					wordsOfCorrectLength.add(wp.getWord());
 				}
 			}
 		}
-		returnedWordList = wordsOfCorrectLength;
 		chooseRandomListOfWords(wordsOfCorrectLength);
 		
 	}
@@ -206,6 +219,25 @@ public class GameGenerator {
 	}
 
 	/**
+	 * Method to set the columnData
+	 */
+	public void setColumnData() {
+		columnData = createColumns();
+		
+		if(!duplicates){
+			removeDuplicates();
+			for (ArrayList<String> arrayList : columnData) {
+				while (arrayList.size() < numWords) {				
+					arrayList.add(" ");
+				}
+			}
+		}
+		if(!charOrder){
+			shuffleColumns();
+		}
+	}
+
+	/**
 	 * Method to create the columns
 	 * @return ArrayList<ArrayList<String>>
 	 */
@@ -213,8 +245,9 @@ public class GameGenerator {
 		ArrayList<ArrayList<String>> columns = new ArrayList<ArrayList<String>>();
 		for(int i = 0; i < wordLength; i++){
 			ArrayList<String> single = new ArrayList<String>();
-			for(String word : wordList){
+			for(String word : returnedWordList){
 				WordProcessor wp = new WordProcessor(word);
+				wp.stripSpaces();
 				single.add(wp.logicalCharAt(i));
 			}
 			single = shuffleChars(single);
@@ -302,25 +335,6 @@ public class GameGenerator {
 				//TODO what to do if duplicate words are returned
 				bigWordList.addAll(bwcByCriteria.getAllBigWords());
 			}
-		}
-	}
-
-	/**
-	 * Method to set the columnData
-	 */
-	public void setColumnData() {
-		columnData = createColumns();
-		
-		if(!duplicates){
-			removeDuplicates();
-			for (ArrayList<String> arrayList : columnData) {
-				while (arrayList.size() < numWords) {				
-					arrayList.add(" ");
-				}
-			}
-		}
-		if(!charOrder){
-			shuffleColumns();
 		}
 	}
 
@@ -429,14 +443,15 @@ public class GameGenerator {
 		return returnedWordList;
 	}
 	
-//	/**
-//	 * Main method to test the generator
-//	 * @param args
-//	 */
-//	public static void main(String[] args) {
-//		GameGenerator gg = new GameGenerator("BodyParts", 1, 4, 4, false, false);
-//		gg.chooseNumberOfWords(5);
-//		Game game = gg.getNewGame();
-//		System.out.println(game.toString());
-//	}
+	/**
+	 * Main method to test the generator
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		WordProcessor wp = new WordProcessor("ఐస్ ల్యాండ్");
+		System.out.println(wp.getLength());
+		wp.stripSpaces();
+		System.out.println(wp.getLength());
+		
+	}
 }
