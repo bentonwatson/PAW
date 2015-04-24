@@ -64,12 +64,7 @@ public class WordProcessor {
 	 */
 	public void setLogicalChars(ArrayList<String> some_logical_chars)
 	{
-		String newWord = "";
 		logicalChars = some_logical_chars;
-		for (String string : logicalChars) {
-			newWord += string;
-		}
-		word = newWord;
 	}
 
 	/**

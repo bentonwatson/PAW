@@ -24,6 +24,7 @@ public class GameTracker
 	private List<String> wordList;
 	private int numberOfWords;
 	private int numberOfWordsFound;
+	private int currentIndex;
 
 	/**
 	 * constructor for setting the puzzle to play
@@ -49,127 +50,53 @@ public class GameTracker
 	 * When a match is found, wordListStatus is updated at the corresponding
 	 * location
 	 * 
-	 * @param a_selected_word
+	 * @param inputWord
 	 * @return
 	 */
-	public boolean isWordInTheList(String a_selected_word)
-	{
-		boolean theReturn = false;
-		
-		for (int i = 0; i < wordList.size(); i++)
-		{
-			String word = wordList.get(i);
-			word = word.replaceAll("\\s+", "");
-			// System.out.println(word);
-			if (word.equalsIgnoreCase(a_selected_word.replaceAll("\\s+", "")))
-			{
-				theReturn = true;
-			}
-		}
-		
-		return theReturn;
-	}
-	
-	
-	public boolean isWordInTheList(String[] inputWord){
-		WordProcessor wp = new WordProcessor("");
-		String guessWord = "";
-		for (String string : inputWord) {
-			guessWord += string;
-		}
-		
-		for (String gameWord : wordList) {
-			wp.setWord(gameWord);
-				if(wp.equals(guessWord)){
-					return true;
+	public boolean isWordInTheList(ArrayList<String> inputWord){
+		WordProcessor wpin = new WordProcessor(inputWord);
+		ArrayList<String> input = wpin.getLogicalChars();
+		for (int i = 0; i < wordList.size(); i++) {
+			WordProcessor wpg = new WordProcessor(wordList.get(i));
+			wpg.stripSpaces();
+			ArrayList<String> gw = wpg.getLogicalChars();
+			int matchCount = 0;
+			for(int j = 0; j < inputWord.size(); j++){
+				if(input.get(j).equals(gw.get(j))){
+					matchCount++;
 				}
+			}
+			if(matchCount == inputWord.size()){
+				currentIndex = i;
+				return true;
+			}
 		}
 		return false;
 	}
 	
-	public boolean wordHasAlreadyBeenFound(String a_selected_word)
-	{
-		for (int i=0; i< wordList.size(); i++) {
-			// THe word is in the word list
-			if (wordList.get(i).equalsIgnoreCase(a_selected_word)) {
-				if (wordListStatus.get(i)) {
-					return true;
-				}
-			}
-		} 
-		return false;
-	}
-
 	/**
 	 * this method sets the a_selected_word as FOUND precondition is
 	 * isWordInTheList = true
 	 */
-	public void setSelectedWordAsFound(String a_word)
+	public void setCurrentWordAsFound()
 	{
-		int index = wordList.indexOf(a_word);
-		wordListStatus.set(index, true);
+		wordListStatus.set(currentIndex, true);
 		numberOfWordsFound++;
 
 	}
 
 	/**
 	 * This method checks whether a word has already been marked as found
-	 * 
-	 * @param a_selected_word
 	 * @return
 	 */
-	public boolean isWordAlreadyFound(String a_selected_word)
+	public boolean isCurrentWordAlreadyFound()
 	{
-		int index = wordList.indexOf(a_selected_word);
-		if(wordListStatus.get(index)){
+		if(wordListStatus.get(currentIndex)){
 			return true;
 		}
 		return false;
-//		for (int i = 0; i < numberOfWords; i++)
-//		{
-//			if (wordListStatus.get(i).equals(true))
-//			{
-//				if (wordList.get(i).equals(a_selected_word))
-//				{
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
 	}
-	/**
-	 * This method checks whether a word has already been marked as found
-	 * 
-	 * @param string[]
-	 * @return
-	 */
-	public boolean isWordAlreadyFound(String[] inputWord)
-	{
-		WordProcessor wp = new WordProcessor("");
-		wp = new WordProcessor("");
-		String guessWord = "";
-		for (String string : inputWord) {
-			guessWord += string;
-		}
-		
-		for (String gameWord : wordList) {
-			wp.setWord(gameWord);
-				if(wp.equals(guessWord)){
-					numberOfWordsFound++;
-				}
-		}
-		for (int i = 0; i < numberOfWords; i++)
-		{
-			if (wordListStatus.get(i).equals(true))
-			{
-				if (wordList.get(i).equals(guessWord))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+
 
 	public ArrayList<String> getWordsNotFound(){
 		ArrayList<String> words = new ArrayList<String>();

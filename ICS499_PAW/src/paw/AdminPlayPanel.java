@@ -61,7 +61,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 	private int clickCount = 0;
 	private List<GridTile> gridTiles = new ArrayList<>();
 	private List<AnswerTile> answerTiles = new ArrayList<>();
-	private String[] guessWord;
+	private ArrayList<String> guessWord;
 	private GameTracker tracker;
 	private JEditorPane numWords;
 	private JEditorPane words;
@@ -169,7 +169,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 
 		ArrayList<ArrayList<String>> columnData = new ArrayList<ArrayList<String>>();
 		if(currentGame!= null){
-			guessWord = new String[currentGame.getNumberColumns()];
+//			guessWord = new String[currentGame.getNumberColumns()];
 			columnData = currentGame.getColumnData();
 		
 			for(int i = 0; i < columnData.size(); i++){
@@ -305,9 +305,9 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 					gridTile.setSelected(false);
 					gridTile.setBackground(tileColor);
 				}
-				for (int i = 0; i < guessWord.length; i++) {
-					guessWord[i] = "";
-				}
+//				for (int i = 0; i < guessWord.length; i++) {
+//					guessWord[i] = "";
+//				}
 				clickCount = 0;
 			}
 		});
@@ -428,12 +428,13 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 				}
 				if (clickCount == currentGame.getWordLength()) {
 					setGuessWord();
+					
 					String found = "";
 					for(String s: guessWord){
 						found += s;
 					}
-					if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
-						tracker.setSelectedWordAsFound(found);
+					if (tracker.isWordInTheList(guessWord) && !tracker.isCurrentWordAlreadyFound()) {
+						tracker.setCurrentWordAsFound();
 						foundWordList.add(found);
 						numWords.setText("Number of Words = "
 								+ String.valueOf(currentGame.getNumberWords())
@@ -472,7 +473,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							}
 						}
 						clickCount = 0;
-						guessWord = new String[currentGame.getWordLength()];
+//						guessWord = new String[currentGame.getWordLength()];
 						for (AnswerTile answerTile : answerTiles) {
 							timer.schedule(new TimerTask() {
 								@Override
@@ -634,8 +635,9 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 		atList.get(currentLocation).setText(" ");
 	}
 	public void setGuessWord(){
-		for (int i = 0; i < guessWord.length; i++) {
-			guessWord[i] = answerTiles.get(i).getText();
+		guessWord = new ArrayList<String>();
+		for (int i = 0; i < answerTiles.size(); i++) {
+			guessWord.add(answerTiles.get(i).getText());
  		}
 	}
 	
@@ -676,8 +678,8 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 						for(String s: guessWord){
 							found += s;
 						}
-						if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
-							tracker.setSelectedWordAsFound(found);
+						if (tracker.isWordInTheList(guessWord) && !tracker.isCurrentWordAlreadyFound()) {
+							tracker.setCurrentWordAsFound();
 							foundWordList.add(found);
 							numWords.setText("Number of Words = "
 									+ String.valueOf(currentGame.getNumberWords())
@@ -719,7 +721,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							}
 							
 							clickCount = 0;
-							guessWord = new String[currentGame.getWordLength()];
+//							guessWord = new String[currentGame.getWordLength()];
 							for (AnswerTile answerTile : answerTiles) {
 								timer.schedule(new TimerTask() {
 
@@ -752,7 +754,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							answerTile.setBackground(Color.YELLOW);
 						}
 					}
-					guessWord[pressedButton.clickedPosition] = "";
+					guessWord.set(pressedButton.clickedPosition, "");
 					shiftAnswerTilesLeft(answerTiles, pressedButton.clickedPosition,
 							gridTiles);
 					pressedButton.getParent().revalidate();
@@ -765,8 +767,8 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 						for(String s: guessWord){
 							found += s;
 						}
-						if (tracker.isWordInTheList(found) && !tracker.isWordAlreadyFound(found)) {
-							tracker.setSelectedWordAsFound(found);
+						if (tracker.isWordInTheList(guessWord) && !tracker.isCurrentWordAlreadyFound()) {
+							tracker.setCurrentWordAsFound();
 							foundWordList.add(found);
 							numWords.setText("Number of Words = "
 									+ String.valueOf(currentGame.getNumberWords())
@@ -809,7 +811,7 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 
 //							pause = 500 * guessWord.length; // adds bug
 							clickCount = 0;
-							guessWord = new String[currentGame.getWordLength()];
+//							guessWord = new String[currentGame.getWordLength()];
 							for (AnswerTile answerTile : answerTiles) {
 								timer.schedule(new TimerTask() {
 
@@ -1032,14 +1034,14 @@ public class AdminPlayPanel extends JPanel implements MouseListener{
 							} else {
 								dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 								setText(text[0]);
-								guessWord[tileId] = text[0];
+//								guessWord[tileId] = text[0];
 								dtde.getDropTargetContext().dropComplete(true);
 							}
 						} else {
 							dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 							clickedPosition = Integer.parseInt(text[1]);
 							setText(text[0]);
-							guessWord[tileId] = text[0];
+//							guessWord[tileId] = text[0];
 							dtde.getDropTargetContext().dropComplete(true);
 						}
 

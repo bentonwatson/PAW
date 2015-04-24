@@ -3,8 +3,6 @@ package paw;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-
 import core.BigWord;
 import core.BigWordCollection;
 import core.Game;
@@ -147,11 +145,11 @@ public class GameGenerator {
 	 */
 	public void chooseNumberOfWords(int num){
 		numWords = num;
-		ArrayList<String> wordsOfCorrectLength = new ArrayList<String>();
 		returnedWordList = new ArrayList<String>();
 		WordProcessor wp = new WordProcessor("");
 		if(custom){
 			for(String word : customWords){
+				System.out.println("original word " + word);
 				wp.setWord(word);
 				if (language.equals("en")){
 					wp.stripAllSymbols();
@@ -166,7 +164,6 @@ public class GameGenerator {
 				wp.stripSpaces();
 				if (wp.getLength() == wordLength) {
 					returnedWordList.add(word);
-					wordsOfCorrectLength.add(wp.getWord());
 				}
 			}
 		}else{
@@ -174,19 +171,19 @@ public class GameGenerator {
 				if (language.equals("en")){
 					wp.setWord(bigWord.getEnglish());
 					wp.stripAllSymbols();
-					wp.toCaps();
 				}else if (language.equals("te")){
 					wp.setWord(bigWord.getTelugu());
 				}
 				wp.trim();
 				wp.stripSpaces();
 				if (wp.getLength() == wordLength) {
-					if (language.equals("en")){
-						returnedWordList.add(bigWord.getEnglish());
-					}else if (language.equals("te")){
+					if(language.equals("te")){
 						returnedWordList.add(bigWord.getTelugu());
 					}
-					wordsOfCorrectLength.add(wp.getWord());
+					if (language.equals("en")){
+						wp.toCaps();
+						returnedWordList.add(wp.getWord());
+					}
 				}
 			}
 		}
@@ -202,17 +199,24 @@ public class GameGenerator {
 	 * @param wordsOfCorrectLength
 	 */
 	public void chooseRandomListOfWords() {
+//		WordProcessor wp = new WordProcessor();
 		if(returnedWordList.size() >= numWords){
 			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
 			for (int i = 0; i < numWords; i++) {
 				wordList.add(returnedWordList.get(i));
+//				wp.setWord(returnedWordList.get(i));
+//				wp.stripSpaces();
+//				wordList.add(wp.getWord());
 			}
 		}else{
 			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
 			for (int i = 0; i < returnedWordList.size(); i++) {
 				wordList.add(returnedWordList.get(i));
+//				wp.setWord(returnedWordList.get(i));
+//				wp.stripSpaces();
+//				wordList.add(wp.getWord());
 			}
 			
 		}
@@ -446,7 +450,7 @@ public class GameGenerator {
 	public String toString(){
 		String s = "";
 		s += "NumWords " + numWords + " - returnedWordList " + returnedWordList.toString()
-				+ " - wordList " + wordList.toString();
+				+ " - columnData " + columnData.toString() ;
 		return s;
 	}
 	
@@ -455,10 +459,11 @@ public class GameGenerator {
 //	 * @param args
 //	 */
 //	public static void main(String[] args) {
-//		WordProcessor wp = new WordProcessor("ఐస్ ల్యాండ్");
-//		System.out.println(wp.getLength());
-//		wp.stripSpaces();
-//		System.out.println(wp.getLength());
+//		ArrayList<String> words = new ArrayList<String>();
+//		words.add("యునై టెడ్");
+//		words.add("ఫ్రెంచ్ ఫ్రైస్");
+//		GameGenerator gg = new GameGenerator("topic", 1, 4, 1, 7, true, true, words);
+//		System.out.println(gg.toString());
 //		
 //	}
 }
