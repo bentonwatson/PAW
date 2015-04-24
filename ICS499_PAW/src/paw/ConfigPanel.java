@@ -472,8 +472,6 @@ public class ConfigPanel extends JPanel
 				showNumberWordsFoundTF.setText(String.valueOf(internalPool.size()));
 				numWordsTF.setText(String.valueOf(numWords));
 				
-				System.out.println(gg.toString());
-				
 				internalgui.setCurrentGameGenerator(gg);
 //				GeneratePanel.setNewGame(gg);
 //				goToGenerate(2); // switches tab to Generate tab when clicking setConfig button

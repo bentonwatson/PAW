@@ -203,15 +203,12 @@ public class GameGenerator {
 	 */
 	public void chooseRandomListOfWords() {
 		if(returnedWordList.size() >= numWords){
-			System.out.println("more");
 			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
 			for (int i = 0; i < numWords; i++) {
 				wordList.add(returnedWordList.get(i));
 			}
-			System.out.println("wordList " + wordList.toString());
 		}else{
-			System.out.println("less");
 			Collections.shuffle(returnedWordList);
 			wordList = new ArrayList<String>();
 			for (int i = 0; i < returnedWordList.size(); i++) {
