@@ -1,13 +1,12 @@
 The game requires folder creations in "user.home".
 Create the following structures before play.
 
-For English Language Game play:
-user.home\\PAW\en and download "enGameSet.txt" and "input_words.txt"
+create directory 'user.home\\PAW\en' and download "enGameSet.txt" and "input_words.txt"
 
-For Teluga Language game play:
-user.home\\PAW\te and 
+Additionally, For Teluga Language game play:
+create directory 'user.home\\PAW\te' and download "teGameSet.txt" and "input_words.txt" and "Gidugu.ttf"
 
-Game  jar may be saved anywhere as long as access to user.home is possible.
+Game may be played from anywhere as long as access to user.home is possible.
 
 # paw
 PAW
